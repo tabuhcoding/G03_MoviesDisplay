@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
 import { UserService } from './user/user.service';
 import { UserController } from './user/user.controller';
+import { MoviesModule } from './movies/movies.module';
 import { JwtStrategy } from './auth/jwt.strategies';
 import { JwtAuthMiddleware } from './auth/middlewares/jwt-auth.middleware';
 import { User, UserSchema } from './user/schema/user.schema';
@@ -19,6 +20,7 @@ import { GoogleStrategy } from './auth/google.strategies';
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '1h' },
     }),
+    MoviesModule,
   ],
   controllers: [UserController],
   providers: [UserService, JwtStrategy, GoogleStrategy],
