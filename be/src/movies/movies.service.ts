@@ -33,7 +33,7 @@ export class MoviesService {
     }
   }
 
-  async searchMovies(query: string): Promise<any> {
+  async searchMovies(query: string, page:number): Promise<any> {
     if (!query) {
       throw new Error('Query parameter is missing');
     }
@@ -42,12 +42,12 @@ export class MoviesService {
         params: {
           api_key: this.apiKey,
           query,
+          page,
           include_adult: false,
           language: 'en-US',
-          page: 1,
         },
       });
-      return response.data.results;
+      return response.data;
     } catch (error) {
       throw new HttpException(
         { message: 'Failed to fetch movie search results', statusCode: error.response?.status || 500 },
