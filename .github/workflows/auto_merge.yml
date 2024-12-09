@@ -16,21 +16,24 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Fetch toàn bộ lịch sử commit
+          fetch-depth: 0
 
       - name: Fetch and Checkout staging
         run: |
-          git fetch origin staging
+          git fetch origin
           git checkout staging
+          git reset --hard origin/staging
 
       - name: Merge Changes into Staging
         run: |
-          git pull origin ${GITHUB_HEAD_REF} # Merge nhánh source của PR
-          git push origin staging # Cập nhật staging
+          git fetch origin ${GITHUB_HEAD_REF}
+          git merge --no-ff FETCH_HEAD
+          git push origin staging
 
       - name: Create Pull Request from Staging to Main
         uses: peter-evans/create-pull-request@v6
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           branch: "staging"
           base: "main"
           title: "[AUTO-PR] Staging to Main"
@@ -43,4 +46,4 @@ jobs:
             ci/cd
           commit-message: |
             [AUTO-PR] Staging to Main
-          force: false # Đảm bảo không force push
+          force: false
