@@ -6,6 +6,7 @@ import Profile from "./pages/Profile";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AuthRoute from "./components/AuthRoute";
 import LoginSuccess from "./pages/LoginSuccess";
+import Movies from "./pages/Movies";
 import { UserProvider } from "./helpers/useContext";
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
           <Route path="/register" element={<AuthRoute><Register /></AuthRoute>} />
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/login-success" element={<LoginSuccess />} />
+          <Route path="/movies" element={<Movies />} />
         </Routes>
       </Router>
     </UserProvider>
