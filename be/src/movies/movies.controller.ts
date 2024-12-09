@@ -11,12 +11,12 @@ export class MoviesController {
   }
 
   @Get('search')
-  async searchMovies(@Query('query') query: string) {
+  async searchMovies(@Query('query') query: string, @Query('page') page: number) {
     if (!query) {
       throw new Error('Query parameter is missing');
     }
     try {
-      return await this.moviesService.searchMovies(query);
+      return await this.moviesService.searchMovies(query, page);
     } catch (error) {
       console.error('Controller caught error:', error.message);
       throw error; // Re-throw lỗi nếu cần
