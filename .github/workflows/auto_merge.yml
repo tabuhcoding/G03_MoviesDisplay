@@ -43,3 +43,4 @@ jobs:
             ci/cd
           commit-message: |
             [AUTO-PR] Staging to Main
+          force: false # Đảm bảo không force push
