@@ -47,7 +47,7 @@ const MovieDetail = () => {
       {movieDetails ? (
         <div className="custom-bg"
           style={{
-            backgroundImage: `url(https://media.themoviedb.org/t/p/original${movieDetails?.belongs_to_collection?.backdrop_path})`,
+            backgroundImage: `url(https://media.themoviedb.org/t/p/original${movieDetails?.belongs_to_collection?.backdrop_path ?? movieDetails?.belongs_to_collection?.poster_path ?? movieDetails.backdrop_path})`,
           }}
         >
           <div className="movie-detail-container">
