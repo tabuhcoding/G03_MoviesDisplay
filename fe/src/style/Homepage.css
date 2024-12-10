@@ -1,0 +1,52 @@
+.toggle-switch {
+    display: flex;
+    border: 2px solid #032541;
+    border-radius: 50px;
+    overflow: hidden;
+  }
+  
+  .toggle-btn {
+    padding: 8px 20px;
+    border: none;
+    background-color: white;
+    color: #0a2540;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    
+  }
+  
+  .toggle-btn.active {
+    background-color: #032541; /* Màu nền cho nút active */
+    background-image: linear-gradient(90deg, #5eead4, #00d4ff);
+    border-radius: 50px; 
+    color: white;
+  }
+  
+  .toggle-btn:not(.active):hover {
+    background-color: #f8f9fa; /* Màu nền khi hover */
+  }
+
+  /* Đặt màu mũi tên mặc định là trắng */
+.dropdown-toggle::after {
+    color: white !important;  /* Đảm bảo màu trắng */
+}
+
+/* Đảm bảo màu mũi tên vẫn trắng khi dropdown mở */
+.dropdown-toggle[aria-expanded="true"]::after {
+    color: white !important;  
+}
+
+/* Đảm bảo màu mũi tên vẫn trắng khi hover */
+.dropdown-toggle:hover::after {
+    color: white !important;  /* Mũi tên trắng khi hover */
+}
+
+.card-group-scroll {
+    display: flex; /* Xếp các thẻ card theo hàng ngang */
+    overflow-x: auto; /* Kích hoạt cuộn ngang khi không gian không đủ */
+    gap: 10px; /* Khoảng cách giữa các thẻ card */
+    padding-bottom: 10px; /* Đảm bảo không bị cắt khi cuộn ngang */
+}
+  

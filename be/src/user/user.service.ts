@@ -45,7 +45,7 @@ export class UserService {
     }    
   }
 
-  async login(getUserDto: GetUserDto): Promise<{ token: string; }> {
+  async login(getUserDto: GetUserDto): Promise<{ token: string; user: User }> {
     const { email, password } = getUserDto;
   
     const user = await this.userModel.findOne({ email });
@@ -61,11 +61,11 @@ export class UserService {
     const payload = { username: user.username, email: user.email, avatar: user.avatar, sub: user._id };
     const token = this.jwtService.sign(payload);
   
-    return { token };
+    return { token, user };
   }
   
 
-  async handleGoogleUser(profile: any): Promise<{ token: string; }> {
+  async handleGoogleUser(profile: any): Promise<{ token: string; user: User }> {
     const { googleId, email, fullName, avatar } = profile;
     let user = await this.userModel.findOne({ email });
 
@@ -86,6 +86,6 @@ export class UserService {
     // Tạo JWT token
     const payload = { email: user.email, username: user.username , avatar: avatar , sub: user._id };
     const token = this.jwtService.sign(payload);
-    return { token };
+    return { token, user };
   }
 }

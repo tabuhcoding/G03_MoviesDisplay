@@ -4,7 +4,7 @@ import { useState } from 'react'
 import axios from 'axios'
 import { Button, TextField, Card, CardContent, CardHeader, Typography, Alert, Box } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
-import { setCookie } from '../helpers/cookies'
+import { setCookie } from '../../helpers/cookies'
 
 export default function Register() {
   const [formData, setFormData] = useState({
