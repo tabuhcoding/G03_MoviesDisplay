@@ -71,7 +71,7 @@ export default function Home() {
           ) : (
             <div className="movie-list d-flex">
               {movies.map((movie) => (
-                <div className="movie-card mx-2" key={movie.id}>
+                <div onClick={() => navigate(`/movies/${movie.id}`)} className="movie-card mx-2" key={movie.id}>
                   <img
                     src={
                       movie.poster_path

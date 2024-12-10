@@ -29,7 +29,7 @@ const UserScoreSection = ({ vote_average }) => {
         >
           <CircularProgress
             variant="determinate"
-            value={(vote_average * 10).toFixed(2)}
+            value={(vote_average * 10).toFixed(1)}
             size={70}
             thickness={4}
             sx={{
@@ -53,7 +53,7 @@ const UserScoreSection = ({ vote_average }) => {
             <Typography variant="caption" component="div" fontSize={12}>
               {Number.isInteger(vote_average * 10)
                 ? (vote_average * 10)
-                : (vote_average * 10).toFixed(2)}%
+                : (vote_average * 10).toFixed(1)}%
             </Typography>
           </Box>
         </Box>

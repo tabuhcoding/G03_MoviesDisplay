@@ -47,7 +47,7 @@ const MovieDetail = () => {
       {movieDetails ? (
         <div className="custom-bg"
           style={{
-            backgroundImage: `url(https://media.themoviedb.org/t/p/original${movieDetails?.belongs_to_collection?.backdrop_path ?? movieDetails?.belongs_to_collection?.poster_path ?? movieDetails.backdrop_path})`,
+            backgroundImage: `url(https://media.themoviedb.org/t/p/original${movieDetails?.belongs_to_collection?.backdrop_path ?? movieDetails?.belongs_to_collection?.poster_path ?? movieDetails.backdrop_path ?? movieDetails.poster_path})`,
           }}
         >
           <div className="movie-detail-container">
@@ -68,7 +68,7 @@ const MovieDetail = () => {
                       <span className="genres">{movieDetails.genres.map((genre) => genre.name).join(", ")}</span>
                       <span className="runtime">{formatRuntime(movieDetails.runtime)}</span>
                     </div>
-                    <UserScoreSection vote_average={movieDetails.vote_average} />
+                    <UserScoreSection vote_average={movieDetails.vote_average ?? 0} />
                   </div>
                   <div className="header-info">
                     <h3 className="tagline" dir="auto">{movieDetails.tagline}</h3>

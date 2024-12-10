@@ -26,8 +26,7 @@ const SearchPage = () => {
         const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/movies/search`, {
           params: { query, page },
         });
-        console.log('response:', response.data);
-        setMovies(response.data.results || []);
+        setMovies(response.data.results || response.data || []);
         setTotalPages(response.data.total_pages || 1);
       } catch (error) {
         console.error('Error fetching search results:', error);
