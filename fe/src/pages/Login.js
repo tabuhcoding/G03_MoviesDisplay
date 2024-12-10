@@ -41,7 +41,7 @@ export default function Login() {
       setCookie('token', response.data.token, 7);
       setMessage(response.data.message || 'Đăng nhập thành công!');
       setFormData({ email: '', password: '' });
-      navigate('/profile');
+      navigate('/');
     } catch (error) {
       console.log(error);
       if (error.response && error.response.data && error.response.data.message && error.response.data.message.message) {
