@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+// import React, { useState, useEffect } from 'react';
+// import axios from 'axios';
 
 const Movies = () => {
   const [trendingMovies, setTrendingMovies] = useState([]);
@@ -11,36 +13,36 @@ const Movies = () => {
 
   const navigate = useNavigate();
 
-  // Fetch trending movies
-  useEffect(() => {
-    const fetchTrendingMovies = async () => {
-      try {
-        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/movies/trending`, {
-          params: { timeWindow: 'day' },
-        });
-        setTrendingMovies(response.data);
-        setSelectedMovieId(response.data[0].id);
-      } catch (error) {
-        console.error('Error fetching trending movies:', error);
-      }
-    };
-    fetchTrendingMovies();
-  }, []);
+//   // Fetch trending movies
+//   useEffect(() => {
+//     const fetchTrendingMovies = async () => {
+//       try {
+//         const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/movies/trending`, {
+//           params: { timeWindow: 'day' },
+//         });
+//         setTrendingMovies(response.data);
+//         setSelectedMovieId(response.data[0].id);
+//       } catch (error) {
+//         console.error('Error fetching trending movies:', error);
+//       }
+//     };
+//     fetchTrendingMovies();
+//   }, []);
 
-  // Fetch movie details
-  useEffect(() => {
-    if (selectedMovieId) {
-      const fetchMovieDetails = async () => {
-        try {
-          const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/movies/${selectedMovieId}`);
-          setMovieDetails(response.data);
-        } catch (error) {
-          console.error('Error fetching movie details:', error);
-        }
-      };
-      fetchMovieDetails();
-    }
-  }, [selectedMovieId]);
+//   // Fetch movie details
+//   useEffect(() => {
+//     if (selectedMovieId) {
+//       const fetchMovieDetails = async () => {
+//         try {
+//           const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/movies/${selectedMovieId}`);
+//           setMovieDetails(response.data);
+//         } catch (error) {
+//           console.error('Error fetching movie details:', error);
+//         }
+//       };
+//       fetchMovieDetails();
+//     }
+//   }, [selectedMovieId]);
 
   // Search movies
   const handleSearch = async () => {
@@ -57,31 +59,42 @@ const Movies = () => {
   const handleMovieClick = (movieId) => {
     navigate(`/movies/${movieId}`);
   }
+//   // Search movies
+//   const handleSearch = async () => {
+//     try {
+//       const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/movies/search`, {
+//         params: { query: searchQuery },
+//       });
+//       setSearchResults(response.data);
+//     } catch (error) {
+//       console.error('Error searching movies:', error);
+//     }
+//   };
 
-  return (
-    <div style={{ padding: '20px' }}>
-      <h1>Movies</h1>
+//   return (
+//     <div style={{ padding: '20px' }}>
+//       <h1>Movies</h1>
 
-      {/* Trending Movies */}
-      <section>
-        <h2>Trending Movies</h2>
-        <ul>
-          {trendingMovies.map((movie) => (
-            <li key={movie.id} onClick={() => setSelectedMovieId(movie.id)}>
-              {movie.title}
-            </li>
-          ))}
-        </ul>
-      </section>
+//       {/* Trending Movies */}
+//       <section>
+//         <h2>Trending Movies</h2>
+//         <ul>
+//           {trendingMovies.map((movie) => (
+//             <li key={movie.id} onClick={() => setSelectedMovieId(movie.id)}>
+//               {movie.title}
+//             </li>
+//           ))}
+//         </ul>
+//       </section>
 
-      {/* Movie Details */}
-      {movieDetails && (
-        <section>
-          <h2>Movie Details</h2>
-          <p><strong>Title:</strong> {movieDetails.title}</p>
-          <p><strong>Overview:</strong> {movieDetails.overview}</p>
-        </section>
-      )}
+//       {/* Movie Details */}
+//       {movieDetails && (
+//         <section>
+//           <h2>Movie Details</h2>
+//           <p><strong>Title:</strong> {movieDetails.title}</p>
+//           <p><strong>Overview:</strong> {movieDetails.overview}</p>
+//         </section>
+//       )}
 
       {/* Search Movies */}
       <section>
@@ -109,4 +122,4 @@ const Movies = () => {
   );
 };
 
-export default Movies;
+// export default Movies;
