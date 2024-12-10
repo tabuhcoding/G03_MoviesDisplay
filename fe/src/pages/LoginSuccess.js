@@ -13,7 +13,7 @@ export default function LoginSuccess() {
       setCookie("token", token, 7);
       setMessage('Login successful. Redirecting to profile page...')
       setTimeout(() => {
-        navigate("/profile");
+        navigate("/");
       }, 2000)
     } else {
       setMessage('Login failed. Redirecting to login page...')
