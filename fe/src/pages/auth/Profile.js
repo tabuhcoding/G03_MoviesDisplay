@@ -2,16 +2,10 @@ import { useUser } from "../../helpers/useContext";
 import { useNavigate } from "react-router-dom";
 import { Button, Card, CardContent, CardHeader, Typography, CircularProgress, Avatar } from "@mui/material";
 import { LogOut, User } from "lucide-react";
-import { deleteCookie } from "../../helpers/cookies";
 
 export default function Profile() {
   const { user } = useUser(); // Lấy user từ context
   const navigate = useNavigate();
-
-  const handleLogout = () => {
-    deleteCookie("token");
-    navigate("/login");
-  };
 
   if (!user) {
     return (
@@ -49,7 +43,7 @@ export default function Profile() {
             variant="contained"
             color="primary"
             fullWidth
-            onClick={handleLogout}
+            onClick={navigate('/logout')}
             startIcon={<LogOut />}
           >
             Đăng xuất

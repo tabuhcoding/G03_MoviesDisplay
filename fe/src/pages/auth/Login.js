@@ -5,6 +5,7 @@ import Alert from '@mui/material/Alert';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useNavigate } from 'react-router-dom';
 import { setCookie } from '../../helpers/cookies';
+import { useUser } from '../../helpers/useContext';
 // import Cookies from 'js-cookie'
 
 const GoogleIcon = () => (
@@ -20,6 +21,7 @@ export default function Login() {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const { setUser } = useUser();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -39,6 +41,7 @@ export default function Login() {
       console.log(response);
       // setCookie('token', response.data.token, { path: '/' });
       setCookie('token', response.data.token, 7);
+      setUser(response.data.user);
       setMessage(response.data.message || 'Đăng nhập thành công!');
       setFormData({ email: '', password: '' });
       navigate('/');

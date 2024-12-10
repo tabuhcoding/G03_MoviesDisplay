@@ -1,16 +1,20 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { setCookie } from "../../helpers/cookies";
+import { useUser } from "../../helpers/useContext";
 
 export default function LoginSuccess() {
   const navigate = useNavigate();
+  const { setUser } = useUser();
   const [message, setMessage] = useState('Processing your login...')
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const token = params.get("token");
-    if (token) {
+    const user = JSON.parse(decodeURIComponent(params.get("user")));
+    if (token && user) {
       setCookie("token", token, 7);
+      setUser(user);
       setMessage('Login successful. Redirecting to profile page...')
       setTimeout(() => {
         navigate("/");
@@ -21,7 +25,7 @@ export default function LoginSuccess() {
         navigate("/login");
       }, 2000)
     }
-  }, [navigate]);
+  }, [navigate, setUser]);
   return (
     <>
       <div className="flex items-center justify-center min-h-screen bg-gray-100">

@@ -9,6 +9,7 @@ import LoginSuccess from "./pages/auth/LoginSuccess";
 import SearchPage from "./pages/movies/SearchMovies";
 import { UserProvider } from "./helpers/useContext";
 import MainLayout from "./pages/MainLayout";
+import Logout from "./pages/auth/Logout";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Routes>
           <Route path="/" element={<MainLayout />}>
             <Route index element={<Home />} />
+            <Route path="logout" element={<Logout />} />
             <Route path="login" element={<AuthRoute><Login /></AuthRoute>} />
             <Route path="register" element={<AuthRoute><Register /></AuthRoute>} />
             <Route path="profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
