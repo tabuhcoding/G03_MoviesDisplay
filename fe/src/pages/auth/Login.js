@@ -4,7 +4,7 @@ import { Button, TextField, Card, CardContent, CardHeader, Typography, Divider, 
 import Alert from '@mui/material/Alert';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useNavigate } from 'react-router-dom';
-import { setCookie } from '../helpers/cookies';
+import { setCookie } from '../../helpers/cookies';
 // import Cookies from 'js-cookie'
 
 const GoogleIcon = () => (

@@ -1,8 +1,8 @@
-import { useUser } from "../helpers/useContext";
+import { useUser } from "../../helpers/useContext";
 import { useNavigate } from "react-router-dom";
 import { Button, Card, CardContent, CardHeader, Typography, CircularProgress, Avatar } from "@mui/material";
 import { LogOut, User } from "lucide-react";
-import { deleteCookie } from "../helpers/cookies";
+import { deleteCookie } from "../../helpers/cookies";
 
 export default function Profile() {
   const { user } = useUser(); // Lấy user từ context

@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Button, Card, CardContent, CardHeader } from '@mui/material';
+// import { useNavigate } from 'react-router-dom';
+// import { Button, Card, CardContent, CardHeader } from '@mui/material';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Footer from './layout/Footer';
 import Navigation from './layout/Navigation';
-import "./Homepage.css"
+import "../style/Homepage.css";
 
 export default function Home() {
 

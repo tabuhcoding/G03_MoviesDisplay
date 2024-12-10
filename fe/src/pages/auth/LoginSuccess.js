@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { setCookie } from "../helpers/cookies";
+import { setCookie } from "../../helpers/cookies";
 
 export default function LoginSuccess() {
   const navigate = useNavigate();

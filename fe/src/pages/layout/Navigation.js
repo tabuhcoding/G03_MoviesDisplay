@@ -2,8 +2,11 @@ import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import { useState } from 'react';
 
 const Navigation = () => {
+    const [searchInput, setSearchInput] = useState('');
+
     const navigate = useNavigate();
 
     const handleLogin = () => {
@@ -13,6 +16,10 @@ const Navigation = () => {
     const handleRegister = () => {
         navigate('/register');
     };
+
+    const handleSearch = () => {
+        navigate(`/movies/search?query=${searchInput}&page=1`);
+    }
 
     return (
         <header>
@@ -40,7 +47,7 @@ const Navigation = () => {
                             <li className="nav-item dropdown">
                                 <a
                                     className="nav-link dropdown-toggle"
-                                    href="#"
+                                    href="/"
                                     role="button"
                                     data-bs-toggle="dropdown"
                                     aria-expanded="false"
@@ -50,7 +57,7 @@ const Navigation = () => {
                                 </a>
                                 <ul className="dropdown-menu">
                                     <li>
-                                        <a className="dropdown-item" href="#">
+                                        <a className="dropdown-item" href="/">
                                             Popular
                                         </a>
                                     </li>
@@ -58,7 +65,7 @@ const Navigation = () => {
                                         <hr className="dropdown-divider" />
                                     </li>
                                     <li>
-                                        <a className="dropdown-item" href="#">
+                                        <a className="dropdown-item" href="/">
                                             Now playing
                                         </a>
                                     </li>
@@ -66,7 +73,7 @@ const Navigation = () => {
                                         <hr className="dropdown-divider" />
                                     </li>
                                     <li>
-                                        <a className="dropdown-item" href="#">
+                                        <a className="dropdown-item" href="/">
                                             Upcoming
                                         </a>
                                     </li>
@@ -74,7 +81,7 @@ const Navigation = () => {
                                         <hr className="dropdown-divider" />
                                     </li>
                                     <li>
-                                        <a className="dropdown-item" href="#">
+                                        <a className="dropdown-item" href="/">
                                             Top Rated
                                         </a>
                                     </li>
@@ -169,12 +176,14 @@ const Navigation = () => {
                         <div className="text-white">
                             <h1 className="mb-3">Welcome</h1>
                             <h4 className="mb-3">Millions of movies, TV shows and people to discover. Explore now.</h4>
-                            <form className="d-flex" role="search">
+                            <form className="d-flex" role="search" onSubmit={handleSearch}>
                                 <input
                                     className="form-control me-2"
                                     type="search"
                                     placeholder="Search"
                                     aria-label="Search"
+                                    value={searchInput}
+                                    onChange={(e) => setSearchInput(e.target.value)}
                                 />
                                 <button
                                     className="btn btn-outline-light btn-lg"
