@@ -5,9 +5,7 @@ import Register from "./pages/auth/Register";
 import Profile from "./pages/auth/Profile";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AuthRoute from "./components/AuthRoute";
-import LoginSuccess from "./pages/LoginSuccess";
-import Movies from "./pages/movie/Movies";
-import MovieDetail from "./pages/movie/Detail";
+import MovieDetail from "./pages/movies/Detail";
 import ProflieRoute from "./components/ProfileRoute";
 import LoginSuccess from "./pages/auth/LoginSuccess";
 import SearchPage from "./pages/movies/SearchMovies";
@@ -25,7 +23,6 @@ function App() {
           <Route path="/register" element={<AuthRoute><Register /></AuthRoute>} />
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/login-success" element={<LoginSuccess />} />
-          <Route path="/movies" element={<Movies />} />
           <Route path="/movies/:movieId" element={<MovieDetail />} />
           <Route path="/" element={<MainLayout />}>
             <Route index element={<ProflieRoute><Home /></ProflieRoute>} />
