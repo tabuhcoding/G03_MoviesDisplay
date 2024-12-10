@@ -5,6 +5,7 @@ import Register from "./pages/auth/Register";
 import Profile from "./pages/auth/Profile";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AuthRoute from "./components/AuthRoute";
+import ProflieRoute from "./components/ProfileRoute";
 import LoginSuccess from "./pages/auth/LoginSuccess";
 import SearchPage from "./pages/movies/SearchMovies";
 import { UserProvider } from "./helpers/useContext";
@@ -17,7 +18,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<MainLayout />}>
-            <Route index element={<Home />} />
+            <Route index element={<ProflieRoute><Home /></ProflieRoute>} />
             <Route path="logout" element={<Logout />} />
             <Route path="login" element={<AuthRoute><Login /></AuthRoute>} />
             <Route path="register" element={<AuthRoute><Register /></AuthRoute>} />
