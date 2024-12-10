@@ -14,7 +14,7 @@ function App() {
     <UserProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<AuthRoute><Home /></AuthRoute>} />
+          <Route path="/" element={<Home />} />
           <Route path="/login" element={<AuthRoute><Login /></AuthRoute>} />
           <Route path="/register" element={<AuthRoute><Register /></AuthRoute>} />
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
