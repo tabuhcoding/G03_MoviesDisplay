@@ -1,13 +1,14 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 // import { Button, Card, CardContent, CardHeader } from '@mui/material';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import SearchInput from './layout/SearchInput';
 import "../style/Homepage.css";
+import axios from 'axios';
 
 export default function Home() {
   const navigate = useNavigate();
-  const [active, setActive] = useState("today");
+  const [active, setActive] = useState("day");
   const [searchInput, setSearchInput] = useState("");
   const handleSearch = (e) => {
     e.preventDefault();
@@ -15,130 +16,87 @@ export default function Home() {
     // console.log("Search for:", searchInput);
   };
 
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [movies, setMovies] = useState([]);
+  // Gọi API khi active thay đổi (Today hoặc This Week)
+  useEffect(() => {
+    const fetchTrendingMovies = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/movies/trending?timeWindow=${active}`);
+        setMovies(response.data); // Lưu danh sách phim vào state
+      } catch (err) {
+        setError("Failed to fetch trending movies");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTrendingMovies();
+  }, [active]); // Gọi lại API khi active thay đổi
+
+
   return (
     <>
-      {/* <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', backgroundColor: '#f5f5f5' }}>
-        <Card sx={{ width: '100%', maxWidth: 400, p: 2 }}>
-          <CardHeader
-            title="Welcome to 21120041-50-76's App"
-            subheader="There are our G02 projects"
-            sx={{ textAlign: 'center' }}
-          />
-          <CardContent>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <Button variant="contained" color="primary" onClick={handleLogin} fullWidth>Login</Button>
-              <Button variant="outlined" color="primary" onClick={handleRegister} fullWidth>Register</Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div> */}
+      <SearchInput value={searchInput} onChange={(value) => setSearchInput(value)} onSubmit={handleSearch}></SearchInput>
 
-        <SearchInput value={searchInput} onChange={(value) => setSearchInput(value)} onSubmit={handleSearch}></SearchInput>
-
-        <div className="container my-4">
-          <div className="d-flex justify-content-between align-items-center">
-            <h5>Trending</h5>
-            {/* Toggle Switch Component */}
-            <div className="toggle-switch">
-              <button
-                className={`toggle-btn ${active === "today" ? "active" : ""}`}
-                onClick={() => setActive("today")}
-              >
-                Today
-              </button>
-              <button
-                className={`toggle-btn ${active === "week" ? "active" : ""}`}
-                onClick={() => setActive("week")}
-              >
-                This Week
-              </button>
-            </div>
+      <div className="container my-4">
+        <div className="d-flex justify-content-between align-items-center">
+          <h5>Trending</h5>
+          {/* Toggle Switch */}
+          <div className="toggle-switch">
+            <button
+              className={`toggle-btn ${active === "day" ? "active" : ""}`}
+              onClick={() => setActive("day")}
+            >
+              Today
+            </button>
+            <button
+              className={`toggle-btn ${active === "week" ? "active" : ""}`}
+              onClick={() => setActive("week")}
+            >
+              This Week
+            </button>
           </div>
-
-          {/* Movies list */}
-          <div className="card-group card-group-scroll my-3">
-            <div className="card">
-              <img
-                src="https://mdbcdn.b-cdn.net/img/new/standard/city/041.webp"
-                className="card-img-top"
-                alt="Hollywood Sign on The Hill"
-              />
-              <div className="card-body">
-                <h5 className="card-title">Card title</h5>
-                <p className="card-text">
-                  This is a wider card
-                </p>
-              </div>
-            </div>
-            <div className="card">
-              <img
-                src="https://mdbcdn.b-cdn.net/img/new/standard/city/042.webp"
-                className="card-img-top"
-                alt="Palm Springs Road"
-              />
-              <div className="card-body">
-                <h5 className="card-title">Card title</h5>
-                <p className="card-text">
-                  This card has supporting
-                </p>
-              </div>
-              
-            </div>
-            <div className="card">
-              <img
-                src="https://mdbcdn.b-cdn.net/img/new/standard/city/043.webp"
-                className="card-img-top"
-                alt="Los Angeles Skyscrapers"
-              />
-              <div className="card-body">
-                <h5 className="card-title">Card title</h5>
-                <p className="card-text">
-                  This is a wider card 
-                </p>
-              </div>
-            </div>
-            <div className="card">
-              <img
-                src="https://mdbcdn.b-cdn.net/img/new/standard/city/044.webp"
-                className="card-img-top"
-                alt="Hollywood Sign on The Hill"
-              />
-              <div className="card-body">
-                <h5 className="card-title">Card title</h5>
-                <p className="card-text">
-                  This is a wider card
-                </p>
-              </div>
-            </div>
-            <div className="card">
-              <img
-                src="https://mdbcdn.b-cdn.net/img/new/standard/city/045.webp"
-                className="card-img-top"
-                alt="Palm Springs Road"
-              />
-              <div className="card-body">
-                <h5 className="card-title">Card title</h5>
-                <p className="card-text">
-                  This card has supporting
-                </p>
-              </div>
-            </div>
-            <div className="card">
-              <img
-                src="https://mdbcdn.b-cdn.net/img/new/standard/city/046.webp"
-                className="card-img-top"
-                alt="Los Angeles Skyscrapers"
-              />
-              <div className="card-body">
-                <h5 className="card-title">Card title</h5>
-                <p className="card-text">
-                  This is a wider 
-                </p>
-              </div>
-            </div>
-          </div>
-
         </div>
+
+        {/* Hiển thị danh sách phim */}
+        <div className="movie-list-container my-3">
+          {loading ? (
+            <p>Loading...</p> // Hiển thị loading khi đang tải dữ liệu
+          ) : error ? (
+            <p>{error}</p> // Hiển thị lỗi nếu có
+          ) : (
+            <div className="movie-list d-flex">
+              {movies.map((movie) => (
+                <div className="movie-card mx-2" key={movie.id}>
+                  <img
+                    src={
+                      movie.poster_path
+                        ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+                        : "https://via.placeholder.com/150"
+                    }
+                    alt={movie.title}
+                    style={{
+                      width: "150px",
+                      height: "225px",
+                      objectFit: "cover",
+                      borderRadius: "8px",
+                    }}
+                  />
+                  <div className="movie-info mt-2 text-center">
+                    <h6>{movie.title}</h6>
+                    <p>{movie.release_date || "Unknown"}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+      </div>
     </>
   );
 }
