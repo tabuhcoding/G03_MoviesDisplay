@@ -1,14 +1,19 @@
 import { useState } from 'react';
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 // import { Button, Card, CardContent, CardHeader } from '@mui/material';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Footer from './layout/Footer';
-import Navigation from './layout/Navigation';
+import SearchInput from './layout/SearchInput';
 import "../style/Homepage.css";
 
 export default function Home() {
-
+  const navigate = useNavigate();
   const [active, setActive] = useState("today");
+  const [searchInput, setSearchInput] = useState("");
+  const handleSearch = (e) => {
+    e.preventDefault();
+    navigate(`/movies/search?query=${searchInput}&page=1`);
+    // console.log("Search for:", searchInput);
+  };
 
   return (
     <>
@@ -28,8 +33,7 @@ export default function Home() {
         </Card>
       </div> */}
 
-      <div className="d-flex flex-column min-vh-100">
-        <Navigation></Navigation>
+        <SearchInput value={searchInput} onChange={(value) => setSearchInput(value)} onSubmit={handleSearch}></SearchInput>
 
         <div className="container my-4">
           <div className="d-flex justify-content-between align-items-center">
@@ -135,10 +139,6 @@ export default function Home() {
           </div>
 
         </div>
-
-        <Footer></Footer>
-      </div>
-
     </>
   );
 }

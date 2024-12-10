@@ -1,18 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import MoviesGrid from './_components/MoviesGrid';
 import Pagination from './_components/Pagination';
-import { Input, Button, Box } from "@mui/material"
+// import { Input, Button, Box } from "@mui/material"
+import SearchInput from '../layout/SearchInput';
+
+
 const SearchPage = () => {
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
   const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [query, setQuery] = useState(searchParams.get('query') || '');
   const [page, setPage] = useState(parseInt(searchParams.get('page')) || 1);
-  const [searchInput, setSearchInput] = useState('');
+  const [searchInput, setSearchInput] = useState(query);
+  // setSearchInput(query);
 
   useEffect(() => {
     const fetchMovies = async () => {
@@ -41,10 +45,6 @@ const SearchPage = () => {
     setPage(newPage);
   };
 
-  const handleInputChange = (e) => { 
-    setSearchInput(e.target.value);
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     setSearchParams({ query: searchInput, page: page.toString() });
@@ -52,6 +52,8 @@ const SearchPage = () => {
   };
 
   return (
+    <>
+    <SearchInput value={searchInput} onChange={(value) => setSearchInput(value)} onSubmit={handleSubmit}></SearchInput>
     <div className="container mx-auto px-4 py-8">
       {/* <form onSubmit={handleSubmit} className="flex gap-2 mb-6">
         <Input
@@ -63,39 +65,6 @@ const SearchPage = () => {
         />
         <Button type="submit">Search</Button>
       </form> */}
-      <Box
-        component="form"
-        onSubmit={handleSubmit}
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        mb={3}
-        gap={2}
-      >
-        {/* Back to Home Button */}
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => navigate('/movies')}
-          style={{ whiteSpace: "nowrap" }}
-        >
-          Back to Home
-        </Button>
-
-      {/* Search Bar */}
-      <Box display="flex" gap={1} alignItems="center" flexGrow={1} justifyContent="flex-end">
-          <Input
-            type="text"
-            value={searchInput}
-            onChange={handleInputChange}
-            placeholder="Search for movies..."
-            style={{ flexGrow: 1, maxWidth: "400px" }}
-          />
-          <Button type="submit" variant="contained">
-            Search
-          </Button>
-        </Box>
-      </Box>
       {isLoading && <p className="text-center">Loading...</p>}
 
       {!isLoading && movies.length > 0 && (
@@ -113,6 +82,7 @@ const SearchPage = () => {
         <p className="text-center">No results found for "{query}".</p>
       )}
     </div>
+    </>
   );
 };
 
