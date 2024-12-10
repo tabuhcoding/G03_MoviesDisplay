@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const Movies = () => {
@@ -7,6 +8,8 @@ const Movies = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedMovieId, setSelectedMovieId] = useState(null);
+
+  const navigate = useNavigate();
 
   // Fetch trending movies
   useEffect(() => {
@@ -51,6 +54,10 @@ const Movies = () => {
     }
   };
 
+  const handleMovieClick = (movieId) => {
+    navigate(`/movies/${movieId}`);
+  }
+
   return (
     <div style={{ padding: '20px' }}>
       <h1>Movies</h1>
@@ -88,7 +95,13 @@ const Movies = () => {
         <button onClick={handleSearch}>Search</button>
         <ul>
           {searchResults.map((movie) => (
-            <li key={movie.id}>{movie.title}</li>
+            <li 
+              key={movie.id}
+              onClick={() => handleMovieClick(movie.id)}
+              style={{ cursor: 'pointer' }}
+            >
+              {movie.title}
+            </li>
           ))}
         </ul>
       </section>
