@@ -43,11 +43,13 @@
     color: white !important;  /* Mũi tên trắng khi hover */
 }
 
-/* Container cho phần cuộn ngang */
+/* Container chính */
 .movie-list-container {
-  overflow-x: auto; /* Cho phép cuộn ngang */
-  white-space: nowrap; /* Ngăn thẻ xuống dòng */
-  padding: 10px 0;
+  max-height: 500px; /* Chiều cao cố định để cuộn dọc */
+  overflow-y: auto; /* Cho phép cuộn dọc */
+  padding: 10px;
+  border: 1px solid #ddd; /* Viền nhẹ cho rõ phần cuộn */
+  border-radius: 8px;
 }
 
 .movie-list {
@@ -76,6 +78,7 @@
 
 .movie-info h6 {
   font-size: 0.9rem; /* Kích thước chữ */
+  font-weight: 600;
   margin-top: 5px;
   width: 150px; /* Giới hạn chiều rộng */
   white-space: normal; /* Cho phép xuống dòng */

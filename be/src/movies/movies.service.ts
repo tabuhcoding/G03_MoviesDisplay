@@ -1,4 +1,4 @@
-import { Injectable, HttpException } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 
@@ -6,6 +6,7 @@ import axios from 'axios';
 export class MoviesService {
   private readonly baseUrl: string;
   private readonly apiKey: string;
+
   constructor(private configService: ConfigService) {
     this.baseUrl = process.env.BASE_URL_TMDB;
     this.apiKey = process.env.API_KEY_TMDB;
@@ -18,7 +19,7 @@ export class MoviesService {
       });
       return data.results;
     } catch (error) {
-      throw new HttpException('Failed to fetch trending movies', error.response.status);
+      this.handleApiError(error, 'Failed to fetch trending movies');
     }
   }
 
@@ -29,16 +30,16 @@ export class MoviesService {
       });
       return data;
     } catch (error) {
-      throw new HttpException('Failed to fetch movie details', error.response.status);
+      this.handleApiError(error, 'Failed to fetch movie details');
     }
   }
 
-  async searchMovies(query: string, page:number): Promise<any> {
+  async searchMovies(query: string, page: number): Promise<any> {
     if (!query) {
-      throw new Error('Query parameter is missing');
+      throw new HttpException('Query parameter is missing', HttpStatus.BAD_REQUEST);
     }
     try {
-      const response = await axios.get(`${this.baseUrl}/search/movie`, {
+      const { data } = await axios.get(`${this.baseUrl}/search/movie`, {
         params: {
           api_key: this.apiKey,
           query,
@@ -47,12 +48,25 @@ export class MoviesService {
           language: 'en-US',
         },
       });
-      return response.data;
+      return data;
     } catch (error) {
-      throw new HttpException(
-        { message: 'Failed to fetch movie search results', statusCode: error.response?.status || 500 },
-        error.response?.status || 500,
-      );
+      this.handleApiError(error, 'Failed to fetch movie search results');
     }
+  }
+
+  private handleApiError(error: any, message: string) {
+    // Check if error response is present
+    const statusCode = error.response?.status || HttpStatus.INTERNAL_SERVER_ERROR;
+    const errorMessage =
+      error.response?.data?.status_message || error.message || 'An unknown error occurred';
+    
+    throw new HttpException(
+      {
+        message,
+        details: errorMessage,
+        statusCode,
+      },
+      statusCode,
+    );
   }
 }

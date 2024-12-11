@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../../../style/CustomMoviesGrid.css'; // Adjust the import path if needed
 
 const MoviesGrid = ({ movies, lastMovieElementRef }) => {
   const [expandedMovieId, setExpandedMovieId] = useState(null);
+
+  const navigate = useNavigate();
 
   const toggleExpand = (movieId) => {
     setExpandedMovieId((prev) => (prev === movieId ? null : movieId));
@@ -19,6 +22,7 @@ const MoviesGrid = ({ movies, lastMovieElementRef }) => {
             key={movie.id}
             className="movies-item"
             ref={isLastMovie ? lastMovieElementRef : null}
+            onClick={() => navigate(`/movies/${movie.id}`)}
           >
             <div className="movies-card">
               <img
@@ -36,7 +40,7 @@ const MoviesGrid = ({ movies, lastMovieElementRef }) => {
                       ? movie.title
                       : `${movie.title.substring(0, 30)}...`}
                 </h4>
-                <p>Rating: {movie.vote_average.toFixed(1)}</p>
+                <p>Rating: {(movie.vote_average ?? 0).toFixed(1)}</p>
                 <p>{movie.release_date ? new Date(movie.release_date).getFullYear() : 'Unknown'}</p>
                 {isExpanded && <p className="movie-overview">{movie.overview || 'No overview available.'}</p>}
                 <button
