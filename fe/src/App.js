@@ -25,8 +25,8 @@ function App() {
             <Route path="register" element={<AuthRoute><Register /></AuthRoute>} />
             <Route path="profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
             <Route path="login-success" element={<LoginSuccess />} />
-            <Route path="movies/search" element={<SearchPage />} />
-            <Route path="/movies/:movieId" element={<MovieDetail />} />
+            <Route path="movies/search" element={<ProflieRoute><SearchPage /></ProflieRoute>} />
+            <Route path="/movies/:movieId" element={<ProflieRoute><MovieDetail /></ProflieRoute>} />
           </Route>
         </Routes>
       </Router>

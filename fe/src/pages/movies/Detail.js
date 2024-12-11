@@ -1,5 +1,5 @@
 /* Package Application */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
@@ -7,25 +7,39 @@ import axios from "axios";
 import UserScoreSection from "../../views/components/UserScoreSection";
 import '../../public/styles/movie/Detail.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { ErrorHandling } from "../../components/ErrorHandling";
 
 const MovieDetail = () => {
   const { movieId } = useParams();
   const [movieDetails, setMovieDetails] = useState(null);
-
-  useEffect(() => {
-    const fetchMovieDetails = async () => {
+  const [error, setError] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const fetchMovieDetails = useCallback(
+    async () => {
+      setError([]);
+      setLoading(true);
       try {
         const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/movies/${movieId}`);
         console.log('response', response);
         if (response.status === 200) {
           setMovieDetails(response.data);
         }
-      } catch (error) {
-        console.error("Error fetching movie details:", error);
+      } catch (err) {
+        const errorData = [
+          err.response?.data?.message?.message || "Failed to fetch trending movies",
+          "Backend Error: " + err.response?.data?.message?.details || "Unknown error occurred",
+          err.response?.data?.message?.statusCode?.toString() || "500",
+        ];
+        setError(errorData);
+        console.error("Error fetching movie details:", err);
+      } finally {
+        setLoading(false);
       }
-    };
+    }, [movieId]);
+  useEffect(() => {
+    
     fetchMovieDetails();
-  }, [movieId]);
+  }, [fetchMovieDetails]);
 
   const formatDate = (releaseDate) => {
     const date = new Date(releaseDate);
@@ -44,13 +58,17 @@ const MovieDetail = () => {
 
   return (
     <>
+      { error.length > 0 && (
+        <div style={{ marginTop: '64px' }}>
+          <ErrorHandling error={error} callback={fetchMovieDetails} />
+        </div> )}
       {movieDetails ? (
         <div className="custom-bg"
           style={{
             backgroundImage: `url(https://media.themoviedb.org/t/p/original${movieDetails?.belongs_to_collection?.backdrop_path ?? movieDetails?.belongs_to_collection?.poster_path ?? movieDetails.backdrop_path ?? movieDetails.poster_path})`,
           }}
         >
-          <div className="movie-detail-container">
+          <div className="movie-detail-container" style={{ marginTop: '64px' }}>
             <section className="movie-header">
               <div className="poster-wrapper">
                 <img
@@ -82,7 +100,7 @@ const MovieDetail = () => {
             </section>
           </div>
         </div>
-      ) : (
+      ) : loading && (
         <div className="loading-container">
           <div className="loading-spinner"></div>
         </div>
