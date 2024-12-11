@@ -44,7 +44,7 @@ export default function Home() {
 
       <div className="container my-4">
         <div className="d-flex justify-content-between align-items-center">
-          <h5>Trending</h5>
+          <h4>Trending</h4>
           {/* Toggle Switch */}
           <div className="toggle-switch">
             <button
@@ -69,7 +69,7 @@ export default function Home() {
           ) : error ? (
             <p>{error}</p> // Hiển thị lỗi nếu có
           ) : (
-            <div className="movie-list d-flex">
+            <div className="movie-list d-flex flex-wrap">
               {movies.map((movie) => (
                 <div onClick={() => navigate(`/movies/${movie.id}`)} className="movie-card mx-2" key={movie.id}>
                   <img

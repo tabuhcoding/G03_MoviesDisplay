@@ -5,6 +5,7 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import { useUser } from "../../helpers/useContext";
 import { Avatar } from "@mui/material";
 import { User } from "lucide-react";
+import "../../style/Navigation.css";
 
 const Navigation = () => {
   const { user } = useUser(); // Lấy user từ context
@@ -94,12 +95,8 @@ const Navigation = () => {
                 </button>
                 <button
                   type="button"
-                  className="btn"
+                  className="btn btn-signup"
                   onClick={handleRegister}
-                  style={{
-                    background: "linear-gradient(to right, rgb(30, 213, 169), rgb(1, 180, 228))",
-                    color: "white",
-                  }}
                 >
                   Sign-up
                 </button>
@@ -107,37 +104,22 @@ const Navigation = () => {
             )}
             {user && (
               <>
-                {/* <i className="fas fa-search ml-2" style={{ color: "rgb(1 180 228)" }} /> */}
-                <div className="flex-shrink-0 dropdown">
-                  <a
-                    href="/"
-                    className="d-block link-dark text-decoration-none dropdown-toggle"
-                    id="dropdownUser2"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                    style={{ color: "white" }}
-                  >
-                    <Avatar
-                        src={user.avatar}
-                        alt={user.username}
-                        sx={{ width: 40, height: 40, margin: '0 auto' }}
-                        >
-                        {!user.avatar && <User size={40} />}
-                    </Avatar>
+                <div className="dropdown d-flex align-items-center container-profile">
+                  <Avatar src={user.avatar} alt={user.username} sx={{ width: 40, height: 40 }}>
+                    {!user.avatar && <User size={40} />}
+                  </Avatar>
+                  <a href="/" className="link-dark text-decoration-none dropdown-toggle icon-dropdown"
+                    id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
                   </a>
-                  <ul className="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
+                  <ul className="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2" style={{ transform: "translateX(-20px)" }}>
                     <li>
-                      <a className="dropdown-item" href="/profile">
-                        Profile
-                      </a>
+                      <a className="dropdown-item" href="/profile">Profile</a>
                     </li>
                     <li>
                       <hr className="dropdown-divider" />
                     </li>
                     <li>
-                      <a className="dropdown-item" href="/logout">
-                        Sign out
-                      </a>
+                      <a className="dropdown-item" href="/logout">Sign out</a>
                     </li>
                   </ul>
                 </div>
