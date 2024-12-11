@@ -1,51 +1,58 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-// import { Button, Card, CardContent, CardHeader } from '@mui/material';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import SearchInput from './layout/SearchInput';
 import "../style/Homepage.css";
 import axios from 'axios';
+import { ErrorHandling } from '../components/ErrorHandling';
+
 
 export default function Home() {
   const navigate = useNavigate();
   const [active, setActive] = useState("day");
   const [searchInput, setSearchInput] = useState("");
+  const [error, setError] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [movies, setMovies] = useState([]);
+
   const handleSearch = (e) => {
     e.preventDefault();
     navigate(`/movies/search?query=${searchInput}&page=1`);
-    // console.log("Search for:", searchInput);
   };
 
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [movies, setMovies] = useState([]);
-  // Gọi API khi active thay đổi (Today hoặc This Week)
+  const fetchTrendingMovies = useCallback(async () => {
+    setLoading(true);
+    setError([]);
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_BACKEND_URL}/movies/trending?timeWindow=${active}`
+      );
+      setMovies(response.data);
+    } catch (err) {
+      console.error("Error fetching trending movies:", err);
+      const errorData = [
+        err.response?.data?.message?.message || "Failed to fetch trending movies",
+        "Backend Error: " + err.response?.data?.message?.details || "Unknown error occurred",
+        err.response?.data?.message?.statusCode?.toString() || "500",
+      ];
+      setError(errorData);
+    } finally {
+      setLoading(false);
+    }
+  }, [active]);
+
+  // Gọi API khi active thay đổi
   useEffect(() => {
-    const fetchTrendingMovies = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/movies/trending?timeWindow=${active}`);
-        setMovies(response.data); // Lưu danh sách phim vào state
-      } catch (err) {
-        setError("Failed to fetch trending movies");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchTrendingMovies();
-  }, [active]); // Gọi lại API khi active thay đổi
-
+  }, [fetchTrendingMovies]);
 
   return (
     <>
-      <SearchInput value={searchInput} onChange={(value) => setSearchInput(value)} onSubmit={handleSearch}></SearchInput>
+      <SearchInput value={searchInput} onChange={(value) => setSearchInput(value)} onSubmit={handleSearch} />
 
       <div className="container my-4">
         <div className="d-flex justify-content-between align-items-center">
-          <h5>Trending</h5>
-          {/* Toggle Switch */}
+          <h4>Trending</h4>
           <div className="toggle-switch">
             <button
               className={`toggle-btn ${active === "day" ? "active" : ""}`}
@@ -62,16 +69,19 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Hiển thị danh sách phim */}
         <div className="movie-list-container my-3">
           {loading ? (
-            <p>Loading...</p> // Hiển thị loading khi đang tải dữ liệu
-          ) : error ? (
-            <p>{error}</p> // Hiển thị lỗi nếu có
+            <p>Loading...</p>
+          ) : error.length > 0 ? (
+            <ErrorHandling error={error} callback={fetchTrendingMovies} />
           ) : (
-            <div className="movie-list d-flex">
+            <div className="movie-list d-flex flex-wrap">
               {movies.map((movie) => (
-                <div onClick={() => navigate(`/movies/${movie.id}`)} className="movie-card mx-2" key={movie.id}>
+                <div
+                  onClick={() => navigate(`/movies/${movie.id}`)}
+                  className="movie-card mx-2"
+                  key={movie.id}
+                >
                   <img
                     src={
                       movie.poster_path
@@ -95,7 +105,6 @@ export default function Home() {
             </div>
           )}
         </div>
-
       </div>
     </>
   );

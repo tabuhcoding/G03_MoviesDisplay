@@ -18,12 +18,6 @@ function App() {
     <UserProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<AuthRoute><Home /></AuthRoute>} />
-          <Route path="/login" element={<AuthRoute><Login /></AuthRoute>} />
-          <Route path="/register" element={<AuthRoute><Register /></AuthRoute>} />
-          <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-          <Route path="/login-success" element={<LoginSuccess />} />
-          <Route path="/movies/:movieId" element={<MovieDetail />} />
           <Route path="/" element={<MainLayout />}>
             <Route index element={<ProflieRoute><Home /></ProflieRoute>} />
             <Route path="logout" element={<Logout />} />
@@ -31,7 +25,8 @@ function App() {
             <Route path="register" element={<AuthRoute><Register /></AuthRoute>} />
             <Route path="profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
             <Route path="login-success" element={<LoginSuccess />} />
-            <Route path="movies/search" element={<SearchPage />} />
+            <Route path="movies/search" element={<ProflieRoute><SearchPage /></ProflieRoute>} />
+            <Route path="/movies/:movieId" element={<ProflieRoute><MovieDetail /></ProflieRoute>} />
           </Route>
         </Routes>
       </Router>
