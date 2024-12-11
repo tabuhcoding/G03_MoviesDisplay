@@ -45,7 +45,10 @@ const MoviesGrid = ({ movies, lastMovieElementRef }) => {
                 {isExpanded && <p className="movie-overview">{movie.overview || 'No overview available.'}</p>}
                 <button
                   className="toggle-button"
-                  onClick={() => toggleExpand(movie.id)}
+                  onClick={(e) => {
+                    e.stopPropagation(); // Ngăn sự kiện lan lên <div>
+                    toggleExpand(movie.id);
+                  }}
                 >
                   {isExpanded ? '▲' : '▼'}
                 </button>
