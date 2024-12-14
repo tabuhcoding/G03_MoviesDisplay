@@ -25,7 +25,6 @@ export class UserService {
 
     try {
       const hashedPassword = await bcrypt.hash(password, 10);
-      console.log("password", hashedPassword);
       const newUser = await this.userModel.create({
         username,
         email,
@@ -34,7 +33,6 @@ export class UserService {
         googleId: null,
       });
       
-      console.log(newUser);
       const payload = { username: newUser.username, email: newUser.email, avatar: newUser.avatar, sub: newUser._id };
       const token = this.jwtService.sign(payload);
     
