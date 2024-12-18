@@ -12,9 +12,12 @@ const compat = new FlatCompat({
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
-    files: ["app/**/*.js", "app/**/*.ts", "app/**/*.tsx"],
+    files: ["src/**/*.js", "src/**/*.ts", "src/**/*.tsx"],
     rules: {
+      "@next/next/no-img-element": "off",
+      "@typescript-eslint/no-require-imports": "off",
       "@typescript-eslint/no-unused-vars": "off",
+      "@typescript-eslint/no-explicit-any": "off",
       // Cảnh báo khi bỏ quá 1 dòng trống liên tiếp
       "no-multiple-empty-lines": ["warn", { max: 1, maxEOF: 0, maxBOF: 0 }],
       // Cảnh báo khi có dấu phẩy cuối cùng trong array, object, ...
