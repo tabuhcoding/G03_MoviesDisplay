@@ -40,7 +40,7 @@ export class UserController {
   const { token, user: userData } = await this.userService.handleGoogleUser(user);
 
   return res.redirect(
-    `${process.env.FRONTEND_URL}/login-success?token=${token}&user=${encodeURIComponent(JSON.stringify(userData))}`
+    `${process.env.FRONTEND_URL}/login-response?token=${token}&user=${encodeURIComponent(JSON.stringify(userData))}`
   );
 }
 

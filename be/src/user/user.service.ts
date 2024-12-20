@@ -15,7 +15,7 @@ export class UserService {
     private readonly jwtService: JwtService
   ) {}
 
-  async register(createUserDto: CreateUserDto): Promise<{ token: string }> {
+  async register(createUserDto: CreateUserDto): Promise<{ token: string, user: User }> {
     const { username, email, password } = createUserDto;
 
     const existingUser = await this.userModel.findOne({ $or: [{ email }, { username }] });
@@ -38,7 +38,7 @@ export class UserService {
       const payload = { username: newUser.username, email: newUser.email, avatar: newUser.avatar, sub: newUser._id };
       const token = this.jwtService.sign(payload);
     
-      return { token };
+      return { token, user:newUser };
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException('Failed to register user');
