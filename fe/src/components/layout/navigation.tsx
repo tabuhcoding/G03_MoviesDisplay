@@ -1,15 +1,15 @@
+"use client"
 import Link from 'next/link';
-// import { useContext } from 'react';
 import "bootstrap/dist/css/bootstrap.min.css";
 // import "bootstrap/dist/js/bootstrap.bundle.min";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-// import { Avatar } from "@mui/material";
-// import { User } from "lucide-react";
-// import { UserContext } from "../../context/UserContext";
+import { Avatar, Button } from "@mui/material";
+import { User } from "lucide-react";
+import { useAuth } from '@/src/context/authContext';
 import "@styles/Navigation.css";
 
 const Navigation: React.FC = () => {
-  // const { user } = useContext(UserContext);
+  const { userInfo, isLogin, logout } = useAuth();
   return (
     <nav className="navbar navbar-expand-lg fixed-top" style={{ backgroundColor: "#032541" }}>
       <div className="container-fluid">
@@ -46,24 +46,32 @@ const Navigation: React.FC = () => {
           </ul>
         </div>
         <div className="text-end">
-          {/* {!user ? (
+          {!isLogin ? (
             <>
               <Link href="/login"><button type="button" className="btn btn-outline-light me-2">Login</button></Link>
               <Link href="/register"><button type="button" className="btn btn-signup">Sign-up</button></Link>
             </>
           ) : (
             <div className="dropdown d-flex align-items-center container-profile">
-              <Avatar src={user.avatar} alt={user.username} sx={{ width: 40, height: 40 }}>
-                {!user.avatar && <User size={40} />}
+              <Avatar src={userInfo.avatar} alt={userInfo.username} sx={{ width: 40, height: 40 }}>
+                {!userInfo.avatar && <User size={40} />}
               </Avatar>
               <a href="#" className="link-dark text-decoration-none dropdown-toggle icon-dropdown" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false"></a>
               <ul className="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2" style={{ transform: "translateX(-20px)" }}>
                 <li><Link href="/profile" className="dropdown-item">Profile</Link></li>
                 <li><hr className="dropdown-divider" /></li>
-                <li><Link href="/logout" className="dropdown-item">Sign out</Link></li>
+                <li>
+                  <Button
+                    type="button"
+                    className="dropdown-item"
+                    onClick={logout}
+                  >
+                    Sign out
+                  </Button>
+                </li>
               </ul>
             </div>
-          )} */}
+          )}
         </div>
       </div>
     </nav>
