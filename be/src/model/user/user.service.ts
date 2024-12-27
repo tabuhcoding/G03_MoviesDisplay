@@ -1,9 +1,7 @@
 // src/user/user.service.ts
 import { Injectable, ConflictException, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { UserRepository } from './user.repository';
 import { User } from './schema/user.schema';
 import { CreateUserDto } from './dto/create-user.dto';
 import { GetUserDto } from './dto/get-user.dto';
@@ -11,21 +9,21 @@ import { GetUserDto } from './dto/get-user.dto';
 @Injectable()
 export class UserService {
   constructor(
-    @InjectModel(User.name) private userModel: Model<User>,
+    private readonly userRepository: UserRepository,
     private readonly jwtService: JwtService
   ) {}
 
   async register(createUserDto: CreateUserDto): Promise<{ token: string, user: User }> {
     const { username, email, password } = createUserDto;
 
-    const existingUser = await this.userModel.findOne({ $or: [{ email }, { username }] });
+    const existingUser = await this.userRepository.findByUsernameOrEmail(username, email);
     if (existingUser) {
       throw new ConflictException('Username or email already exists');
     }
 
     try {
-      const hashedPassword = await bcrypt.hash(password, 10);
-      const newUser = await this.userModel.create({
+      const hashedPassword = await this.userRepository.hashPassword(password);
+      const newUser = await this.userRepository.createUser({
         username,
         email,
         password: hashedPassword,
@@ -36,7 +34,7 @@ export class UserService {
       const payload = { username: newUser.username, email: newUser.email, avatar: newUser.avatar, sub: newUser._id };
       const token = this.jwtService.sign(payload);
     
-      return { token, user:newUser };
+      return { token, user: newUser };
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException('Failed to register user');
@@ -46,12 +44,12 @@ export class UserService {
   async login(getUserDto: GetUserDto): Promise<{ token: string; user: User }> {
     const { email, password } = getUserDto;
   
-    const user = await this.userModel.findOne({ email });
+    const user = await this.userRepository.findByEmail(email);
     if (!user) {
       throw new UnauthorizedException('Invalid email or password');
     }
   
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await this.userRepository.comparePassword(password, user.password);
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid email or password');
     }
@@ -61,28 +59,25 @@ export class UserService {
   
     return { token, user };
   }
-  
 
   async handleGoogleUser(profile: any): Promise<{ token: string; user: User }> {
     const { googleId, email, fullName, avatar } = profile;
-    let user = await this.userModel.findOne({ email });
+    let user = await this.userRepository.findByEmail(email);
 
     if (!user) {
-      user = new this.userModel({
+      user = await this.userRepository.createGoogleUser({
         googleId,
         email,
         username: fullName,
         password: process.env.DEFAULT_PASSWORD,
         avatar,
       });
-      await user.save();
     }
     if (!user.googleId || !user.avatar) {
-      let res = await this.userModel.updateOne({ email }, { googleId, avatar });
+      await this.userRepository.updateGoogleUser(email, { googleId, avatar });
     }
 
-    // Tạo JWT token
-    const payload = { email: user.email, username: user.username , avatar: avatar , sub: user._id };
+    const payload = { email: user.email, username: user.username, avatar: avatar, sub: user._id };
     const token = this.jwtService.sign(payload);
     return { token, user };
   }
