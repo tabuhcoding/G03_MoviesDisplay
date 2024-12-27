@@ -8,7 +8,7 @@ import { ImageModule } from './model/image/image.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot( {isGlobal: true}),
     MongooseModule.forRoot(process.env.MONGODB_URL),
     MoviesModule,
     UserModule,
