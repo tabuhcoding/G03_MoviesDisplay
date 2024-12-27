@@ -1,11 +1,13 @@
 "use client"
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useAuth } from '@/src/context/authContext';
 
 const UploadPage: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
   const [result, setResult] = useState<{ id: string; url: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const { isLogin } = useAuth();
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
@@ -19,9 +21,13 @@ const UploadPage: React.FC = () => {
       return;
     }
 
+    if (!isLogin) {
+      setError('Please login to upload image.');
+      return;
+    }
+
     const formData = new FormData();
     formData.append('img_file', file);
-    formData.append('create_by', 'baobao11062003@gmail.com');
 
     try {
       const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/image`, formData, {

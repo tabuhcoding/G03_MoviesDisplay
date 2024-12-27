@@ -37,4 +37,13 @@ export class UserRepository {
   async comparePassword(plainPassword: string, hashedPassword: string): Promise<boolean> {
     return bcrypt.compare(plainPassword, hashedPassword);
   }
+
+  async updateUser(userEmail: string, updates: Partial<User>): Promise<User> {
+    return this.userModel.findOneAndUpdate({ email: userEmail }, updates, { new: true }).exec();
+  }
+
+  async updateAvatar(userEmail: string, file: string): Promise<User> {
+    return this.userModel.findOneAndUpdate({ email: userEmail }, { avatar: file }, { new: true }).exec();
+  }
+
 }

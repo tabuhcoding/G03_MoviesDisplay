@@ -9,9 +9,11 @@ import { JwtStrategy } from '@/auth/jwt.strategies';
 import { JwtModule } from '@nestjs/jwt';
 import { NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { JwtAuthMiddleware } from '@/auth/middlewares/jwt-auth.middleware';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     JwtModule.register({
       secret: process.env.JWT_SECRET,

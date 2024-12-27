@@ -5,6 +5,7 @@ import { UserRepository } from './user.repository';
 import { User } from './schema/user.schema';
 import { CreateUserDto } from './dto/create-user.dto';
 import { GetUserDto } from './dto/get-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -63,7 +64,6 @@ export class UserService {
   async handleGoogleUser(profile: any): Promise<{ token: string; user: User }> {
     const { googleId, email, fullName, avatar } = profile;
     let user = await this.userRepository.findByEmail(email);
-
     if (!user) {
       user = await this.userRepository.createGoogleUser({
         googleId,
@@ -80,5 +80,15 @@ export class UserService {
     const payload = { email: user.email, username: user.username, avatar: avatar, sub: user._id };
     const token = this.jwtService.sign(payload);
     return { token, user };
+  }
+
+  async updateProfile(user: User, updateUserDto: UpdateUserDto): Promise<User> {
+    const updatedUser = await this.userRepository.updateUser(user.email, updateUserDto);
+    return updatedUser;
+  }
+
+  async updateAvatar(user: User, file: string): Promise<User> {
+    const updatedUser = await this.userRepository.updateAvatar(user.email, file);
+    return updatedUser;
   }
 }
