@@ -2,12 +2,12 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
-import { UserService } from './user/user.service';
-import { UserController } from './user/user.controller';
-import { MoviesModule } from './movies/movies.module';
+import { UserService } from './model/user/user.service';
+import { UserController } from './model/user/user.controller';
+import { MoviesModule } from './model/movies/movies.module';
 import { JwtStrategy } from './auth/jwt.strategies';
 import { JwtAuthMiddleware } from './auth/middlewares/jwt-auth.middleware';
-import { User, UserSchema } from './user/schema/user.schema';
+import { User, UserSchema } from './model/user/schema/user.schema';
 import { ConfigModule } from '@nestjs/config';
 import { GoogleStrategy } from './auth/google.strategies';
 
