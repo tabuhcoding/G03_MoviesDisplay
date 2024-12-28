@@ -1,7 +1,7 @@
 "use client"
 
 /* Package System */
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from 'next/navigation';
 import { useColor } from "color-thief-react";
@@ -47,7 +47,6 @@ const formatRunTime = (runtime: number) => {
 export default function MovieDetail({ movieDetails }: MovieDetailProps) {
   const router = useRouter();
   const [bgColor, setBgColor] = useState<string>("rgba(0, 0, 0, 0.6)");
-  const imageRef = useRef<HTMLImageElement | null>(null);
 
   const imageUrl = `https://media.themoviedb.org/t/p/original${
     movieDetails?.backdrop_path ??
@@ -58,7 +57,7 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
 
   const { data: color } = useColor(imageUrl, "rgbArray", {
     crossOrigin: "anonymous",
-    quality: 10,
+    quality: 10
   });
 
   useEffect(() => {
@@ -74,7 +73,7 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
       style={{
         backgroundImage: `url(${imageUrl})`,
         backgroundColor: bgColor,
-        backgroundBlendMode: "overlay", 
+        backgroundBlendMode: "overlay"
       }}
     >
       <div className="movie-detail-container mt-5">

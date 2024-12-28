@@ -7,6 +7,7 @@ export interface TUser {
   username: string
   email: string
   avatar: string
+  createdAt: string
 }
 
 // STEP 1: create a useState

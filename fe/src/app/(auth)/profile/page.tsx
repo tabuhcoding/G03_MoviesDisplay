@@ -1,61 +1,64 @@
 'use client'
-import { useRouter } from 'next/router';
-import { Button, Card, CardContent, CardHeader, Typography, CircularProgress, Avatar } from "@mui/material";
-import { LogOut, User } from "lucide-react";
+/* Package System */
+import { useRouter } from 'next/navigation';
+import { CircularProgress, Avatar } from "@mui/material";
+import { User } from "lucide-react";
+
+/* Package Application */
 import { useAuth } from "@context/authContext";
+import "@public/styles/user/profile.css";
 
 const Profile: React.FC = () => {
-  const { userInfo: user, logout } = useAuth();
+  const { userInfo: user } = useAuth();
   const router = useRouter();
 
-  if (!user) {
+  if (!user || Object.keys(user).length === 0) {
     return (
       <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
         <CircularProgress />
       </div>
     );
   }
+  const formatDate = (dateString: string) => {
+    if (dateString === "") return "";
 
-  const handleLogout = () => {
-    logout();
-    router.push("/login");
+    const date = new Date(dateString);
+
+    return new Intl.DateTimeFormat('en-US', {
+      month: 'long',
+      year: 'numeric'
+    }).format(date);
   };
 
   return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", backgroundColor: "#f5f5f5" }}>
-      <Card sx={{ width: "100%", maxWidth: 400, p: 2 }}>
-        <CardHeader
-          avatar={
-            <Avatar
-              src={user.avatar}
-              alt={user.username}
-              sx={{ width: 80, height: 80, margin: '0 auto' }}
-            >
-              {!user.avatar && <User size={40} />}
-            </Avatar>
-          }
-          title={<Typography variant="h5" component="h2">Trang cá nhân</Typography>}
-          subheader={<Typography variant="body2" color="textSecondary">Thông tin người dùng</Typography>}
-          sx={{ textAlign: "center" }}
-        />
-        <CardContent>
-          <Typography variant="body1" sx={{ mb: 2 }}>
-            <strong>Tên đăng nhập:</strong> {user.username}
-          </Typography>
-          <Typography variant="body1" sx={{ mb: 2 }}>
-            <strong>Email:</strong> {user.email}
-          </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            fullWidth
-            onClick={handleLogout}
-            startIcon={<LogOut />}
-          >
-            Đăng xuất
-          </Button>
-        </CardContent>
-      </Card>
+    <div className='bg_image'>
+      <div className='block header gradient blue'>
+        <div className='inner_content'>
+          <div className='content'>
+            <span className='avatar'>
+              <Avatar
+                src={user?.avatar ?? undefined}
+                alt={user?.username ?? ''}
+                onClick={() => router.push("/profile")}
+              >
+                {!user.avatar && <User size={150} />}
+              </Avatar>
+            </span>
+            <div className='user_info'>
+              <div className='about_me'>
+                <div className='content_wrapper flex'>
+                  <h2>{user.username ?? ''}</h2>
+                  <h3>Member since {formatDate(user?.createdAt ?? '')}</h3>
+                </div>
+                <div className='content_wrapper flex'>
+                  <span>Email: {user?.email ?? ''}</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
