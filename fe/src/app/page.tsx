@@ -25,7 +25,7 @@ export default function Home() {
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
-    router.push(`/movies/search?query=${searchInput}&page=1`);
+    router.push(`/movie/search?query=${searchInput}&page=1`);
   };
 
   const fetchTrendingMovies = useCallback(async () => {
