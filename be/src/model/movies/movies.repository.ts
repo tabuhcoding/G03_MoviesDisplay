@@ -1,18 +1,13 @@
+// src/movies/movies.repository.ts
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 
 @Injectable()
-export class MoviesService {
-  private readonly baseUrl: string;
-  private readonly apiKey: string;
+export class MoviesRepository {
+  private readonly baseUrl: string = process.env.BASE_URL_TMDB;
+  private readonly apiKey: string = process.env.API_KEY_TMDB;
 
-  constructor(private configService: ConfigService) {
-    this.baseUrl = process.env.BASE_URL_TMDB;
-    this.apiKey = process.env.API_KEY_TMDB;
-  }
-
-  async getTrendingMovies(timeWindow: 'day' | 'week') {
+  async fetchTrendingMovies(timeWindow: 'day' | 'week') {
     try {
       const { data } = await axios.get(`${this.baseUrl}/trending/movie/${timeWindow}`, {
         params: { api_key: this.apiKey },
@@ -23,7 +18,7 @@ export class MoviesService {
     }
   }
 
-  async getMovieDetails(movieId: number) {
+  async fetchMovieDetails(movieId: number) {
     try {
       const { data } = await axios.get(`${this.baseUrl}/movie/${movieId}`, {
         params: { api_key: this.apiKey },
@@ -35,9 +30,6 @@ export class MoviesService {
   }
 
   async searchMovies(query: string, page: number): Promise<any> {
-    if (!query) {
-      throw new HttpException('Query parameter is missing', HttpStatus.BAD_REQUEST);
-    }
     try {
       const { data } = await axios.get(`${this.baseUrl}/search/movie`, {
         params: {
@@ -55,11 +47,10 @@ export class MoviesService {
   }
 
   private handleApiError(error: any, message: string) {
-    // Check if error response is present
     const statusCode = error.response?.status || HttpStatus.INTERNAL_SERVER_ERROR;
     const errorMessage =
       error.response?.data?.status_message || error.message || 'An unknown error occurred';
-    
+
     throw new HttpException(
       {
         message,
