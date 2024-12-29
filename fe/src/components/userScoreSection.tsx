@@ -27,20 +27,20 @@ const UserScoreSection: React.FC<UserScoreSectionProps> = ({ vote_average }) => 
         backgroundColor: "transparent",
         padding: 2,
         borderRadius: 2,
-        color: "white",
+        color: "white"
       }}
     >
       <Box
         sx={{
           display: "flex",
           alignItems: "center",
-          gap: 1,
+          gap: 1
         }}
       >
         <Box
           sx={{
             position: "relative",
-            display: "inline-flex",
+            display: "inline-flex"
           }}
         >
           <CircularProgress
@@ -50,7 +50,7 @@ const UserScoreSection: React.FC<UserScoreSectionProps> = ({ vote_average }) => 
             thickness={4}
             sx={{
               color: getColor(score),
-              borderRadius: "50%",
+              borderRadius: "50%"
             }}
           />
           <Box
@@ -63,7 +63,7 @@ const UserScoreSection: React.FC<UserScoreSectionProps> = ({ vote_average }) => 
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              color: "white",
+              color: "white"
             }}
           >
             <Typography variant="caption" component="div" fontSize={12}>

@@ -4,8 +4,8 @@ import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 import SearchInput from "@components/layout/searchInput";
-import MoviesGrid from "../components/moviesGrid";
-import Pagination from "../components/pagination";
+import MoviesGrid from "../../../(movies)/movies/[id]/_components/moviesGrid";
+import Pagination from "../../../(movies)/movies/[id]/_components/pagination";
 
 interface Movie {
   id: number;

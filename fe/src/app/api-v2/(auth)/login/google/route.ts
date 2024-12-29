@@ -10,8 +10,14 @@ export async function POST (request: NextRequest) {
     });
     if(res.status === 200 && res.data.user){
       const response = NextResponse.json( res.data.user, { status: 200 })
+      const expires = new Date();
+      expires.setDate(expires.getDate() + 7);
       response.cookies.set(
-        "token", res.data.token, { path: "/", expires: 7 }
+        "token", body.token, { 
+          path: "/", 
+          expires: expires,
+          httpOnly: true, 
+          secure: process.env.NODE_ENV === "production"  }
       )
       return response
     }

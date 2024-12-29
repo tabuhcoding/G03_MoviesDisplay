@@ -12,11 +12,9 @@ export default function RootLayout({
       <body className="default-body-class">
         <AuthProvider>
           <Navigation />
-          <main>
-            <div className="d-flex flex-column min-vh-100">
-              {children}
-            </div>
-          </main>
+          <div className="d-flex flex-column min-vh-100">
+            {children}
+          </div>
           <Footer />
         </AuthProvider>
       </body>
