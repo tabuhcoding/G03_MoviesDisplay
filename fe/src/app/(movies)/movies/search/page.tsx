@@ -54,7 +54,7 @@ export default function SearchPage() {
     e.preventDefault();
     const inputQuery = (e.target as HTMLFormElement).searchInput.value.trim();
     if (inputQuery) {
-      router.push(`/movie/search?query=${inputQuery}&page=1`);
+      router.push(`/movies/search?query=${inputQuery}&page=1`);
     }
   };
 
@@ -62,7 +62,7 @@ export default function SearchPage() {
     <>
       <SearchInput
         value={query}
-        onChange={(value) => router.push(`/movie/search?query=${value}&page=1`)}
+        onChange={(value) => router.push(`/movies/search?query=${value}&page=1`)}
         onSubmit={handleSearch}
       />
       <div className="container my-4">
@@ -75,7 +75,7 @@ export default function SearchPage() {
               currentPage={page}
               totalPages={totalPages}
               onPageChange={(newPage) =>
-                router.push(`/movie/search?query=${query}&page=${newPage}`)
+                router.push(`/movies/search?query=${query}&page=${newPage}`)
               }
             />
           </>
