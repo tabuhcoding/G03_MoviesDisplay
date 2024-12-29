@@ -3,7 +3,6 @@
 /* Package System */
 import Link from 'next/link';
 import "bootstrap/dist/css/bootstrap.min.css";
-// import "bootstrap/dist/js/bootstrap.bundle.min";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { Avatar, Button } from "@mui/material";
 import { User } from "lucide-react";
