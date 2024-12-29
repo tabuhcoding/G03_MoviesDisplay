@@ -1,15 +1,26 @@
 "use client"
+
+/* Package System */
 import Link from 'next/link';
 import "bootstrap/dist/css/bootstrap.min.css";
 // import "bootstrap/dist/js/bootstrap.bundle.min";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { Avatar, Button } from "@mui/material";
 import { User } from "lucide-react";
+import { useRouter } from 'next/navigation';
+
+/* Package Application */
 import { useAuth } from '@/src/context/authContext';
 import "@styles/Navigation.css";
 
 const Navigation: React.FC = () => {
   const { userInfo, isLogin, logout } = useAuth();
+  const router = useRouter();
+
+  const handleProfileClick = () => {
+    router.push("/profile");
+  }
+
   return (
     <nav className="navbar navbar-expand-lg fixed-top" style={{ backgroundColor: "#032541" }}>
       <div className="container-fluid">
@@ -53,7 +64,7 @@ const Navigation: React.FC = () => {
             </>
           ) : (
             <div className="dropdown d-flex align-items-center container-profile">
-              <Avatar src={userInfo.avatar} alt={userInfo.username} sx={{ width: 40, height: 40 }}>
+              <Avatar onClick={handleProfileClick} src={userInfo.avatar} alt={userInfo.username} sx={{ width: 40, height: 40, cursor: "pointer" }}>
                 {!userInfo.avatar && <User size={40} />}
               </Avatar>
               <a href="#" className="link-dark text-decoration-none dropdown-toggle icon-dropdown" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false"></a>

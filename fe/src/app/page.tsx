@@ -86,7 +86,7 @@ export default function Home() {
             <div className="movie-list d-flex flex-wrap">
               {movies.map((movie) => (
                 <div
-                  onClick={() => router.push(`/movie/${movie.id}`)}
+                  onClick={() => router.push(`/movies/${movie.id}`)}
                   className="movie-card mx-2"
                   key={movie.id}
                 >
