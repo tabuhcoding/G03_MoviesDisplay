@@ -5,9 +5,4 @@ export class CreateImageDto {
   @ApiProperty({ type: 'string', format: 'binary' })
   @IsNotEmpty()
   img_file: any;
-
-  @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
-  create_by: string;
 }

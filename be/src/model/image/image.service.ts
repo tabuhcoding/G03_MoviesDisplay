@@ -7,7 +7,7 @@ import { ImageRepository } from './image.repository';
 export class ImageService {
   constructor(private readonly imageRepository: ImageRepository) {}
 
-  async createImage(createImageDto: CreateImageDto, file: Express.Multer.File) {
+  async createImage(userEmail: string, file: Express.Multer.File) {
     if (!file) throw new BadRequestException('File is required');
     try {
       // Upload to Cloudinary
@@ -16,7 +16,7 @@ export class ImageService {
       // Save to database
       const savedImage = await this.imageRepository.createImage({
         img_url: result.secure_url,
-        create_by: createImageDto.create_by,
+        create_by: userEmail,
       });
 
       return {
