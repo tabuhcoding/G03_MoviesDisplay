@@ -2,8 +2,8 @@
 import axios from "axios";
 
 /* Package Application */
-import MovieDetail from "../components/detail";
-import Loading from "../../loading";
+import MovieDetail from "../_components/detail";
+import Loading from "../../../../components/loading";
 import { Suspense } from "react";
 import { ErrorData, ErrorHandling } from "@components/errorHandling";
 
