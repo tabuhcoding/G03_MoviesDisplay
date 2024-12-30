@@ -1,54 +1,120 @@
 'use client'
 
-import { useState } from 'react'
-import { Button, TextField, Card, CardContent, CardHeader, Typography, Alert, Box, CircularProgress } from '@mui/material'
-import { useRouter } from 'next/navigation'
-import { useAuth } from '@/src/context/authContext'
+/* Package System */
+import { useState } from 'react';
+import { Button, TextField, Card, CardContent, CardHeader, Typography, Alert, Box, CircularProgress, IconButton, InputAdornment } from '@mui/material';
+import { useRouter } from 'next/navigation';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+
+/* Package Application */
+import { useAuth } from '@/src/context/authContext';
+
+const isValidEmail = (email: string) => {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(email);
+}
 
 export default function Register() {
   const [formData, setFormData] = useState({
     username: '',
     email: '',
-    password: ''
+    password: '',
+    confirmPassword: ''
   })
+  const [errors, setErrors] = useState({
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
+  });
   const [message, setMessage] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const router = useRouter()
   const { login } = useAuth()
-  const [isLoading, setIsLoading] = useState(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setFormData(prevState => ({
       ...prevState,
       [name]: value
-    }))
+    }));
+
+    setErrors(prevState => ({
+      ...prevState,
+      [name]: ''
+    }));
+  }
+  
+  const validateForm = () => {
+    const newErrors: any = {};
+
+    if (!formData.username) {
+      newErrors.username = 'Tên đăng nhập không được để trống';
+    }
+
+    if (!formData.email) {
+      newErrors.email = 'Email không được để trống';
+    } else if (!isValidEmail(formData.email)) {
+      newErrors.email = 'Email không hợp lệ';
+    }
+
+    if (!formData.password) {
+      newErrors.password = 'Mật khẩu không được để trống';
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'Mật khẩu phải có ít nhất 6 ký tự';
+    }
+
+    if (!formData.confirmPassword) {
+      newErrors.confirmPassword = 'Nhập lại mật khẩu không được để trống';
+    } else if (formData.confirmPassword.length < 6) {
+      newErrors.confirmPassword = 'Mật khẩu phải có ít nhất 6 ký tự';
+    } else if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = 'Nhập lại mật khẩu không khớp';
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
   }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setMessage('')
-    setIsLoading(true)
+
+    if (!validateForm()) {
+      return;
+    }
+
+    setIsLoading(true);
+
     try {
       const res = await fetch('api-v2/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
       });
+
+      const data = await res.json();
+      
       if (res.ok) {
         const user = await res.json();
         login(user);
         setMessage('Đăng ký thành công!')
-        setFormData({ username: '', email: '', password: '' })
+        setFormData({ username: '', email: '', password: '', confirmPassword: '' })
         setTimeout(() => {
           router.push('/')
         }, 2000)
         return;
       }
-      
-      setMessage((await res.json()).detail as string || 'Đăng ký thất bại. Vui lòng kiểm tra lại thông tin đăng ký.')
+
+      // setMessage((await res.json()).detail as string || 'Đăng ký thất bại. Vui lòng kiểm tra lại thông tin đăng ký.')
+      throw new Error(data?.message || 'Đăng ký thất bại. Vui lòng kiểm tra lại thông tin đăng ký.');
     } catch (error: any) {
       console.log(error)
-      setMessage(error.response?.data?.message || "Đã xảy ra lỗi trong quá trình đăng ký");
+      setMessage(error.response?.data?.message || error?.message || "Đã xảy ra lỗi trong quá trình đăng ký");
     } finally {
       setIsLoading(false)
     }
@@ -77,31 +143,67 @@ export default function Register() {
               label="Tên đăng nhập"
               name="username"
               type="text"
-              required
               value={formData.username}
               onChange={handleChange}
               placeholder="Nhập tên đăng nhập"
               fullWidth
+              error={!!errors.username}
+              helperText={errors.username}
             />
             <TextField
               label="Email"
               name="email"
-              type="email"
-              required
+              type="text"
               value={formData.email}
               onChange={handleChange}
               placeholder="Nhập địa chỉ email"
               fullWidth
+              error={!!errors.email}
+              helperText={errors.email}
             />
             <TextField
               label="Mật khẩu"
               name="password"
-              type="password"
-              required
+              type={showPassword ? 'text' : 'password'}
               value={formData.password}
               onChange={handleChange}
               placeholder="Nhập mật khẩu"
               fullWidth
+              error={!!errors.password}
+              helperText={errors.password}
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }
+              }}
+            />
+            <TextField
+              label="Nhập lại mật khẩu"
+              name="confirmPassword"
+              type={showConfirmPassword ? 'text' : 'password'}
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              placeholder="Nhập lại mật khẩu"
+              fullWidth
+              error={!!errors.confirmPassword}
+              helperText={errors.confirmPassword}
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={() => setShowConfirmPassword(!showConfirmPassword)} edge="end">
+                        {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }
+              }}
             />
             <Button type="submit" variant="contained" color="primary" fullWidth
               style={{

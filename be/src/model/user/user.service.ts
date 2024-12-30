@@ -1,5 +1,5 @@
 // src/user/user.service.ts
-import { Injectable, ConflictException, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, ConflictException, InternalServerErrorException, UnauthorizedException, BadRequestException  } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserRepository } from './user.repository';
 import { User } from './schema/user.schema';
@@ -15,7 +15,11 @@ export class UserService {
   ) {}
 
   async register(createUserDto: CreateUserDto): Promise<{ token: string, user: User }> {
-    const { username, email, password } = createUserDto;
+    const { username, email, password, confirmPassword } = createUserDto;
+
+    if (password !== confirmPassword) {
+      throw new BadRequestException('Mật khẩu xác nhận không khớp');
+    }
 
     const existingUser = await this.userRepository.findByUsernameOrEmail(username, email);
     if (existingUser) {
