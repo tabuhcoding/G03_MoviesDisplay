@@ -5,7 +5,7 @@ import { AxiosError } from "axios";
 export async function POST (request: NextRequest) {
   const body = await request.json()
   try{
-    const res = await axios.get(`${process.env.NEXT_PUBlIC_BACKEND_URL}/user/profile`, {
+    const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user/google`, {
       headers: { Authorization: `Bearer ${body.token}` }
     });
     if(res.status === 200 && res.data.user){

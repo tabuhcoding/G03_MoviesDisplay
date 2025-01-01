@@ -76,7 +76,7 @@ export default function Login() {
         const res = await fetch('/api-v2/login/google', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token: tokenResponse.access_token }),
+          body: JSON.stringify({ token: tokenResponse.access_token })
         });
 
         if (!res.ok) {
@@ -94,7 +94,7 @@ export default function Login() {
     onError: (error) => {
       console.error('Google login error:', error);
       alert('Google login failed. Please try again.');
-    },
+    }
   });
 
   return (
