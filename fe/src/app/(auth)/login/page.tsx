@@ -16,6 +16,8 @@ import {
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@context/authContext';
+import { useGoogleLogin } from '@react-oauth/google';
+
 const GoogleIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="24px" height="24px">
     <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z" />
@@ -68,9 +70,32 @@ export default function Login() {
     }
   };
 
-  const handleGoogleSignIn = () => {
-    window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/google`;
-  };
+  const handleGoogleSignIn = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        const res = await fetch('/api-v2/login/google', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: tokenResponse.access_token })
+        });
+
+        if (!res.ok) {
+          throw new Error('Login failed');
+        }
+
+        const user = await res.json();
+        login(user);
+        router.push('/'); // Điều hướng về trang chủ sau khi đăng nhập thành công
+      } catch (error) {
+        console.error('Google login failed:', error);
+        alert('Login failed. Please try again.');
+      }
+    },
+    onError: (error) => {
+      console.error('Google login error:', error);
+      alert('Google login failed. Please try again.');
+    }
+  });
 
   return (
     <Box
@@ -149,7 +174,7 @@ export default function Login() {
               sx={{ padding: '12px 24px', fontSize: '14px', height: 56 }}
               fullWidth
               startIcon={<GoogleIcon />}
-              onClick={handleGoogleSignIn}
+              onClick={() => {handleGoogleSignIn()}}
             >
               Đăng nhập với Google
             </Button>
