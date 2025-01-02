@@ -19,6 +19,7 @@ import {
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
+import { useGoogleLogin } from '@react-oauth/google';
 
 /* Package Application */
 import { useAuth } from '@context/authContext';
@@ -112,9 +113,32 @@ export default function Login() {
     }
   };
 
-  const handleGoogleSignIn = () => {
-    window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/google`;
-  };
+  const handleGoogleSignIn = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        const res = await fetch('/api-v2/login/google', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: tokenResponse.access_token })
+        });
+
+        if (!res.ok) {
+          throw new Error('Login failed');
+        }
+
+        const user = await res.json();
+        login(user);
+        router.push('/'); // Điều hướng về trang chủ sau khi đăng nhập thành công
+      } catch (error) {
+        console.error('Google login failed:', error);
+        alert('Login failed. Please try again.');
+      }
+    },
+    onError: (error) => {
+      console.error('Google login error:', error);
+      alert('Google login failed. Please try again.');
+    }
+  });
 
   return (
     <Box
@@ -215,7 +239,7 @@ export default function Login() {
               sx={{ padding: '12px 24px', fontSize: '14px', height: 56 }}
               fullWidth
               startIcon={<GoogleIcon />}
-              onClick={handleGoogleSignIn}
+              onClick={() => {handleGoogleSignIn()}}
             >
               Đăng nhập với Google
             </Button>
