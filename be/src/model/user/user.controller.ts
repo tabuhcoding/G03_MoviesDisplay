@@ -2,6 +2,7 @@ import { Body, Controller, Get, Post, UseGuards, Res, Req, UseInterceptors, Uplo
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { GetUserDto } from './dto/get-user.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 import { JwtAuthGuard } from '../../auth/jwt.guards';
 import { AuthGuard } from '@nestjs/passport';
 import { Response, Request as ExpressRequest } from 'express';
@@ -10,7 +11,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   @Post('register')
   @UsePipes(new ValidationPipe({ transform: true }))
@@ -44,7 +45,7 @@ export class UserController {
     const user = req.user; // `req.user` được gắn bởi JwtAuthGuard sau khi token được xác minh
     return this.userService.updateAvatar(user, img_file);
   }
-  
+
 
   @Get('google')
   @UseGuards(AuthGuard('google'))
@@ -63,4 +64,21 @@ export class UserController {
     );
   }
 
+  @Post('forgot-password')
+  async forgotPassword(@Body() body: { email: string }) {
+    const otpInfo = await this.userService.getUserByEmail(body.email);
+
+    return {
+      success: true,
+      message: 'OTP đã được gửi đến email của bạn',
+      expiresAt: otpInfo.expiresAt,
+      remainingAttempts: otpInfo.remainingAttempts,
+    };
+  }
+
+  @Post('reset-password')
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
+    return this.userService.resetPassword(resetPasswordDto);
+  }
 }

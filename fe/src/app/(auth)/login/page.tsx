@@ -93,15 +93,17 @@ export default function Login() {
         body: JSON.stringify(formData)
       });
 
+      const data = await res.json();
+
       if (res.ok) {
-        const user = await res.json();
-        login(user);
+        login(data);
         setMessage("Đăng nhập thành công!");
         setFormData({ email: "", password: "" });
         router.push("/");
         return;
       }
-      setMessage( (await res.json()).detail as string || "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin đăng nhập.");
+      setMessage(data?.message?.message || 'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin đăng nhập.');
+      throw new Error(data?.message?.message || 'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin đăng nhập.');
     } catch (error: any) {
       console.error(error);
       setMessage(error.response?.data?.message || error?.message || "Đã xảy ra lỗi trong quá trình đăng nhập");
@@ -167,6 +169,15 @@ export default function Login() {
                 }
               }}
             />
+            <Link 
+              href="/forgot-password" 
+              color="primary" 
+              sx={{fontSize: '13px'}}
+              underline="hover" 
+              align="right"
+            >
+              Quên mật khẩu?
+            </Link>
             <Button
               type="submit"
               variant="contained"

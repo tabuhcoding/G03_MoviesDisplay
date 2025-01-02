@@ -1,42 +1,40 @@
-'use client'
+"use client";
 
 /* Package System */
-import { useState } from 'react';
-import { Button, TextField, Card, CardContent, CardHeader, Typography, Alert, Box, CircularProgress, IconButton, InputAdornment } from '@mui/material';
+import { useState, ChangeEvent, FormEvent } from "react"
+import {
+  Button,
+  TextField,
+  Card,
+  CardContent,
+  CardHeader,
+  Typography,
+  Divider,
+  Box,
+  Alert,
+  CircularProgress,
+  IconButton,
+  InputAdornment
+} from '@mui/material';
 import { useRouter } from 'next/navigation';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 /* Package Application */
+import '@public/styles/admin/style.css';
 import { useAuth } from '@/src/context/authContext';
 
-const isValidEmail = (email: string) => {
-  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return regex.test(email);
-}
-
-export default function Register() {
-  const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: '',
-    confirmPassword: ''
-  })
-  const [errors, setErrors] = useState({
-    username: '',
-    email: '',
-    password: '',
-    confirmPassword: ''
-  });
-  const [message, setMessage] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
+export default function RenewPassword() {
+  const [formData, setFormData] = useState({ password: '', confirmPassword: '' });
+  const [message, setMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState({ password: '', confirmPassword: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const router = useRouter()
-  const { login } = useAuth()
+  const router = useRouter();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
     setFormData(prevState => ({
       ...prevState,
       [name]: value
@@ -47,32 +45,22 @@ export default function Register() {
       [name]: ''
     }));
   }
-  
+
   const validateForm = () => {
     const newErrors: any = {};
-
-    if (!formData.username) {
-      newErrors.username = 'Tên đăng nhập không được để trống';
-    }
-
-    if (!formData.email) {
-      newErrors.email = 'Email không được để trống';
-    } else if (!isValidEmail(formData.email)) {
-      newErrors.email = 'Email không hợp lệ';
-    }
 
     if (!formData.password) {
       newErrors.password = 'Mật khẩu không được để trống';
     } else if (formData.password.length < 6) {
-      newErrors.password = 'Mật khẩu phải có ít nhất 6 ký tự';
+      newErrors.password = 'Mật khẩu phải chứa ít nhất 6 ký tự';
     }
 
     if (!formData.confirmPassword) {
-      newErrors.confirmPassword = 'Nhập lại mật khẩu không được để trống';
+      newErrors.confirmPassword = 'Xác nhận mật khẩu không được để trống';
     } else if (formData.confirmPassword.length < 6) {
-      newErrors.confirmPassword = 'Mật khẩu phải có ít nhất 6 ký tự';
+      newErrors.confirmPassword = 'Mật khẩu phải chứa ít nhất 6 ký tự';
     } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Nhập lại mật khẩu không khớp';
+      newErrors.confirmPassword = 'Mật khẩu không khớp';
     }
 
     setErrors(newErrors);
@@ -80,42 +68,43 @@ export default function Register() {
     return Object.keys(newErrors).length === 0;
   }
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setMessage('')
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setMessage('');
 
-    if (!validateForm()) {
-      return;
-    }
+    if (!validateForm()) return;
 
     setIsLoading(true);
 
     try {
-      const res = await fetch('api-v2/register', {
+      const email = localStorage.getItem('forgotPasswordEmail');
+      if (!email) {
+        throw new Error('Không tìm thấy email, vui lòng thử lại từ đầu.');
+      }
+
+      const res = await fetch('api-v2/reset-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({ email, newPassword: formData.password })
       });
 
       const data = await res.json();
-      
+
       if (res.ok) {
-        login(data);
-        setMessage('Đăng ký thành công!')
-        setFormData({ username: '', email: '', password: '', confirmPassword: '' })
+        setMessage(data?.message);
+        setIsLoading(false);
+        localStorage.removeItem('forgotPasswordEmail');
         setTimeout(() => {
-          router.push('/login')
-        }, 2000)
+          router.push('/login');
+        }, 2000);
         return;
       }
 
-      setMessage(data?.message?.message || 'Đăng ký thất bại. Vui lòng kiểm tra lại thông tin đăng ký.');
-      throw new Error(data?.message?.message || 'Đăng ký thất bại. Vui lòng kiểm tra lại thông tin đăng ký.');
-    } catch (error: any) {
-      console.log(error)
-      setMessage(error.response?.data?.message || error?.message || "Đã xảy ra lỗi trong quá trình đăng ký");
-    } finally {
-      setIsLoading(false)
+      setMessage(data?.message?.message || 'Đã xảy ra lỗi không xác định');
+      throw new Error(data?.message?.message || 'Đã xảy ra lỗi không xác định');
+    } catch (error) {
+      console.error(error);
+      setMessage((error as Error).message);
     }
   }
 
@@ -132,34 +121,12 @@ export default function Register() {
     }}>
       <Card sx={{ width: '100%', maxWidth: 400, p: 2 }}>
         <CardHeader
-          title={<Typography variant="h5" component="h2">Đăng ký</Typography>}
-          subheader={<Typography variant="body2" color="textSecondary">Tạo tài khoản mới</Typography>}
+          title={<Typography variant="h5" component="h2">Tạo mật khẩu mới</Typography>}
+          subheader={<Typography variant="body2" color="textSecondary">Nhập mật khẩu mới của bạn</Typography>}
           sx={{ textAlign: 'center', fontWeight: 'bold', color: '#01647e' }}
         />
         <CardContent>
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <TextField
-              label="Tên đăng nhập"
-              name="username"
-              type="text"
-              value={formData.username}
-              onChange={handleChange}
-              placeholder="Nhập tên đăng nhập"
-              fullWidth
-              error={!!errors.username}
-              helperText={errors.username}
-            />
-            <TextField
-              label="Email"
-              name="email"
-              type="text"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Nhập địa chỉ email"
-              fullWidth
-              error={!!errors.email}
-              helperText={errors.email}
-            />
             <TextField
               label="Mật khẩu"
               name="password"
@@ -228,7 +195,7 @@ export default function Register() {
               disabled={isLoading}
               startIcon={isLoading ? <CircularProgress size={20} /> : null}
             >
-              {isLoading ? 'Đang đăng ký...' : 'Đăng ký'}
+              {isLoading ? 'Đang thay đổi...' : 'Thay đổi'}
             </Button>
           </form>
           {message && (
@@ -239,5 +206,5 @@ export default function Register() {
         </CardContent>
       </Card>
     </Box>
-  )
+  );
 }

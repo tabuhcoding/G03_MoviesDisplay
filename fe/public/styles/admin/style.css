@@ -1,0 +1,26 @@
+.resend-btn {
+  color: #1C0098;
+  cursor: pointer;
+
+}
+
+.resend-btn:hover {
+  text-decoration: underline;
+}
+
+.resend-btn.disabled {
+  color: #ccc;
+  cursor: not-allowed;
+}
+
+.otp-timer {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 8px 0;
+}
+
+.otp-timer span {
+  padding: 5px;
+  background: linear-gradient(to right, rgb(30 213 169), rgb(1 180 228));
+  border-radius: 4px;
+}
