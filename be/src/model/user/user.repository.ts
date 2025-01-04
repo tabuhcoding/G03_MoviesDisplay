@@ -46,4 +46,12 @@ export class UserRepository {
     return this.userModel.findOneAndUpdate({ email: userEmail }, { avatar: file }, { new: true }).exec();
   }
 
+  async updatePassword(email: string, newPassword: string): Promise<void> {
+    const hashedPassword = await this.hashPassword(newPassword);
+    await this.userModel.findOneAndUpdate(
+      { email },
+      { password: hashedPassword },
+      { new: true }
+    ).exec();
+  }
 }
