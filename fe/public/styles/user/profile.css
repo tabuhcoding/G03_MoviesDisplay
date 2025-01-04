@@ -126,3 +126,17 @@
   align-items: center;
   padding-top: 10px;
 }
+
+.my-list {
+  cursor: pointer;
+}
+
+.my-list:hover{
+  color: #072e46;
+}
+
+.cus-select {
+  width: auto;
+  max-width: 210px;
+  margin-left: 10px;
+}
