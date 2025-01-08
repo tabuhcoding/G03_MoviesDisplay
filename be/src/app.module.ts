@@ -1,34 +1,18 @@
 // src/app.module.ts
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { JwtModule } from '@nestjs/jwt';
-import { UserService } from './user/user.service';
-import { UserController } from './user/user.controller';
-import { MoviesModule } from './movies/movies.module';
-import { JwtStrategy } from './auth/jwt.strategies';
-import { JwtAuthMiddleware } from './auth/middlewares/jwt-auth.middleware';
-import { User, UserSchema } from './user/schema/user.schema';
+import { UserModule } from './model/user/user.module';
+import { MoviesModule } from './model/movies/movies.module';
 import { ConfigModule } from '@nestjs/config';
-import { GoogleStrategy } from './auth/google.strategies';
+import { ImageModule } from './model/image/image.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot( {isGlobal: true}),
     MongooseModule.forRoot(process.env.MONGODB_URL),
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
-    JwtModule.register({
-      secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '1h' },
-    }),
     MoviesModule,
+    UserModule,
+    ImageModule,
   ],
-  controllers: [UserController],
-  providers: [UserService, JwtStrategy, GoogleStrategy],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(JwtAuthMiddleware)
-      .forRoutes('user/profile'); // Áp dụng middleware cho route cần bảo vệ
-  }
-}
+export class AppModule {}
