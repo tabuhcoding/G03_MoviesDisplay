@@ -1,7 +1,7 @@
 // src/app.module.ts
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserModule } from './model/user/user.module';
+import { UserModule } from './model/user/auth/user.module';
 import { MoviesModule } from './model/movies/movies.module';
 import { ConfigModule } from '@nestjs/config';
 import { ImageModule } from './model/image/image.module';

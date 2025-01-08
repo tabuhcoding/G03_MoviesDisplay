@@ -1,12 +1,12 @@
 import { Body, Controller, Get, Post, UseGuards, Res, Req, UseInterceptors, UploadedFile, HttpException, HttpStatus, UsePipes, ValidationPipe, Headers } from '@nestjs/common';
-import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { GetUserDto } from './dto/get-user.dto';
-import { ResetPasswordDto } from './dto/reset-password.dto';
-import { JwtAuthGuard } from '../../auth/jwt.guards';
+import { UserService } from '../user.service';
+import { CreateUserDto } from '../dto/create-user.dto';
+import { GetUserDto } from '../dto/get-user.dto';
+import { ResetPasswordDto } from '../dto/reset-password.dto';
+import { JwtAuthGuard } from '../../../auth/jwt.guards';
 import { AuthGuard } from '@nestjs/passport';
 import { Response, Request as ExpressRequest } from 'express';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateUserDto } from '../dto/update-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import axios from 'axios';
 

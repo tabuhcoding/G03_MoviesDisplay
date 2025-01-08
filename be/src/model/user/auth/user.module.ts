@@ -1,16 +1,16 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserService } from './user.service';
-import { UserController } from './auth/user.controller';
+import { UserService } from '../user.service';
+import { UserController } from './user.controller';
 import { UserRepository } from './user.repository';
-import { User, UserSchema } from './schema/user.schema';
+import { User, UserSchema } from '../schema/user.schema';
 import { GoogleStrategy } from '@/auth/google.strategies';
 import { JwtStrategy } from '@/auth/jwt.strategies';
 import { JwtModule } from '@nestjs/jwt';
 import { NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { JwtAuthMiddleware } from '@/auth/middlewares/jwt-auth.middleware';
 import { ConfigModule } from '@nestjs/config';
-import { OtpModule } from './otp/otp.module';
+import { OtpModule } from '../otp/otp.module';
 
 @Module({
   imports: [
