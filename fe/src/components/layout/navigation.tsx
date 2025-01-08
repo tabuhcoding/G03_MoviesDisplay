@@ -6,7 +6,7 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import { Avatar, Button } from "@mui/material";
 import { User } from "lucide-react";
 import { useRouter } from 'next/navigation';
-import React from 'react';
+import { useState, useEffect } from 'react';
 
 /* Package Application */
 import { useAuth } from '@/src/context/authContext';
@@ -15,22 +15,22 @@ import "@styles/Navigation.css";
 const Navigation: React.FC = () => {
   const { userInfo, isLogin, logout } = useAuth();
   const router = useRouter();
-  const [isDropdownOpen, setDropdownOpen] = React.useState(false);
+  const [isDropdownOpen, setDropdownOpen] = useState(false);
 
   const handleProfileClick = () => {
     router.push("/profile");
   }
 
   const toggleDropdown = () => {
-    setDropdownOpen(prev => !prev); // Đảo ngược trạng thái dropdown
+    setDropdownOpen(prev => !prev); // Toggle dropdown state
   };
 
   const closeDropdown = () => {
-    setDropdownOpen(false); // Đóng dropdown khi người dùng nhấp ra ngoài
+    setDropdownOpen(false); // Close dropdown when clicking outside
   };
 
-  React.useEffect(() => {
-    // Thêm sự kiện để đóng dropdown khi người dùng nhấp ra ngoài
+  useEffect(() => {
+    // Add event listener to close dropdown if clicked outside
     const handleClickOutside = (event: MouseEvent) => {
       if ((event.target as HTMLElement).closest('.dropdown') === null) {
         closeDropdown();
