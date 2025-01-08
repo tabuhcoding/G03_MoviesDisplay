@@ -6,7 +6,7 @@ import { OtpRepository } from './otp.repository';
 import { Otp, OtpSchema } from './schema/otp.schema';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: Otp.name, schema: OtpSchema }])],
+  imports: [MongooseModule.forFeature([{ name: Otp.name, schema: OtpSchema }], 'auth')],
   controllers: [OtpController],
   providers: [OtpService, OtpRepository],
   exports: [OtpService],

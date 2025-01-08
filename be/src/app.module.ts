@@ -10,7 +10,18 @@ import { OtpModule } from './model/user/otp.module';
 @Module({
   imports: [
     ConfigModule.forRoot( {isGlobal: true}),
-    MongooseModule.forRoot(process.env.MONGODB_URL),
+    MongooseModule.forRoot(process.env.MONGODB_URL_AUTH, {
+      connectionName: 'auth',
+    }),
+    MongooseModule.forRoot(process.env.MONGODB_URL_CUSTOMDATA, {
+      connectionName: 'customData',
+    }),
+    MongooseModule.forRoot(process.env.MONGODB_URL_OTHERSCRAP, {
+      connectionName: 'otherNoSQL',
+    }),
+    MongooseModule.forRoot(process.env.MONGODB_URL_MOVIESSCRAP, {
+      connectionName: 'moviesNoSQL',
+    }),
     MoviesModule,
     UserModule,
     ImageModule,

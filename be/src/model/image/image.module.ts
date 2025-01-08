@@ -7,7 +7,7 @@ import { ImageController } from './image.controller';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Image.name, schema: ImageSchema }]),
+    MongooseModule.forFeature([{ name: Image.name, schema: ImageSchema }], 'auth'),
   ],
   controllers: [ImageController],
   providers: [ImageService, ImageRepository],

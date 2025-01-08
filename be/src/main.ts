@@ -3,6 +3,7 @@ import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
+import * as express from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -11,7 +12,7 @@ async function bootstrap() {
     origin: [ process.env.FRONTEND_URL ], 
     credentials: true,
   });
-
+  app.use(express.json());
   app.useGlobalFilters(new AllExceptionsFilter());
   await app.listen(3001);
 }

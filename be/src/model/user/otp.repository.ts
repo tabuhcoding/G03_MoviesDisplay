@@ -5,7 +5,7 @@ import { Otp, OtpDocument } from './schema/otp.schema';
 
 @Injectable()
 export class OtpRepository {
-  constructor(@InjectModel(Otp.name) private otpModel: Model<OtpDocument>) {}
+  constructor(@InjectModel(Otp.name, 'auth') private otpModel: Model<OtpDocument>) {}
 
   async createOtp(email: string, otp: string, expiresAt: Date): Promise<Otp> {
     const newOtp = new this.otpModel({

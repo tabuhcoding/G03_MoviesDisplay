@@ -7,7 +7,7 @@ import { User } from './schema/user.schema';
 
 @Injectable()
 export class UserRepository {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(@InjectModel(User.name, 'auth') private userModel: Model<User>) {}
 
   async findByUsernameOrEmail(username: string, email: string): Promise<User | null> {
     return this.userModel.findOne({ $or: [{ email }, { username }] }).exec();

@@ -92,24 +92,29 @@ export class UserService {
   }
 
   async handleGoogleUser(profile: any): Promise<{ token: string; user: User }> {
-    const { googleId, email, fullName, avatar } = profile;
-    let user = await this.userRepository.findByEmail(email);
-    if (!user) {
-      user = await this.userRepository.createGoogleUser({
-        googleId,
-        email,
-        username: fullName,
-        password: process.env.DEFAULT_PASSWORD,
-        avatar,
-      });
-    }
-    if (!user.googleId || !user.avatar) {
-      await this.userRepository.updateGoogleUser(email, { googleId, avatar });
-    }
+    try{
+      const { id, email, name, picture } = profile;
+      let user = await this.userRepository.findByEmail(email);
+      if (!user) {
+        user = await this.userRepository.createGoogleUser({
+          googleId: id,
+          email,
+          username: name,
+          password: process.env.DEFAULT_PASSWORD,
+          avatar:picture,
+        });
+      }
+      if (!user.googleId || !user.avatar) {
+        await this.userRepository.updateGoogleUser(email, { googleId: id, avatar: picture });
+      }
 
-    const payload = { email: user.email, username: user.username, avatar: avatar, sub: user._id };
-    const token = this.jwtService.sign(payload);
-    return { token, user };
+      const payload = { email: user.email, username: user.username, avatar: picture, sub: user._id };
+      const token = this.jwtService.sign(payload);
+      return { token, user };
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException('Failed to login with Google');
+    }
   }
 
   async updateProfile(user: User, updateUserDto: UpdateUserDto): Promise<User> {
