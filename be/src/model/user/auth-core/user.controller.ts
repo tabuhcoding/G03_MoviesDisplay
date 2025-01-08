@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, UseGuards, Res, Req, UseInterceptors, UploadedFile, HttpException, HttpStatus, UsePipes, ValidationPipe, Headers } from '@nestjs/common';
-import { UserService } from '../user.service';
+import { UserService } from './user.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { GetUserDto } from '../dto/get-user.dto';
 import { ResetPasswordDto } from '../dto/reset-password.dto';
