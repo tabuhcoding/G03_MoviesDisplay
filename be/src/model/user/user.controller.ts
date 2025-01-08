@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards, Res, Req, UseInterceptors, UploadedFile, HttpException, HttpStatus, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards, Res, Req, UseInterceptors, UploadedFile, HttpException, HttpStatus, UsePipes, ValidationPipe, Headers } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { GetUserDto } from './dto/get-user.dto';
@@ -66,17 +66,16 @@ export class UserController {
   // }
 
   @Post('google')
-  async googleLogin(@Body('token') token: string) {
+  async googleLogin(@Headers('authorization') authHeader: string) {
     try {
+      const token = authHeader?.split(' ')[1];
       // Xác thực token với Google
       const googleUser = await axios.get(
         `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${token}`
       );
       const { data } = googleUser;
-      
        // Xử lý user trong database
       const { token: jwtToken, user } = await this.userService.handleGoogleUser(data);
-
       return { token: jwtToken, user };
     } catch (error) {
       throw new HttpException('Invalid Google token', HttpStatus.UNAUTHORIZED);

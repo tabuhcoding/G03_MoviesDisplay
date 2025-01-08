@@ -5,10 +5,11 @@ import { AxiosError } from "axios";
 export async function POST (request: NextRequest) {
   const body = await request.json()
   try{
-    const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user/google`, {
-      headers: { Authorization: `Bearer ${body.token}` }
-    });
-    if(res.status === 200 && res.data.user){
+    const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user/google`, 
+      {}, {
+        headers: { Authorization: `Bearer ${body.token}` }
+      });
+    if(res.status === 201 && res.data.user){
       const response = NextResponse.json( res.data.user, { status: 200 })
       const expires = new Date();
       expires.setDate(expires.getDate() + 7);
