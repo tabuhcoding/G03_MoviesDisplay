@@ -74,26 +74,6 @@ const Profile: React.FC = () => {
           </div>
         </div>
       );
-    case 'Watchlist':
-      return (
-        <div className="d-flex">
-          <div className="p-2">
-            <h4>My Watchlist</h4>
-            <p>You haven&apos;t  added any movies to your watchlist</p>
-          </div>
-          <div className="ms-auto p-2 mt-2">
-            <div className="d-flex justify-content-end align-items-center">
-              <span className="d-inline">Filter by:</span>
-              <select className="form-select cus-select" aria-label="Default select example">
-                <option selected>Date Rated</option>
-                <option value={1}>My Rating</option>
-                <option value={2}>Popularity</option>
-                <option value={3}>Release Date</option>
-              </select>
-            </div>
-          </div>
-        </div>
-      );
     case 'Favorites':
     default:
       return (
