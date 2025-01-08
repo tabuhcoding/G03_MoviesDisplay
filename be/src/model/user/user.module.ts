@@ -10,7 +10,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { JwtAuthMiddleware } from '@/auth/middlewares/jwt-auth.middleware';
 import { ConfigModule } from '@nestjs/config';
-import { OtpModule } from './otp.module';
+import { OtpModule } from './otp/otp.module';
 
 @Module({
   imports: [

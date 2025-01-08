@@ -3,7 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { OtpService } from './otp.service';
 import { OtpController } from './otp.controller';
 import { OtpRepository } from './otp.repository';
-import { Otp, OtpSchema } from './schema/otp.schema';
+import { Otp, OtpSchema } from '../schema/otp.schema';
 
 @Module({
   imports: [MongooseModule.forFeature([{ name: Otp.name, schema: OtpSchema }], 'auth')],

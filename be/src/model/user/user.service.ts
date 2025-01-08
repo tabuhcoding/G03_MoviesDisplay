@@ -3,7 +3,7 @@ import { Injectable, ConflictException, InternalServerErrorException, Unauthoriz
 import { JwtService } from '@nestjs/jwt';
 import { UserRepository } from './user.repository';
 import { User } from './schema/user.schema';
-import { OtpService } from './otp.service';
+import { OtpService } from './otp/otp.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { GetUserDto } from './dto/get-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
