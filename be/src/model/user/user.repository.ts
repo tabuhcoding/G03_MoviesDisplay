@@ -7,7 +7,7 @@ import { User } from './schema/user.schema';
 
 @Injectable()
 export class UserRepository {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(@InjectModel(User.name, 'auth') private userModel: Model<User>) {}
 
   async findByUsernameOrEmail(username: string, email: string): Promise<User | null> {
     return this.userModel.findOne({ $or: [{ email }, { username }] }).exec();
@@ -46,4 +46,12 @@ export class UserRepository {
     return this.userModel.findOneAndUpdate({ email: userEmail }, { avatar: file }, { new: true }).exec();
   }
 
+  async updatePassword(email: string, newPassword: string): Promise<void> {
+    const hashedPassword = await this.hashPassword(newPassword);
+    await this.userModel.findOneAndUpdate(
+      { email },
+      { password: hashedPassword },
+      { new: true }
+    ).exec();
+  }
 }

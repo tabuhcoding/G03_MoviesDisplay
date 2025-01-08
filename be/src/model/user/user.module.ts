@@ -10,19 +10,22 @@ import { JwtModule } from '@nestjs/jwt';
 import { NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { JwtAuthMiddleware } from '@/auth/middlewares/jwt-auth.middleware';
 import { ConfigModule } from '@nestjs/config';
+import { OtpModule } from './otp.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }], 'auth'),
     JwtModule.register({
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '1h' },
     }),
+    OtpModule,
   ],
   providers: [  JwtStrategy, GoogleStrategy,
     UserService, UserRepository,],
   controllers: [UserController],
+  exports: [UserService],
 })
 export class UserModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
