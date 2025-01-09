@@ -24,6 +24,10 @@ export class END_POINT_URL_LIST {
   static MOVIES_GENRES = "/movies/genres";
   static MOVIES_TRENDING = "/movies/trending";
   static MOVIES_SEARCH = "/movies/search";
+  static MOVIES_NOW_PLAYING = "/movies/now-playing";
+  static MOVIES_POPULAR = "/movies/popular";
+  static MOVIES_TOP_RATED = "/movies/top-rated";
+  static MOVIES_UPCOMING = "/movies/upcoming";
 
   // ACTION
   static favorite = "user/action/favorite-list";
