@@ -8,6 +8,7 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 /* Package Application */
 import { useAuth } from '@/src/context/authContext';
+import { END_POINT_URL_LIST } from '@/src/util/constant';
 
 const isValidEmail = (email: string) => {
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -91,7 +92,7 @@ export default function Register() {
     setIsLoading(true);
 
     try {
-      const res = await fetch('api-v2/register', {
+      const res = await fetch(END_POINT_URL_LIST.V2_REGISTER, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)

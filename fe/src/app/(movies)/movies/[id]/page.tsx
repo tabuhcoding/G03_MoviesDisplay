@@ -6,6 +6,7 @@ import MovieDetail from "./_components/detail";
 import Loading from "../../../../components/loading";
 import { Suspense } from "react";
 import { ErrorData, ErrorHandling } from "@components/errorHandling";
+import { END_POINT_URL_LIST } from "@/src/util/constant";
 
 interface MoviePageProps {
   params: Promise<{
@@ -16,11 +17,11 @@ interface MoviePageProps {
 async function fetchMovieDetails(id: string) {
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/movies/${id}`
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}${END_POINT_URL_LIST.MOVIES}/${id}`
     )
 
-    if (response.status === 200) {
-      return response.data;
+    if (response.data.status === 200) {
+      return response.data.data;
     }
   } catch (error) {
     console.error('Error fetching movie details:', error);

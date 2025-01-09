@@ -1,16 +1,18 @@
 import { type NextRequest, NextResponse } from "next/server";
 import axios from "axios";
 import { AxiosError } from "axios";
+import { END_POINT_URL_LIST } from "@/src/util/constant";
 
 export async function POST (request: NextRequest) {
   const body = await request.json()
   try{
-    const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user/google`, 
+    const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}${END_POINT_URL_LIST.GOOGLE_LOGIN}`, 
       {}, {
         headers: { Authorization: `Bearer ${body.token}` }
       });
-    if(res.status === 201 && res.data.user){
-      const response = NextResponse.json( res.data.user, { status: 200 })
+    console.log(res)
+    if(res.data.statusCode === 201 && res.data.data.user){
+      const response = NextResponse.json( res.data.data.user, { status: 200 })
       const expires = new Date();
       expires.setDate(expires.getDate() + 7);
       response.cookies.set(

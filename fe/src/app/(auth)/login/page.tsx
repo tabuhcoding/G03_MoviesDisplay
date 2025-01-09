@@ -23,6 +23,7 @@ import { useGoogleLogin } from '@react-oauth/google';
 
 /* Package Application */
 import { useAuth } from '@context/authContext';
+import { END_POINT_URL_LIST } from '@/src/util/constant';
 
 const isValidEmail = (email: string) => {
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -88,7 +89,7 @@ export default function Login() {
 
     setIsLoading(true);
     try {
-      const res = await fetch('api-v2/login', {
+      const res = await fetch(END_POINT_URL_LIST.V2_LOGIN, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
@@ -116,7 +117,7 @@ export default function Login() {
   const handleGoogleSignIn = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       try {
-        const res = await fetch('/api-v2/login/google', {
+        const res = await fetch(END_POINT_URL_LIST.V2_GOOGLE_LOGIN, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ token: tokenResponse.access_token })
