@@ -1,7 +1,7 @@
 'use client'
 
 /* Package System */
-import { useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { Button, TextField, Card, CardContent, CardHeader, Typography, Alert, Box, CircularProgress, IconButton, InputAdornment } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
@@ -34,7 +34,12 @@ export default function Register() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const router = useRouter()
-  const { login } = useAuth()
+  const { login, isLogin } = useAuth()
+  useEffect(() => {
+    if (isLogin) {
+      return router.push('/')
+    }
+  }, [isLogin, router])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target

@@ -1,7 +1,7 @@
 "use client"
 
 /* Package System */
-import { useState, ChangeEvent, FormEvent } from 'react';
+import { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import {
   Button,
   TextField,
@@ -45,8 +45,14 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
-  const { login } = useAuth(); 
+  const { login, isLogin } = useAuth(); 
   const router = useRouter();
+
+  useEffect(() => {
+    if (isLogin) {
+      router.push('/');
+    }
+  }, [isLogin, router]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

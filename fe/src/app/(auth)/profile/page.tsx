@@ -9,14 +9,14 @@ import { useAuth } from "@context/authContext";
 import "@public/styles/user/profile.css";
 
 export default function Profile() {
-  const { userInfo: user } = useAuth();
+  const { userInfo: user, isLogin } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!user || Object.keys(user).length === 0) {
+    if (!isLogin) {
       router.push("/login");
     }
-  }, [user, router]);
+  }, [isLogin, router]);
 
   if (!user || Object.keys(user).length === 0) {
     return null; // Hiển thị trống trong khi chờ chuyển hướng

@@ -18,6 +18,7 @@ import { useRouter } from 'next/navigation';
 
 /* Package Application */
 import '@public/styles/admin/style.css';
+import { END_POINT_URL_LIST } from "@/src/util/constant";
 
 const isValidEmail = (email: string) => {
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -66,7 +67,8 @@ export default function ForgotPassword() {
 
     setIsLoading(true);
     try {
-      const res = await fetch('api-v2/forgot-password', {
+      console.log(END_POINT_URL_LIST.FORGOT_PASSWORD);
+      const res = await fetch(END_POINT_URL_LIST.V2_FORGOT_PASSWORD, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
