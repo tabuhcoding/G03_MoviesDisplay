@@ -1,7 +1,8 @@
 'use client'
 /* Package System */
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { CircularProgress, Avatar } from "@mui/material";
+import { Avatar } from "@mui/material";
 import { User } from "lucide-react";
 import { useState } from 'react';
 
@@ -9,23 +10,24 @@ import { useState } from 'react';
 import { useAuth } from "@context/authContext";
 import "@public/styles/user/profile.css";
 
-const Profile: React.FC = () => {
-  const { userInfo: user } = useAuth();
+export default function Profile() {
+  const { userInfo: user, isLogin } = useAuth();
   const router = useRouter();
   const [selectedTab, setSelectedTab] = useState<string>('Favorites');
 
+  useEffect(() => {
+    if (!isLogin) {
+      router.push("/login");
+    }
+  }, [isLogin, router]);
+
   if (!user || Object.keys(user).length === 0) {
-    return (
-      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
-        <CircularProgress />
-      </div>
-    );
+    return null; // Hiển thị trống trong khi chờ chuyển hướng
   }
+
   const formatDate = (dateString: string) => {
-    if (dateString === "") return "";
-
+    if (!dateString) return "";
     const date = new Date(dateString);
-
     return new Intl.DateTimeFormat('en-US', {
       month: 'long',
       year: 'numeric'
@@ -140,6 +142,4 @@ const Profile: React.FC = () => {
       </div>
     </div>
   );
-};
-
-export default Profile;
+}

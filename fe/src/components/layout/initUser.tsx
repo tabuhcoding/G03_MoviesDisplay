@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "@/src/context/authContext";
+import { END_POINT_URL_LIST } from "@/src/util/constant";
 
 export const InitUser = ({token}: {token:string}) => {
   const { login, logout, isLogin} = useAuth();
@@ -12,7 +13,7 @@ export const InitUser = ({token}: {token:string}) => {
       }
       try {
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/profile`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}${END_POINT_URL_LIST.PROFILE}`,
           {
             withCredentials: true, // Để gửi cookie trong request
             headers: {
@@ -20,8 +21,8 @@ export const InitUser = ({token}: {token:string}) => {
             }
           }
         );
-        login(response.data.user);
-        console.log("User profile:", response.data);
+        login(response.data.data.user);
+        console.log("User profile:", response.data.data);
       } catch (error) {
         logout();
         console.error("Failed to fetch user profile:", error);

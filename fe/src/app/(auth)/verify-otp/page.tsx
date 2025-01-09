@@ -1,7 +1,7 @@
 "use client"
 
 /* Package System */
-import { useState, ChangeEvent, FormEvent, useEffect } from "react"
+import { useState, ChangeEvent, FormEvent, useEffect, use } from "react"
 import {
   Button,
   TextField,
@@ -18,6 +18,8 @@ import { useRouter } from 'next/navigation';
 
 /* Package Application */
 import '@public/styles/admin/style.css';
+import { END_POINT_URL_LIST } from "@/src/util/constant";
+import { useAuth } from "@/src/context/authContext";
 
 const TIMELEFT = 60;
 const ATTEMPTS = 0;
@@ -35,6 +37,13 @@ export default function VerifyOTP() {
   const [email, setEmail] = useState<string | null>(null);
 
   const router = useRouter();
+  const {isLogin} = useAuth();
+  useEffect(() => {
+    if (isLogin) {
+      return router.push('/');
+    }
+  }, [isLogin, router]);
+
 
   useEffect(() => {
     const expiresAt = localStorage.getItem('expiresAt');
@@ -116,7 +125,7 @@ export default function VerifyOTP() {
     setIsLoading(true);
 
     try {
-      const res = await fetch('api-v2/verify-otp', {
+      const res = await fetch(END_POINT_URL_LIST.V2_VERIFY_OTP, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
@@ -154,7 +163,7 @@ export default function VerifyOTP() {
     }
 
     try {
-      const res = await fetch('api-v2/forgot-password', {
+      const res = await fetch(END_POINT_URL_LIST.V2_FORGOT_PASSWORD, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })

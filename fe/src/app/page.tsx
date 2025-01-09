@@ -6,6 +6,7 @@ import SearchInput from '@components/layout/searchInput';
 import "@styles/Homepage.css";
 import axios from 'axios';
 import { ErrorData, ErrorHandling } from '@components/errorHandling';
+import { END_POINT_URL_LIST } from '../util/constant';
 export interface Movie {
   id: string;
   title: string;
@@ -33,9 +34,9 @@ export default function Home() {
     setError({} as ErrorData);
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/movies/trending?timeWindow=${active}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}${END_POINT_URL_LIST.MOVIES_TRENDING}?timeWindow=${active}`
       );
-      setMovies(response.data);
+      setMovies(response.data.data);
     } catch (err: any) {
       console.error("Error fetching trending movies:", err);
       const errorData = {

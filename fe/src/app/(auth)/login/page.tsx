@@ -1,7 +1,7 @@
 "use client"
 
 /* Package System */
-import { useState, ChangeEvent, FormEvent } from 'react';
+import { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import {
   Button,
   TextField,
@@ -23,6 +23,7 @@ import { useGoogleLogin } from '@react-oauth/google';
 
 /* Package Application */
 import { useAuth } from '@context/authContext';
+import { END_POINT_URL_LIST } from '@/src/util/constant';
 
 const isValidEmail = (email: string) => {
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -44,8 +45,14 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
-  const { login } = useAuth(); 
+  const { login, isLogin } = useAuth(); 
   const router = useRouter();
+
+  useEffect(() => {
+    if (isLogin) {
+      router.push('/');
+    }
+  }, [isLogin, router]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -88,7 +95,7 @@ export default function Login() {
 
     setIsLoading(true);
     try {
-      const res = await fetch('api-v2/login', {
+      const res = await fetch(END_POINT_URL_LIST.V2_LOGIN, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
@@ -116,7 +123,7 @@ export default function Login() {
   const handleGoogleSignIn = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       try {
-        const res = await fetch('/api-v2/login/google', {
+        const res = await fetch(END_POINT_URL_LIST.V2_GOOGLE_LOGIN, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ token: tokenResponse.access_token })

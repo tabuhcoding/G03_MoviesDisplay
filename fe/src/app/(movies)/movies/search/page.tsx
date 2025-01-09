@@ -6,6 +6,7 @@ import axios from "axios";
 import SearchInput from "@components/layout/searchInput";
 import MoviesGrid from "../../../(movies)/movies/[id]/_components/moviesGrid";
 import Pagination from "../../../(movies)/movies/[id]/_components/pagination";
+import { END_POINT_URL_LIST } from "@/src/util/constant";
 
 interface Movie {
   id: number;
@@ -33,13 +34,13 @@ export default function SearchPage() {
 
       try {
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/movies/search`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}${END_POINT_URL_LIST.MOVIES_SEARCH}`,
           {
             params: { query, page }
           }
         );
-        setMovies(response.data.results || []);
-        setTotalPages(response.data.total_pages || 1);
+        setMovies(response.data.data.results || []);
+        setTotalPages(response.data.data.total_pages || 1);
       } catch (error) {
         console.error("Error fetching movies:", error);
       } finally {

@@ -1,7 +1,7 @@
 "use client";
 
 /* Package System */
-import { useState, ChangeEvent, FormEvent } from "react"
+import { useState, ChangeEvent, FormEvent, use, useEffect } from "react"
 import {
   Button,
   TextField,
@@ -22,6 +22,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 /* Package Application */
 import '@public/styles/admin/style.css';
 import { useAuth } from '@/src/context/authContext';
+import { END_POINT_URL_LIST } from "@/src/util/constant";
 
 export default function RenewPassword() {
   const [formData, setFormData] = useState({ password: '', confirmPassword: '' });
@@ -32,6 +33,12 @@ export default function RenewPassword() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const router = useRouter();
+  const { isLogin } = useAuth();
+  useEffect(() => {
+    if (isLogin) {
+      return router.push('/');
+    }
+  }, [isLogin, router]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -82,7 +89,7 @@ export default function RenewPassword() {
         throw new Error('Không tìm thấy email, vui lòng thử lại từ đầu.');
       }
 
-      const res = await fetch('api-v2/reset-password', {
+      const res = await fetch(END_POINT_URL_LIST.V2_RESET_PASSWORD, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, newPassword: formData.password })

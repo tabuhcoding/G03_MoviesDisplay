@@ -2,8 +2,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '@/src/context/authContext';
+import { END_POINT_URL_LIST } from '@/src/util/constant';
 
-const UploadPage: React.FC = () => {
+export default function UploadPage(){
   const [file, setFile] = useState<File | null>(null);
   const [result, setResult] = useState<{ id: string; url: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -30,7 +31,7 @@ const UploadPage: React.FC = () => {
     formData.append('img_file', file);
 
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/image`, formData, {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}${END_POINT_URL_LIST.IMAGE}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -79,5 +80,3 @@ const UploadPage: React.FC = () => {
     </div>
   );
 };
-
-export default UploadPage;
