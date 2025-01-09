@@ -23,4 +23,9 @@ export class END_POINT_URL_LIST {
   static MOVIES = "/movies";
   static MOVIES_TRENDING = "/movies/trending";
   static MOVIES_SEARCH = "/movies/search";
+
+  // ACTION
+  static favorite = "user/action/favorite-list";
+  static watchlist = "user/action/watch-list";
+  static rating = "user/action/rating";
 }
