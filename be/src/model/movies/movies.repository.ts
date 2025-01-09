@@ -49,16 +49,21 @@ export class MoviesRepository {
 
   async searchMovies(query: string, page: number): Promise<any> {
     try {
-      const { data } = await axios.get(`${this.baseUrl}/search/movie`, {
-        params: {
-          api_key: this.apiKey,
-          query,
-          page,
-          include_adult: false,
-          language: 'en-US',
-        },
-      });
-      return data;
+      // const { data } = await axios.get(`${this.baseUrl}/search/movie`, {
+      //   params: {
+      //     api_key: this.apiKey,
+      //     query,
+      //     page,
+      //     include_adult: false,
+      //     language: 'en-US',
+      //   },
+      // });
+      // return data;
+      return await this.moviesNoSQLModel
+        .find({ name: { $regex: query, $options: 'i' } })
+        .skip(((page - 1) * 10) >> 0)
+        .limit(10)
+        .exec();
     } catch (error) {
       this.handleApiError(error, 'Failed to fetch movie search results');
     }
@@ -87,8 +92,8 @@ export class MoviesRepository {
       // Lấy dữ liệu theo trang
       const data = await this.moviesNowPlayingModel
         .find({})
-        .skip(skip)
-        .limit(limit)
+        .skip(skip  >> 0 )
+        .limit(limit  >> 0 )
         .exec();
 
       return {
@@ -115,8 +120,8 @@ export class MoviesRepository {
       // Lấy dữ liệu theo trang
       const data = await this.moviesPopularModel
         .find({})
-        .skip(skip)
-        .limit(limit)
+        .skip(skip  >> 0 )
+        .limit(limit  >> 0 )
         .exec();
 
       return {
@@ -143,8 +148,8 @@ export class MoviesRepository {
       // Lấy dữ liệu theo trang
       const data = await this.moviesTopRatedModel
         .find({})
-        .skip(skip)
-        .limit(limit)
+        .skip(skip  >> 0 )
+        .limit(limit  >> 0 )
         .exec();
 
       return {

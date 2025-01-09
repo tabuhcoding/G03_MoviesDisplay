@@ -6,6 +6,7 @@ import { MoviesModule } from './model/movies/movies.module';
 import { ConfigModule } from '@nestjs/config';
 import { ImageModule } from './model/image/image.module';
 import { OtpModule } from './model/user/otp/otp.module';
+import { PeopleModule } from './model/people/people.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { OtpModule } from './model/user/otp/otp.module';
     UserModule,
     ImageModule,
     OtpModule,
+    PeopleModule,
   ],
 })
 export class AppModule {}
