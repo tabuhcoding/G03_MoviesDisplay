@@ -1,52 +1,72 @@
-import { Controller, Get, Post, Delete, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Body, Param, Query, Put } from '@nestjs/common';
 import { ActionService } from './action.service';
 
-@Controller()
+@Controller('/user/action')
 export class ActionController {
   constructor(private readonly actionService: ActionService) {}
 
   @Get('watch-list')
-  getWatchList() {
-    return this.actionService.getWatchList();
+  async getWatchList(@Query('email') email: string) {
+    return this.actionService.getWatchList(email);
   }
 
   @Post('watch-list')
-  addToWatchList(@Body() body: { userId: string; movieId: string }) {
-    return this.actionService.addToWatchList(body.userId, body.movieId);
+  async addToWatchList(@Body() body: { email: string; movieId: Number }) {
+    return this.actionService.addToWatchList(body.email, body.movieId);
   }
 
-  @Delete('watch-list/:id')
-  removeFromWatchList(@Param('id') id: string) {
-    return this.actionService.removeFromWatchList(id);
+  @Delete('watch-list')
+  async removeFromWatchList(@Query('email') email: string, @Query('movieId') movieId: Number) {
+    console.log(email, movieId);
+    return this.actionService.removeFromWatchList(email, movieId);
   }
 
   @Get('favorite-list')
-  getFavoriteList() {
-    return this.actionService.getFavoriteList();
+  async getFavoriteList(@Query('email') email: string) {
+    return this.actionService.getFavoriteList(email);
   }
 
   @Post('favorite-list')
-  addToFavoriteList(@Body() body: { userId: string; movieId: string }) {
-    return this.actionService.addToFavoriteList(body.userId, body.movieId);
+  async addToFavoriteList(@Body() body: { email: string; movieId: Number }) {
+    return this.actionService.addToFavoriteList(body.email, body.movieId);
   }
 
-  @Delete('favorite-list/:id')
-  removeFromFavoriteList(@Param('id') id: string) {
-    return this.actionService.removeFromFavoriteList(id);
+  @Delete('favorite-list')
+  async removeFromFavoriteList(@Query('email') email: string, @Query('movieId') movieId: Number) {
+    return this.actionService.removeFromFavoriteList(email, movieId);
   }
 
   @Get('rating')
-  getRatings() {
-    return this.actionService.getRatings();
+  async getRatings(@Query('email') email: string) {
+    return this.actionService.getRatings(email);
   }
 
   @Post('rating')
-  addRating(@Body() body: { userId: string; movieId: string; rating: number }) {
-    return this.actionService.addRating(body.userId, body.movieId, body.rating);
+  async addRating(
+    @Body() body: { email: string; movieId: Number; rating: number; reviews: string },
+  ) {
+    return this.actionService.addRating(
+      body.email,
+      body.movieId,
+      body.rating,
+      body.reviews,
+    );
   }
 
-  @Delete('rating/:id')
-  removeRating(@Param('id') id: string) {
-    return this.actionService.removeRating(id);
+  @Put('rating')
+  async updateRating(
+    @Body() body: { email: string; movieId: Number; rating: number; reviews: string },
+  ) {
+    return this.actionService.updateRating(
+      body.email,
+      body.movieId,
+      body.rating,
+      body.reviews,
+    );
+  }
+
+  @Delete('rating')
+  async removeRating(@Query('email') email: string, @Query('movieId') movieId: Number) {
+    return this.actionService.removeRating(email, movieId);
   }
 }

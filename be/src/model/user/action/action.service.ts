@@ -5,39 +5,46 @@ import { ActionRepository } from './action.repository';
 export class ActionService {
   constructor(private readonly actionRepository: ActionRepository) {}
 
-  getWatchList() {
-    return this.actionRepository.findAll('watchList');
+  async getWatchList(email: string) {
+    const watchlist = await this.actionRepository.findAllWatchlist(email);
+    return this.actionRepository.getMoviesDetails(watchlist, 'moviesNoSQL');
   }
 
-  addToWatchList(userId: string, movieId: string) {
-    return this.actionRepository.create('watchList', { userId, movieId });
+  async addToWatchList(email: string, movieId: Number) {
+    return this.actionRepository.createWatchlist({ email, movieId });
   }
 
-  removeFromWatchList(id: string) {
-    return this.actionRepository.delete('watchList', id);
+  async removeFromWatchList(email: string, movieId: Number) {
+    return this.actionRepository.deleteWatchlist(email, movieId);
   }
 
-  getFavoriteList() {
-    return this.actionRepository.findAll('favoriteList');
+  async getFavoriteList(email: string) {
+    const favoriteList = await this.actionRepository.findAllFavoriteList(email);
+    return this.actionRepository.getMoviesDetails(favoriteList, 'moviesNoSQL');
   }
 
-  addToFavoriteList(userId: string, movieId: string) {
-    return this.actionRepository.create('favoriteList', { userId, movieId });
+  async addToFavoriteList(email: string, movieId: Number) {
+    return this.actionRepository.createFavoriteList({ email, movieId });
   }
 
-  removeFromFavoriteList(id: string) {
-    return this.actionRepository.delete('favoriteList', id);
+  async removeFromFavoriteList(email: string, movieId: Number) {
+    return this.actionRepository.deleteFavoriteList(email, movieId);
   }
 
-  getRatings() {
-    return this.actionRepository.findAll('rating');
+  async getRatings(email: string) {
+    const ratings = await this.actionRepository.findAllRatings(email);
+    return this.actionRepository.getMoviesDetailsWithRatings(ratings, 'moviesNoSQL');
   }
 
-  addRating(userId: string, movieId: string, rating: number) {
-    return this.actionRepository.create('rating', { userId, movieId, rating });
+  async addRating(email: string, movieId: Number, rating: number, reviews: string) {
+    return this.actionRepository.createRating({ email, movieId, rating, reviews });
   }
 
-  removeRating(id: string) {
-    return this.actionRepository.delete('rating', id);
+  async updateRating(email: string, movieId: Number, rating: number, reviews: string) {
+    return this.actionRepository.updateRating({ email, movieId, rating, reviews });
+  }
+
+  async removeRating(email: string, movieId: Number) {
+    return this.actionRepository.deleteRating(email, movieId);
   }
 }
