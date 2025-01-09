@@ -3,7 +3,6 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import axios from 'axios';
 import { Model } from 'mongoose';
-import { In } from 'typeorm';
 
 @Injectable()
 export class MoviesRepository {
@@ -12,7 +11,7 @@ export class MoviesRepository {
   constructor(
       @InjectModel('movies', 'moviesNoSQL') private moviesNoSQLModel: Model<any>,
       @InjectModel('scrap_movies_trending_day', 'otherNoSQL') private moviesTrendingDayModel: Model<any>,
-      @InjectModel('scrap_movies_trending_day', 'otherNoSQL') private moviesTrendingWeekModel: Model<any>,
+      @InjectModel('scrap_movies_trending_week', 'otherNoSQL') private moviesTrendingWeekModel: Model<any>,
       @InjectModel('scrap_movie_genres', 'otherNoSQL') private movieGenresModel: Model<any>,
     ) {}
 
@@ -36,7 +35,8 @@ export class MoviesRepository {
       //   params: { api_key: this.apiKey },
       // });
       // return data;
-      return this.moviesNoSQLModel.findOne({ tmdb_id: movieId }).exec();
+      const movie = await this.moviesNoSQLModel.findOne({ tmdb_id: (movieId >> 0) }).exec();
+      return movie;
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }

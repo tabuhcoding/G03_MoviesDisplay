@@ -19,7 +19,7 @@ async function fetchMovieDetails(id: string) {
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}${END_POINT_URL_LIST.MOVIES}/${id}`
     )
-
+    console.log('response', response);
     if (response.data.status === 200) {
       return response.data.data;
     }

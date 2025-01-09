@@ -4,7 +4,7 @@ import { MoviesService } from './movies.service';
 import { MoviesRepository } from './movies.repository';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule, Schema } from '@nestjs/mongoose';
-import { EmptySchema, ScrapMoviesTrendingWeekSchema, ScrapMoviesTrendingDaySchema, ScrapMovieGenresSchema } from './schema/empty.schema';
+import { ScrapMoviesTrendingWeekSchema, ScrapMoviesTrendingDaySchema, ScrapMovieGenresSchema, MoviesSchema } from './schema/empty.schema';
 
 @Module({
   imports: [ConfigModule,
@@ -17,7 +17,7 @@ import { EmptySchema, ScrapMoviesTrendingWeekSchema, ScrapMoviesTrendingDaySchem
       'otherNoSQL',
     ),
     MongooseModule.forFeature(
-      [{ name: 'movies', schema: EmptySchema }],
+      [{ name: 'movies', schema: MoviesSchema }],
       'moviesNoSQL',
     ),
   ],
