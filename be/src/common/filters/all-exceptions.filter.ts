@@ -23,6 +23,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
         : 'Internal server error';
 
     response.status(status).json({
+      success: false,
       statusCode: status,
       message,
     });

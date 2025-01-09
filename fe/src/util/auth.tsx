@@ -1,12 +1,9 @@
-// import { cookies } from "next/headers"
-// const saveLoginToken = async (token: string) => {
-//   const cookieStore = await cookies();
-//   cookieStore.set("token", token, { path: "/" , expires: 7 });
-// }
+import "server-only"
 
-// const clearAuthToken = async () => {
-//   const cookieStore = await cookies();
-//   cookieStore.delete("token");
-// }
+import { cookies } from "next/headers"
 
-// export { saveLoginToken, clearAuthToken }
+export const verifyToken = async () => {
+  const cookieStore = await cookies()
+  const token = cookieStore.get("token")?.value || "";
+  return { token };
+}

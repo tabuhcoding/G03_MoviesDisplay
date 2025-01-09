@@ -1,0 +1,142 @@
+.bg_image {
+  position: relative;
+  width: 100%;
+  margin-top: 56px;
+  min-height: 100vh;
+}
+
+.bg_image,
+.header.gradient.background_image {
+  background-position: center top;
+  background-size: cover;
+}
+
+.header {
+  background-position: 0 0;
+  background-color: #0a1526;
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(to bottom right, #e3e3e3, #fff);
+}
+
+.header.gradient {
+  width: 100%;
+  z-index: 0;
+}
+
+.gradient.blue {
+  background-image: radial-gradient(at 30%top, #072e46 0%, rgba(3, 37, 65, 1) 70%);
+}
+
+.header.blue .inner_content {
+  background-image: url(https://www.themoviedb.org/assets/2/v4/account_pipes/blue-ad2008f9b378cedc9a1c31b6be9ee3c18589137e4495ed05586c3cb09a95d3f2.svg);
+}
+
+.header .inner_content {
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center -250px;
+  position: relative;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  padding: 0;
+}
+
+.block .inner_content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.block.header .inner_content .content {
+  padding: 40px;
+  flex-wrap: nowrap;
+}
+
+.block .inner_content .content {
+  color: #fff;
+  display: flex;
+  max-width: 1400px;
+  width: 100%;
+  padding: 0 40px;
+}
+
+.header .inner_content .content span.avatar .MuiAvatar-root {
+  min-width: 150px;
+  width: 150px;
+  height: 150px;
+  margin: 0 auto;
+  cursor: pointer;
+}
+
+.block.header .inner_content .content .user_info {
+  display: flex;
+  align-items: center;
+}
+
+.header .inner_content .about_me {
+  box-sizing: border-box;
+  width: 100%;
+  padding-left: 40px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  align-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.header .inner_content .about_me .content_wrapper:first-of-type {
+  line-height: 1;
+  padding: 0;
+  align-items: baseline;
+}
+
+.header .inner_content .about_me h2 {
+  font-weight: 700;
+  font-size: 2em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 10px 0 0;
+}
+
+.header .inner_content .about_me h2 a {
+  text-decoration: none;
+  color: #fff
+}
+
+.header .inner_content .about_me h3 {
+  display: inline-block;
+  opacity: .7;
+  font-size: 1.1em;
+  margin-bottom: 0;
+}
+
+.header .inner_content .about_me .content_wrapper:last-of-type {
+  padding-bottom: 0;
+}
+
+.header .inner_content .about_me .content_wrapper.flex {
+  width: 100%;
+  flex-wrap: nowrap;
+  display: flex;
+  align-items: center;
+  padding-top: 10px;
+}
+
+.my-list {
+  cursor: pointer;
+}
+
+.my-list:hover{
+  color: #072e46;
+}
+
+.cus-select {
+  width: auto;
+  max-width: 210px;
+  margin-left: 10px;
+}

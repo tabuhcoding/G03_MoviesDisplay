@@ -1,15 +1,48 @@
 "use client"
+
+/* Package System */
 import Link from 'next/link';
-import "bootstrap/dist/css/bootstrap.min.css";
-// import "bootstrap/dist/js/bootstrap.bundle.min";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { Avatar, Button } from "@mui/material";
 import { User } from "lucide-react";
+import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+
+/* Package Application */
 import { useAuth } from '@/src/context/authContext';
 import "@styles/Navigation.css";
 
 const Navigation: React.FC = () => {
   const { userInfo, isLogin, logout } = useAuth();
+  const router = useRouter();
+  const [isDropdownOpen, setDropdownOpen] = useState(false);
+
+  const handleProfileClick = () => {
+    router.push("/profile");
+  }
+
+  const toggleDropdown = () => {
+    setDropdownOpen(prev => !prev); // Toggle dropdown state
+  };
+
+  const closeDropdown = () => {
+    setDropdownOpen(false); // Close dropdown when clicking outside
+  };
+
+  useEffect(() => {
+    // Add event listener to close dropdown if clicked outside
+    const handleClickOutside = (event: MouseEvent) => {
+      if ((event.target as HTMLElement).closest('.dropdown') === null) {
+        closeDropdown();
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
+
   return (
     <nav className="navbar navbar-expand-lg fixed-top" style={{ backgroundColor: "#032541" }}>
       <div className="container-fluid">
@@ -53,12 +86,16 @@ const Navigation: React.FC = () => {
             </>
           ) : (
             <div className="dropdown d-flex align-items-center container-profile">
-              <Avatar src={userInfo.avatar} alt={userInfo.username} sx={{ width: 40, height: 40 }}>
+              <Avatar onClick={handleProfileClick} src={userInfo.avatar} alt={userInfo.username} sx={{ width: 40, height: 40, cursor: "pointer" }}>
                 {!userInfo.avatar && <User size={40} />}
               </Avatar>
-              <a href="#" className="link-dark text-decoration-none dropdown-toggle icon-dropdown" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false"></a>
-              <ul className="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2" style={{ transform: "translateX(-20px)" }}>
-                <li><Link href="/profile" className="dropdown-item">Profile</Link></li>
+              <a
+                href="#"
+                className="text-decoration-none dropdown-toggle icon-dropdown"
+                onClick={toggleDropdown}
+              ></a>
+              <ul className={`dropdown-menu text-small shadow ${isDropdownOpen ? 'show' : ''}`}>
+                <li><Link href="/profile" className="dropdown-item" style={{textAlign: 'center'}}>My Profile</Link></li>
                 <li><hr className="dropdown-divider" /></li>
                 <li>
                   <Button

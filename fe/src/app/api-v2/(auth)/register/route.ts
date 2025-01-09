@@ -1,17 +1,24 @@
 import { type NextRequest, NextResponse } from "next/server";
 import axios from "axios";
 import { AxiosError } from "axios";
+import { END_POINT_URL_LIST } from "@/src/util/constant";
 
 export async function POST (request: NextRequest) {
   const body = await request.json()
   try{
-    const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user/register`, body, {
+    const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}${END_POINT_URL_LIST.REGISTER}`, body, {
       withCredentials: true
     });
-    if(res.data.token){
-      const response = NextResponse.json( res.data.user, { status: 200 })
+    if(res.data.data.token){
+      const response = NextResponse.json( res.data.data.user, { status: 200 })
+      const expires = new Date();
+      expires.setDate(expires.getDate() + 7);
       response.cookies.set(
-        "token", res.data.token, { path: "/", expires: 7 }
+        "token", res.data.data.token, { 
+          path: "/", 
+          expires: expires,
+          httpOnly: true, 
+          secure: process.env.NODE_ENV === "production"  }
       )
       return response
     }
