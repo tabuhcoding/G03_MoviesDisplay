@@ -10,6 +10,27 @@ export class MoviesController {
     return await this.moviesService.getTrendingMovies(timeWindow || 'day');
   }
 
+  @Get('now-playing')
+  async getNowPlayingMovies(@Query('page') page: number) {
+    return await this.moviesService.getNowPlayingMovies(page);
+  }
+
+  @Get('popular')
+  async getPopularMovies(@Query('page') page: number) {
+    return await this.moviesService.getPopularMovies(page);
+  }
+
+  @Get('top-rated')
+  async getTopRatedMovies(@Query('page') page: number) {
+    return await this.moviesService.getTopRatedMovies(page);
+  }
+
+  @Get('upcoming')
+  async getUpcomingMovies(@Query('page') page: number) {
+    console.log('page:', page);
+    return await this.moviesService.getUpcomingMovies(page);
+  }
+
   @Get('search')
   async searchMovies(@Query('query') query: string, @Query('page') page: number) {
     if (!query) {
@@ -28,9 +49,9 @@ export class MoviesController {
     return await this.moviesService.getGenres();
   }
 
-
   @Get(':id')
   async getMovieDetails(@Param('id') movieId: number) {
     return await this.moviesService.getMovieDetails(movieId);
   }
+
 }

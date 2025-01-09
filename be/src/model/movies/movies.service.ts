@@ -24,4 +24,20 @@ export class MoviesService {
   async getGenres() {
     return this.moviesRepository.fetchGenres();
   }
+
+  async getNowPlayingMovies(page: number) {
+    return this.moviesRepository.fetchNowPlayingMovies(page);
+  }
+
+  async getPopularMovies(page: number) {
+    return this.moviesRepository.fetchPopularMovies(page);
+  }
+
+  async getTopRatedMovies(page: number) {
+    return this.moviesRepository.fetchTopRatedMovies(page);
+  }
+
+  async getUpcomingMovies(page: number) {
+    return this.moviesRepository.fetchUpcomingMovies(page);
+  }
 }

@@ -3,6 +3,7 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import axios from 'axios';
 import { Model } from 'mongoose';
+import { In } from 'typeorm';
 
 @Injectable()
 export class MoviesRepository {
@@ -13,6 +14,10 @@ export class MoviesRepository {
       @InjectModel('scrap_movies_trending_day', 'otherNoSQL') private moviesTrendingDayModel: Model<any>,
       @InjectModel('scrap_movies_trending_week', 'otherNoSQL') private moviesTrendingWeekModel: Model<any>,
       @InjectModel('scrap_movie_genres', 'otherNoSQL') private movieGenresModel: Model<any>,
+      @InjectModel('scrap_movies_upcoming', 'otherNoSQL') private moviesUpcomingModel: Model<any>,
+      @InjectModel('scrap_movies_now_playing', 'otherNoSQL') private moviesNowPlayingModel: Model<any>,
+      @InjectModel('scrap_movies_popular', 'otherNoSQL') private moviesPopularModel: Model<any>,
+      @InjectModel('scrap_movies_top_rated', 'otherNoSQL') private moviesTopRatedModel: Model<any>,
     ) {}
 
   async fetchTrendingMovies(timeWindow: 'day' | 'week') {
@@ -64,6 +69,118 @@ export class MoviesRepository {
       return this.movieGenresModel.find().exec();
     }
     catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async fetchNowPlayingMovies(page: number = 1) {
+    try {
+      const limit = 500; // Số dòng mỗi trang
+      const skip = (page - 1) * limit; // Bỏ qua các dòng của các trang trước đó
+
+      // Lấy tổng số tài liệu
+      const total_count = await this.moviesNowPlayingModel.countDocuments();
+
+      // Tính tổng số trang
+      const total_page = Math.ceil(total_count / limit);
+
+      // Lấy dữ liệu theo trang
+      const data = await this.moviesNowPlayingModel
+        .find({})
+        .skip(skip)
+        .limit(limit)
+        .exec();
+
+      return {
+        total_page,
+        total_count,
+        results: data,
+      };
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async fetchPopularMovies(page: number = 1) {
+    try {
+      const limit = 500; // Số dòng mỗi trang
+      const skip = (page - 1) * limit; // Bỏ qua các dòng của các trang trước đó
+
+      // Lấy tổng số tài liệu
+      const total_count = await this.moviesPopularModel.countDocuments();
+
+      // Tính tổng số trang
+      const total_page = Math.ceil(total_count / limit);
+
+      // Lấy dữ liệu theo trang
+      const data = await this.moviesPopularModel
+        .find({})
+        .skip(skip)
+        .limit(limit)
+        .exec();
+
+      return {
+        total_page,
+        total_count,
+        results: data,
+      };
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async fetchTopRatedMovies(page: number = 1) {
+    try {
+      const limit = 500; // Số dòng mỗi trang
+      const skip = (page - 1) * limit; // Bỏ qua các dòng của các trang trước đó
+
+      // Lấy tổng số tài liệu
+      const total_count = await this.moviesTopRatedModel.countDocuments();
+
+      // Tính tổng số trang
+      const total_page = Math.ceil(total_count / limit);
+
+      // Lấy dữ liệu theo trang
+      const data = await this.moviesTopRatedModel
+        .find({})
+        .skip(skip)
+        .limit(limit)
+        .exec();
+
+      return {
+        total_page,
+        total_count,
+        results: data,
+      };
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async fetchUpcomingMovies(page: number = 1) {
+    try {
+      console.log('fetchUpcomingMovies');
+      const limit = 500; // Số dòng mỗi trang
+      const skip = (page - 1) * limit; // Bỏ qua các dòng của các trang trước đó
+      console.log(page, limit, skip);
+      // Lấy tổng số tài liệu
+      const total_count = await this.moviesUpcomingModel.countDocuments();
+
+      // Tính tổng số trang
+      const total_page = Math.ceil(total_count / limit);
+
+      // Lấy dữ liệu theo trang
+      const data = await this.moviesUpcomingModel
+        .find({})
+        .skip(skip >> 0)
+        .limit(limit >> 0)
+        .exec();
+      return {
+        total_page,
+        total_count,
+        results: data,
+      };
+    } catch (error) {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
