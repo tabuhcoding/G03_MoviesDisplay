@@ -20,4 +20,8 @@ export class MoviesService {
     }
     return this.moviesRepository.searchMovies(query, page);
   }
+
+  async getGenres() {
+    return this.moviesRepository.fetchGenres();
+  }
 }

@@ -23,6 +23,11 @@ export class MoviesController {
     }
   }
 
+  @Get('genres')
+  async getGenres() {
+    return await this.moviesService.getGenres();
+  }
+
 
   @Get(':id')
   async getMovieDetails(@Param('id') movieId: number) {

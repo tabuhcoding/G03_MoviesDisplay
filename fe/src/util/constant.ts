@@ -21,6 +21,7 @@ export class END_POINT_URL_LIST {
 
   // MOVIES
   static MOVIES = "/movies";
+  static MOVIES_GENRES = "/movies/genres";
   static MOVIES_TRENDING = "/movies/trending";
   static MOVIES_SEARCH = "/movies/search";
 
