@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import "bootstrap/dist/css/bootstrap.min.css";
 import { ChevronRight } from "lucide-react";
+import { CircularProgress } from '@mui/material';
 
 /* Package Application */
 import MovieDetail from "../[id]/_components/detail";
@@ -77,7 +78,7 @@ export default function PopularMovie() {
     if (movies.length > 0) {
       sortMovies(sortOrder);
     }
-  }, [sortOrder]);  
+  }, [sortOrder]);
 
   const fetchPopularMovies = async () => {
     setIsLoading(true);
@@ -142,14 +143,16 @@ export default function PopularMovie() {
                 </p>
               </div>
             </div>
-            <div>
-              <div className="white_column">
-                <section id="media_results" className="panel results movie-list-container">
-                  {isLoading ? (
-                    <Loading />
-                  ) : error.message ? (
-                    <ErrorHandling error={error} callback={fetchPopularMovies} />
-                  ) : (
+            <div style={{ width: '100%' }}>
+              {isLoading ? (
+                <div className="loading-container text-center">
+                  <div className="loading-spinner"></div>
+                </div>
+              ) : error.message ? (
+                <ErrorHandling error={error} callback={fetchPopularMovies} />
+              ) : (
+                <div className="white_column">
+                  <section id="media_results" className="panel results movie-list-container">
                     <div className="movie-list d-flex flex-wrap">
                       {movies.length > 0 && (
                         movies.map((movie) => (
@@ -180,9 +183,9 @@ export default function PopularMovie() {
                         ))
                       )}
                     </div>
-                  )}
-                </section>
-              </div>
+                  </section>
+                </div>
+              )}
             </div>
           </div>
         </div>
