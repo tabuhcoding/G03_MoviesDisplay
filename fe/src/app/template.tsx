@@ -5,8 +5,8 @@ export default async function Template({ children }: { children: React.ReactNode
   const {token} = await verifyToken();
   return (
     <>
-      {children}
       <InitUser token={token}/>
+      {children}
     </>
   )
 }

@@ -49,6 +49,11 @@ export class MoviesController {
     return await this.moviesService.getGenres();
   }
 
+  @Get('lastest-trailers')
+  async getLastestTrailers(@Query('query') query: 'popular' | 'intheater') {
+    return await this.moviesService.getLastestTrailers(query);
+  }
+
   @Get(':id')
   async getMovieDetails(@Param('id') movieId: number) {
     return await this.moviesService.getMovieDetails(movieId);
