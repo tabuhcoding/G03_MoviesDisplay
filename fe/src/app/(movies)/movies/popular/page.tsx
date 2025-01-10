@@ -1,7 +1,7 @@
 "use client";
 
 /* Package System */
-import { useEffect, useState } from "react";
+import { useEffect, useState, ChangeEvent } from "react";
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -23,6 +23,7 @@ export interface Movie {
   backdrop_path: string;
   release_date: string;
   popularity: number;
+  vote_average: number;
 }
 
 export default function PopularMovie() {
@@ -31,6 +32,52 @@ export default function PopularMovie() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<ErrorData>({} as ErrorData);
   const [movies, setMovies] = useState<Movie[]>([]);
+  const [sortOrder, setSortOrder] = useState<string>("popularity.desc");
+
+  const sortMovies = async (sortOrder: string) => {
+    setIsLoading(true);
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    switch (sortOrder) {
+      case "popularity.desc":
+        setMovies(movies.sort((a, b) => b.popularity - a.popularity));
+        break;
+      case "popularity.asc":
+        setMovies(movies.sort((a, b) => a.popularity - b.popularity));
+        break;
+      case "vote_average.asc":
+        setMovies(movies.sort((a, b) => a.vote_average - b.vote_average));
+        break;
+      case "vote_average.desc":
+        setMovies(movies.sort((a, b) => b.vote_average - a.vote_average));
+        break;
+      case "release_date.asc":
+        setMovies(movies.sort((a, b) => new Date(a.release_date).getTime() - new Date(b.release_date).getTime()));
+        break;
+      case "release_date.desc":
+        setMovies(movies.sort((a, b) => new Date(b.release_date).getTime() - new Date(a.release_date).getTime()));
+        break;
+      case "title.asc":
+        setMovies(movies.sort((a, b) => a.title.localeCompare(b.title)));
+        break;
+      case "title.desc":
+        setMovies(movies.sort((a, b) => b.title.localeCompare(a.title)));
+        break;
+      default:
+        break;
+    }
+    setIsLoading(false);
+  }
+
+  const handleSortChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    const selectedOrder = e.target.value;
+    setSortOrder(selectedOrder);
+  };
+
+  useEffect(() => {
+    if (movies.length > 0) {
+      sortMovies(sortOrder);
+    }
+  }, [sortOrder]);  
 
   const fetchPopularMovies = async () => {
     setIsLoading(true);
@@ -40,7 +87,6 @@ export default function PopularMovie() {
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}${END_POINT_URL_LIST.MOVIES_POPULAR}`
       );
-      console.log("🚀 ~ fetchPopularMovies ~ response.data.data.results:", response.data.data.results);
       setMovies(response.data.data.results ?? []);
     } catch (err: any) {
       console.error("Error fetching popular movies:", err);
@@ -68,11 +114,26 @@ export default function PopularMovie() {
             <h3>Popular Movies</h3>
           </div>
           <div className="content">
-            <div>
+            <div style={{ marginRight: '10px' }}>
               <div className="filter_panel card">
                 <div className="name">
                   <h5>Sort</h5>
-                  <ChevronRightIcon size={24} />
+                </div>
+                <div className="filter">
+                  <h5>Sort Results By</h5>
+                  <select
+                    className="form-select"
+                    onChange={handleSortChange}
+                  >
+                    <option value="popularity.desc">Popularity Descending</option>
+                    <option value="popularity.asc">Popularity Ascending</option>
+                    <option value="vote_average.asc">Rating Ascending</option>
+                    <option value="vote_average.desc">Rating Descending</option>
+                    <option value="release_date.asc">Release Date Ascending</option>
+                    <option value="release_date.desc">Release Date Descending</option>
+                    <option value="title.asc">Title (A-Z)</option>
+                    <option value="title.desc">Title (Z-A)</option>
+                  </select>
                 </div>
               </div>
               <div className="apply-btn">
@@ -83,7 +144,7 @@ export default function PopularMovie() {
             </div>
             <div>
               <div className="white_column">
-                <section id="media_results" className="panel results">
+                <section id="media_results" className="panel results movie-list-container">
                   {isLoading ? (
                     <Loading />
                   ) : error.message ? (
