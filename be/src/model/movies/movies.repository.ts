@@ -49,21 +49,21 @@ export class MoviesRepository {
 
   async searchMovies(query: string, page: number): Promise<any> {
     try {
-      // const { data } = await axios.get(`${this.baseUrl}/search/movie`, {
-      //   params: {
-      //     api_key: this.apiKey,
-      //     query,
-      //     page,
-      //     include_adult: false,
-      //     language: 'en-US',
-      //   },
-      // });
-      // return data;
-      return await this.moviesNoSQLModel
-        .find({ name: { $regex: query, $options: 'i' } })
-        .skip(((page - 1) * 10) >> 0)
-        .limit(10)
-        .exec();
+      const { data } = await axios.get(`${this.baseUrl}/search/movie`, {
+        params: {
+          api_key: this.apiKey,
+          query,
+          page,
+          include_adult: false,
+          language: 'en-US',
+        },
+      });
+      return data;
+      // return await this.moviesNoSQLModel
+      //   .find({ name: { $regex: query, $options: 'i' } })
+      //   .skip(((page - 1) * 10) >> 0)
+      //   .limit(10)
+      //   .exec();
     } catch (error) {
       this.handleApiError(error, 'Failed to fetch movie search results');
     }
