@@ -1,13 +1,14 @@
-import { Body, Controller, Get, Post, UseGuards, Res, Req, UseInterceptors, UploadedFile, HttpException, HttpStatus, UsePipes, ValidationPipe, Headers } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards, Res, Req, UseInterceptors, UploadedFile, HttpException, HttpStatus, UsePipes, ValidationPipe, Headers, UploadedFiles } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { GetUserDto } from '../dto/get-user.dto';
 import { ResetPasswordDto } from '../dto/reset-password.dto';
+import { UpdateAvatarDto } from '../dto/update-avatar.dto';
 import { JwtAuthGuard } from '../../../auth/jwt.guards';
 import { AuthGuard } from '@nestjs/passport';
 import { Response, Request as ExpressRequest } from 'express';
 import { UpdateUserDto } from '../dto/update-user.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { AnyFilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import axios from 'axios';
 
 @Controller('user')
@@ -40,11 +41,10 @@ export class UserController {
     return this.userService.updateProfile(user, updateUserDto);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post('update-avatar')
-  async updateAvatar(@Req() req: ExpressRequest, @Body() img_file: string) {
-    const user = req.user; // `req.user` được gắn bởi JwtAuthGuard sau khi token được xác minh
-    return this.userService.updateAvatar(user, img_file);
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async updateAvatar(@Body() body: UpdateAvatarDto) {
+    return this.userService.updateAvatar(body.email, body.img_file);
   }
 
 
