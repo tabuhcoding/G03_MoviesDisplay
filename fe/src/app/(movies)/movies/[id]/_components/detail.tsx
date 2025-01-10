@@ -81,7 +81,7 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
           <div className="poster-wrapper">
             <Image
               className="movie-poster"
-              src={`https://media.themoviedb.org/t/p/w300_and_h450_bestv2${movieDetails.poster_path}`}
+              src={`https://media.themoviedb.org/t/p/w300_and_h450_bestv2${movieDetails.poster_path ?? movieDetails.belongs_to_collection?.poster_path}`}
               alt={movieDetails.title}
               width={300}
               height={450}
