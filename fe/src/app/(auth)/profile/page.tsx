@@ -1,19 +1,22 @@
-'use client'
-/* Package System */
-import { useEffect } from 'react';
+'use client';
+
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Avatar } from "@mui/material";
 import { User } from "lucide-react";
-import { useState } from 'react';
-
-/* Package Application */
 import { useAuth } from "@context/authContext";
 import "@public/styles/user/profile.css";
+import axios from 'axios';
+import { END_POINT_URL_LIST } from '@/src/util/constant';
+import { AvatarUploadDialog } from './_component/avatarDialog';
 
 export default function Profile() {
-  const { userInfo: user, isLogin } = useAuth();
+  const { userInfo: user, isLogin, login } = useAuth();
   const router = useRouter();
   const [selectedTab, setSelectedTab] = useState<string>('Favorites');
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isLogin) {
@@ -32,6 +35,55 @@ export default function Profile() {
       month: 'long',
       year: 'numeric'
     }).format(date);
+  };
+
+  const handleUpload = async (selectedFile: File) => {
+    if (!selectedFile) {
+      setError('Please select a file to upload.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('img_file', selectedFile);
+    formData.append('email', user.email);
+
+    try {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}${END_POINT_URL_LIST.IMAGE}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      setPreviewUrl(response.data.data.url);
+      setError(null);
+    } catch (err: any) {
+      console.error('Error uploading image:', err);
+      setError(err.response?.data?.message || 'Failed to upload image.');
+    }
+  };
+
+  const handleSave = async () => {
+    if (!previewUrl) {
+      setError('Please upload an image first.');
+      return;
+    }
+
+    try {
+      const response = await fetch(END_POINT_URL_LIST.V2_UPDATE_AVATAR, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: user.email, img_file: previewUrl })
+      });
+      if (!response.ok) {
+        throw new Error('Failed to update avatar.');
+      }
+      const updatedUser = await response.json();
+      login(updatedUser);
+      setError(null);
+      setIsDialogOpen(false);
+    } catch (err: any) {
+      console.error('Error updating avatar:', err);
+      setError(err.message || 'Failed to update avatar.');
+    }
   };
 
   const renderContent = () => {
@@ -61,7 +113,7 @@ export default function Profile() {
         <div className="d-flex">
           <div className="p-2">
             <h4>My Watchlist</h4>
-            <p>You haven&apos;t  added any movies to your watchlist</p>
+            <p>You haven&apos;t added any movies to your watchlist</p>
           </div>
           <div className="ms-auto p-2 mt-2">
             <div className="d-flex justify-content-end align-items-center">
@@ -90,7 +142,7 @@ export default function Profile() {
         </div>
       );
     }
-  }
+  };
 
   return (
     <div className='bg_image'>
@@ -101,7 +153,8 @@ export default function Profile() {
               <Avatar
                 src={user?.avatar ?? undefined}
                 alt={user?.username ?? ''}
-                onClick={() => router.push("/profile")}
+                onClick={() => setIsDialogOpen(true)}
+                style={{ cursor: 'pointer' }}
               >
                 {!user.avatar && <User size={150} />}
               </Avatar>
@@ -121,6 +174,11 @@ export default function Profile() {
         </div>
       </div>
       <div className="container text-center mt-3">
+        {error && (
+          <div className="alert alert-danger" role="alert">
+            {error}
+          </div>
+        )}
         <div className="row justify-content-md-center">
           <div className="col col-lg-2 my-list" onClick={() => setSelectedTab('Favorites')}
             style={{ cursor: 'pointer', fontWeight: selectedTab === 'Favorites' ? 'bold' : 'normal' }}>
@@ -140,6 +198,13 @@ export default function Profile() {
       <div className='container ml-4 mr-4'>
         {renderContent()}
       </div>
+      <AvatarUploadDialog 
+        open={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        user={user}
+        onUpload={handleUpload}
+        onSave={handleSave}
+      />
     </div>
   );
 }

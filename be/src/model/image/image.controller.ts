@@ -17,7 +17,6 @@ import { Response, Request as ExpressRequest } from 'express';
 export class ImageController {
   constructor(private readonly imageService: ImageService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Post()
   @UseInterceptors(FileInterceptor('img_file'))
   async uploadImage(
@@ -25,7 +24,6 @@ export class ImageController {
     @UploadedFile() file: Express.Multer.File,
     @Body() createImageDto: CreateImageDto,
   ) {
-    const user = req.user;
-    return this.imageService.createImage(user.email, file);
+    return this.imageService.createImage(createImageDto.email, file);
   }
 }

@@ -8,8 +8,7 @@ export default function UploadPage(){
   const [file, setFile] = useState<File | null>(null);
   const [result, setResult] = useState<{ id: string; url: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const { isLogin } = useAuth();
-
+  const { isLogin, userInfo, login } = useAuth();
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
       setFile(event.target.files[0]);
@@ -29,6 +28,7 @@ export default function UploadPage(){
 
     const formData = new FormData();
     formData.append('img_file', file);
+    formData.append('email', userInfo.email);
 
     try {
       const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}${END_POINT_URL_LIST.IMAGE}`, formData, {
@@ -36,14 +36,45 @@ export default function UploadPage(){
           'Content-Type': 'multipart/form-data'
         }
       });
-      setResult(response.data);
+      setResult(response.data.data);
       setError(null);
     } catch (err: any) {
       console.error('Error uploading image:', err);
       setError(err.response?.data?.message || 'Failed to upload image.');
       setResult(null);
     }
+
   };
+
+  const handleUploadAvatar = async () => {
+    if (!result) {
+      setError('Please upload an image first.');
+      return;
+    }
+
+    try {
+      try {
+        const response = await fetch(END_POINT_URL_LIST.V2_UPDATE_AVATAR,  {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: userInfo.email, img_file: result.url })
+        });
+        if (!response.ok) {
+          throw new Error('Failed to upload image.');
+        }
+        const user = await response.json();
+        login(user);
+        setError(null);
+      } catch (err: any) {
+        console.error('Error uploading image:', err);
+        setError(err.response?.data?.message || 'Failed to upload image.');
+      }
+    } catch (err: any) {
+      console.error('Error updating avatar:', err);
+      setError(err.response?.data?.message || 'Failed to update avatar.');
+      setResult(null);
+    }
+  }
 
   return (
     <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
@@ -58,6 +89,16 @@ export default function UploadPage(){
         }}
       >
         Upload
+      </button>
+      <button
+        onClick={handleUploadAvatar}
+        style={{
+          marginLeft: '10px',
+          padding: '10px 20px',
+          cursor: 'pointer'
+        }}
+      >
+        Upload Avatar
       </button>
       {error && <p style={{ color: 'red' }}>{error}</p>}
       {result && (
