@@ -5,16 +5,12 @@ import { useEffect, useState, ChangeEvent } from "react";
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import "bootstrap/dist/css/bootstrap.min.css";
-import { ChevronRight } from "lucide-react";
-import { CircularProgress } from '@mui/material';
 
 /* Package Application */
-import MovieDetail from "../[id]/_components/detail";
 import { END_POINT_URL_LIST } from "@/src/util/constant";
 import { ErrorData, ErrorHandling } from "@components/errorHandling";
-import Loading from "@components/loading";
 import '@public/styles/movie/popular.css'
-import { ChevronRightIcon } from "lucide-react";
+import { formatDateToMonthDayYear } from "@/src/util/helpers";
 
 export interface Movie {
   id: string;
@@ -27,7 +23,7 @@ export interface Movie {
   vote_average: number;
 }
 
-export default function PopularMovie() {
+export default function PopularMovies() {
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -177,7 +173,7 @@ export default function PopularMovie() {
                             />
                             <div className="movie-info mt-2 text-center">
                               <h6>{movie.title}</h6>
-                              <p>{movie.release_date || "Unknown"}</p>
+                              <p>{formatDateToMonthDayYear(movie.release_date) || "Unknown"}</p>
                             </div>
                           </div>
                         ))
