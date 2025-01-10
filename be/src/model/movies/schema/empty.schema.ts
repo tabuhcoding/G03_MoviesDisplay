@@ -17,6 +17,10 @@ export class ScrapMoviesNowPlaying extends Document {}
 export class ScrapMoviesPopular extends Document {}
 @Schema({ collection: 'scrap_movies_top_rated', strict: false })
 export class ScrapMoviesTopRated extends Document {}
+@Schema({ collection: 'lastest_trailers_intheaters', strict: false })
+export class LastestTrailersIntheaters extends Document {}
+@Schema({ collection: 'lastest_trailers_populars', strict: false })
+export class LastestTrailersPopular extends Document {}
 
 export const MoviesSchema = SchemaFactory.createForClass(Movies);
 export const ScrapMovieGenresSchema = SchemaFactory.createForClass(ScrapMovieGenres);
@@ -26,3 +30,5 @@ export const ScrapMoviesUpcomingSchema = SchemaFactory.createForClass(ScrapMovie
 export const ScrapMoviesNowPlayingSchema = SchemaFactory.createForClass(ScrapMoviesNowPlaying);
 export const ScrapMoviesPopularSchema = SchemaFactory.createForClass(ScrapMoviesPopular);
 export const ScrapMoviesTopRatedSchema = SchemaFactory.createForClass(ScrapMoviesTopRated);
+export const LastestTrailersIntheatersSchema = SchemaFactory.createForClass(LastestTrailersIntheaters);
+export const LastestTrailersPopularSchema = SchemaFactory.createForClass(LastestTrailersPopular);
