@@ -18,6 +18,8 @@ export class MoviesRepository {
       @InjectModel('scrap_movies_now_playing', 'otherNoSQL') private moviesNowPlayingModel: Model<any>,
       @InjectModel('scrap_movies_popular', 'otherNoSQL') private moviesPopularModel: Model<any>,
       @InjectModel('scrap_movies_top_rated', 'otherNoSQL') private moviesTopRatedModel: Model<any>,
+      @InjectModel('lastest_trailers_intheaters', 'otherNoSQL') private lastestTrailersIntheatersModel: Model<any>,
+      @InjectModel('lastest_trailers_populars', 'otherNoSQL') private lastestTrailersPopularsModel: Model<any>,
     ) {}
 
   async fetchTrendingMovies(timeWindow: 'day' | 'week') {
@@ -185,6 +187,16 @@ export class MoviesRepository {
         total_count,
         results: data,
       };
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async fetchLastestTrailers(query: 'popular' | 'intheater') {
+    try {
+      return query === 'popular' ? 
+      this.lastestTrailersPopularsModel.find().exec() : 
+      this.lastestTrailersIntheatersModel.find().exec();
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }

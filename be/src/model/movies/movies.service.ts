@@ -40,4 +40,8 @@ export class MoviesService {
   async getUpcomingMovies(page: number) {
     return this.moviesRepository.fetchUpcomingMovies(page);
   }
+
+  async getLastestTrailers(query: 'popular' | 'intheater') {
+    return this.moviesRepository.fetchLastestTrailers(query);
+  }
 }
