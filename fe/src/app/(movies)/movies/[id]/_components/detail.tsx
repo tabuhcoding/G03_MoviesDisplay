@@ -197,6 +197,44 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
     }
   }
 
+  const handleEditReview = async (
+    movieId: string,
+    email: string,
+    rating: number,
+    review: string,
+    reviewId: string
+  ) => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/${END_POINT_URL_LIST.rating}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          movieId,
+          email,
+          rating,
+          review
+        })
+      });
+  
+      if (response.ok) {
+        console.log("Review updated successfully!");
+        // Cập nhật lại danh sách reviews
+        const updatedReview = await response.json();
+        setReviews((prevReviews) =>
+          prevReviews.map((r) =>
+            r.id === reviewId ? { ...r, ...updatedReview } : r
+          )
+        );
+      } else {
+        console.error("Failed to update review.");
+      }
+    } catch (error) {
+      console.error("Failed to update review:", error);
+    }
+  };  
+
   return (
     <>
       <div
@@ -299,7 +337,7 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
                 currentUserEmail={user.email}
                 onEdit={(review) => {
                   setUserReview(review);
-                  setIsEditing(true);
+                  setIsEditing(!isEditing);
                 }}
               />
             </div>
@@ -322,7 +360,7 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
             currentUserEmail={user.email}
             onEdit={(review) => {
               setUserReview(review);
-              setIsEditing(true);
+              setIsEditing(!isEditing);
             }}
           />
         </>
