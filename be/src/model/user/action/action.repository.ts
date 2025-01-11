@@ -195,8 +195,9 @@ export class ActionRepository {
 
     return movies.map((movie) => ({
       ...movie.toObject(),
-      rating: ratings.find((r) => r.movieId === movie._id.toString())?.rating,
-      reviews: ratings.find((r) => r.movieId === movie._id.toString())?.reviews,
+      rating: ratings.find((r) => r.movieId === movie.tmdb_id)?.rating,
+      reviews: ratings.find((r) => r.movieId === movie.tmdb_id)?.reviews,
+      createdAt: ratings.find((r) => r.movieId === movie.tmdb_id)?.createdAt,
     }));
   }
 }
