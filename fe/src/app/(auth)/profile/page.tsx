@@ -3,7 +3,7 @@
 /* Package System */
 import { useEffect, useState, Dispatch } from 'react';
 import { useRouter } from 'next/navigation';
-import { Avatar } from "@mui/material";
+import { Avatar, CircularProgress } from "@mui/material";
 import { User } from "lucide-react";
 import axios from 'axios';
 
@@ -32,10 +32,10 @@ export default function Profile() {
   }, [isLogin, router]);
 
   useEffect(() => {
-    const fetchList = async (apiEndPoint: string, setState: Dispatch<React.SetStateAction<any[]>>, setLoading: Dispatch<React.SetStateAction<boolean>>) => {
+    const fetchList = async (email: string, apiEndPoint: string, setState: Dispatch<React.SetStateAction<any[]>>, setLoading: Dispatch<React.SetStateAction<boolean>>) => {
       setLoading(true);
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/${apiEndPoint}`);
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/${apiEndPoint}?email=${email}`);
         setState(response.data.data ?? []);
       } catch (err) {
         console.error('Error fetching list:', err);
@@ -45,10 +45,10 @@ export default function Profile() {
     };
 
     if (selectedTab === 'Favorites') {
-      fetchList(END_POINT_URL_LIST.favorite, setFavorites, setLoadingFavorites);
+      fetchList(user.email, END_POINT_URL_LIST.favorite, setFavorites, setLoadingFavorites);
     }
     else if (selectedTab === 'Watchlist') {
-      fetchList(END_POINT_URL_LIST.watchlist, setWatchlist, setLoadingWatchlist);
+      fetchList(user.email, END_POINT_URL_LIST.watchlist, setWatchlist, setLoadingWatchlist);
     }
   }, [selectedTab, user.email]);
 
@@ -138,23 +138,66 @@ export default function Profile() {
       );
     case 'Watchlist':
       return (
-        <div className="d-flex">
-          <div className="p-2">
-            <h4>My Watchlist</h4>
-            <p>You haven&apos;t added any movies to your watchlist</p>
-          </div>
-          <div className="ms-auto p-2 mt-2">
-            <div className="d-flex justify-content-end align-items-center">
-              <span className="d-inline">Filter by:</span>
-              <select className="form-select cus-select" aria-label="Default select example">
-                <option selected>Date Rated</option>
-                <option value={1}>My Rating</option>
-                <option value={2}>Popularity</option>
-                <option value={3}>Release Date</option>
-              </select>
+        <>
+          <div className="d-flex">
+            <div className="p-2">
+              <h4>My Watchlist</h4>
+            </div>
+            <div className="ms-auto p-2 mt-2">
+              <div className="d-flex justify-content-end align-items-center">
+                <span className="d-inline">Filter by:</span>
+                <select className="form-select cus-select" aria-label="Default select example">
+                  <option selected>Date Rated</option>
+                  <option value={1}>My Rating</option>
+                  <option value={2}>Popularity</option>
+                  <option value={3}>Release Date</option>
+                </select>
+              </div>
             </div>
           </div>
-        </div>
+          <div style={{marginBottom:'10px'}} className="white_column">
+            <section id="media_results" className="panel results movie-list-container">
+              {loadingWatchlist ? (
+                <div className="loading-container">
+                  <CircularProgress sx={{ color: "#1976d2" }} />
+                </div>
+              ) : (
+                <div className="movie-list d-flex flex-wrap">
+                  {watchlist.length > 0 ? (
+                    watchlist.map((movie) => (
+                      <div
+                        onClick={() => router.push(`/movies/${movie.id}`)}
+                        className="movie-card mx-2"
+                        key={movie.id}
+                      >
+                        <img
+                          src={
+                            movie.poster_path
+                              ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+                              : "https://via.placeholder.com/150"
+                          }
+                          alt={movie.title}
+                          style={{
+                            width: "150px",
+                            height: "225px",
+                            objectFit: "cover",
+                            borderRadius: "8px"
+                          }}
+                        />
+                        <div className="movie-info mt-2 text-center">
+                          <h6>{movie.title}</h6>
+                          <p>{movie.release_date}</p>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p>You haven&apos;t added any movies to your watchlist.</p>
+                  )}
+                </div>
+              )}
+            </section>
+          </div>
+        </>
       );
     case 'Favorites':
     default:
