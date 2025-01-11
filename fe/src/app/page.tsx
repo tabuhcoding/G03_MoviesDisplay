@@ -7,6 +7,7 @@ import "@styles/Homepage.css";
 import axios from 'axios';
 import { ErrorData, ErrorHandling } from '@components/errorHandling';
 import { END_POINT_URL_LIST } from '../util/constant';
+import UserScoreSection from "../components/userScoreSection";
 export interface Movie {
   id: string;
   title: string;
@@ -114,6 +115,7 @@ export default function Home() {
                       <span>{(movie.vote_average * 10).toFixed(0)}%</span> {/* Hiển thị rating theo % */}
                       <small> ({movie.vote_count} votes)</small> {/* Tổng số đánh giá */}
                     </div>
+                    <UserScoreSection vote_average={movie.vote_average || 0} />
                   </div>
                 </div>
               ))}
