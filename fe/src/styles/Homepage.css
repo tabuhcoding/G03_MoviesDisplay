@@ -92,4 +92,17 @@
   color: #555;
 }
 
+.movie-info .rating {
+  font-size: 14px;
+  color: #ffb400; /* Màu vàng cho rating */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.movie-info .rating small {
+  margin-left: 5px;
+  color: #6c757d; /* Màu xám cho số votes */
+}
+
   

@@ -14,6 +14,8 @@ export interface Movie {
   poster_path: string;
   backdrop_path: string;
   release_date: string;
+  vote_average: number; 
+  vote_count: number;   
 }
 
 export default function Home() {
@@ -108,6 +110,10 @@ export default function Home() {
                   <div className="movie-info mt-2 text-center">
                     <h6>{movie.title}</h6>
                     <p>{movie.release_date || "Unknown"}</p>
+                    <div className="rating">
+                      <span>{(movie.vote_average * 10).toFixed(0)}%</span> {/* Hiển thị rating theo % */}
+                      <small> ({movie.vote_count} votes)</small> {/* Tổng số đánh giá */}
+                    </div>
                   </div>
                 </div>
               ))}
