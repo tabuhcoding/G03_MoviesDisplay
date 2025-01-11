@@ -1,7 +1,7 @@
 'use client';
 
 /* Package System */
-import { useEffect, useState, Dispatch } from 'react';
+import { useEffect, useState, Dispatch, SetStateAction, ChangeEvent, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Avatar, CircularProgress } from "@mui/material";
 import { User } from "lucide-react";
@@ -25,6 +25,33 @@ export default function Profile() {
   const [watchlist, setWatchlist] = useState<any[]>([]);
   const [loadingWatchlist, setLoadingWatchlist] = useState<boolean>(true);
 
+  const sortMovies = useCallback(async (sortOrder: string, setState: Dispatch<SetStateAction<any[]>>, setLoading: Dispatch<SetStateAction<boolean>>) => {
+    const list = selectedTab === 'Favorites' ? favorites : watchlist;
+    setLoading(true);
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    switch (sortOrder) {
+    case 'popularity.desc':
+      setState([...list].sort((a, b) => b.popularity - a.popularity));
+      break;
+    case 'popularity.asc':
+      setState([...list].sort((a, b) => a.popularity - b.popularity));
+      break;
+    case 'created_at.asc':
+      setState([...list].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()));
+      break;
+    case 'created_at.desc':
+      setState([...list].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
+      break;
+    default:
+      break;
+    }
+    setLoading(false);
+  }, [selectedTab, favorites, watchlist]);
+
+  const handleSortChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    sortMovies(e.target.value, selectedTab === 'Favorites' ? setFavorites : setWatchlist, selectedTab === 'Favorites' ? setLoadingFavorites : setLoadingWatchlist);
+  }
+
   useEffect(() => {
     if (!isLogin) {
       router.push("/login");
@@ -32,7 +59,7 @@ export default function Profile() {
   }, [isLogin, router]);
 
   useEffect(() => {
-    const fetchList = async (email: string, apiEndPoint: string, setState: Dispatch<React.SetStateAction<any[]>>, setLoading: Dispatch<React.SetStateAction<boolean>>) => {
+    const fetchList = async (email: string, apiEndPoint: string, setState: Dispatch<SetStateAction<any[]>>, setLoading: Dispatch<SetStateAction<boolean>>) => {
       setLoading(true);
       try {
         const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/${apiEndPoint}?email=${email}`);
@@ -145,12 +172,15 @@ export default function Profile() {
             </div>
             <div className="ms-auto p-2 mt-2">
               <div className="d-flex justify-content-end align-items-center">
-                <span className="d-inline">Filter by:</span>
-                <select className="form-select cus-select" aria-label="Default select example">
-                  <option selected>Date Rated</option>
-                  <option value={1}>My Rating</option>
-                  <option value={2}>Popularity</option>
-                  <option value={3}>Release Date</option>
+                <span className="d-inline">Sort by:</span>
+                <select
+                  className="form-select cus-select"
+                  onChange={handleSortChange}
+                >
+                  <option value="popularity.desc">Popularity Descending</option>
+                  <option value="popularity.asc">Popularity Ascending</option>
+                  <option value="created_at.asc">Added Date Ascending</option>
+                  <option value="created_at.desc">Added Date Descending</option>
                 </select>
               </div>
             </div>
@@ -186,7 +216,7 @@ export default function Profile() {
                         />
                         <div className="movie-info mt-2 text-center">
                           <h6>{movie.title}</h6>
-                          <p>{movie.release_date}</p>
+                          <p><strong>Added: </strong>{formatDate(movie.createdAt)}</p>
                         </div>
                       </div>
                     ))
