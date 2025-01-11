@@ -237,6 +237,20 @@ export default function Profile() {
             <div className="p-2">
               <h4>My Favorite List</h4>
             </div>
+            <div className="ms-auto p-2 mt-2">
+              <div className="d-flex justify-content-end align-items-center">
+                <span className="d-inline">Sort by:</span>
+                <select
+                  className="form-select cus-select"
+                  onChange={handleSortChange}
+                >
+                  <option value="popularity.desc">Popularity Descending</option>
+                  <option value="popularity.asc">Popularity Ascending</option>
+                  <option value="created_at.asc">Added Date Ascending</option>
+                  <option value="created_at.desc">Added Date Descending</option>
+                </select>
+              </div>
+            </div>
           </div>
           <div style={{marginBottom:'10px'}} className="white_column">
             <section id="media_results" className="panel results movie-list-container">
@@ -269,7 +283,7 @@ export default function Profile() {
                         />
                         <div className="movie-info mt-2 text-center">
                           <h6>{movie.title}</h6>
-                          <p>{movie.release_date}</p>
+                          <p><strong>Added: </strong>{formatDate(movie.createdAt)}</p>
                         </div>
                       </div>
                     ))
