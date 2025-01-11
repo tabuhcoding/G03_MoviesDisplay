@@ -161,11 +161,6 @@ export class ActionRepository {
   }
 
   async deleteReview(email: string, movieId: Number) {
-    const findReview = await this.moviesModel.findOne(
-      { tmdb_id: movieId, 'reviews.author_details.username': email },
-      { 'reviews.$': 1 }
-    );
-    console.log(findReview);
     const result = await this.moviesModel.updateOne(
       { tmdb_id: movieId },
       { $pull: { reviews: { 'author_details.username': { $regex: new RegExp(`^${email.trim()}$`, 'i') } }, } },
