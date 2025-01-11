@@ -126,6 +126,55 @@ export default function Home() {
           )}
         </div>
       </div>
+
+      <div className="container my-4">
+        <div className="d-flex justify-content-between align-items-center">
+          <h4>Latest Trailers</h4>
+          <div className="toggle-switch">
+            <button
+              className={`toggle-btn ${active === "day" ? "active" : ""}`}
+              onClick={() => setActive("day")}
+            >
+              Popular
+            </button>
+            <button
+              className={`toggle-btn ${active === "week" ? "active" : ""}`}
+              onClick={() => setActive("week")}
+            >
+              In Theaters
+            </button>
+          </div>
+        </div>
+
+        <div className="movie-list-container my-3">
+          {loading ? (
+            <p>Loading...</p>
+          ) : error?.message ? (
+            <ErrorHandling error={error} callback={fetchTrendingMovies} />
+          ) : (
+            <div className="movie-list d-flex flex-wrap">
+              {movies.map((movie) => (
+                <div key={movie.id} className="movie-card mx-2 cus-card">
+                  {movies.length > 0 ? (
+                    <div className="trailer-video">
+                      <iframe
+                        width="100%"
+                        height="200"
+                        src={`https://www.youtube.com/embed/`}
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      ></iframe>
+                    </div>
+                  ) : (
+                    <p>No trailers available</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
     </>
   );
 }
