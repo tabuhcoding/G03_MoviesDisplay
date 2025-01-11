@@ -8,6 +8,8 @@ import { ScrapMoviesTrendingWeekSchema, ScrapMoviesTrendingDaySchema, ScrapMovie
   ScrapMoviesUpcomingSchema, ScrapMoviesNowPlayingSchema, ScrapMoviesPopularSchema, ScrapMoviesTopRatedSchema,
   LastestTrailersIntheatersSchema, LastestTrailersPopularSchema
 } from './schema/empty.schema';
+import { WatchlistSchema } from '../user/action/schema/watchlist.schema';
+import { FavoriteListSchema } from '../user/action/schema/favorite-list.schema';
 
 @Module({
   imports: [ConfigModule,
@@ -28,6 +30,13 @@ import { ScrapMoviesTrendingWeekSchema, ScrapMoviesTrendingDaySchema, ScrapMovie
     MongooseModule.forFeature(
       [{ name: 'movies', schema: MoviesSchema }],
       'moviesNoSQL',
+    ),
+    MongooseModule.forFeature(
+      [
+        { name: 'Watchlist', schema: WatchlistSchema },
+        { name: 'FavoriteList', schema: FavoriteListSchema },
+      ],
+      'auth',
     ),
   ],
   controllers: [MoviesController],
