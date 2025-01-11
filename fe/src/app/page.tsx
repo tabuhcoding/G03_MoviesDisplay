@@ -15,8 +15,8 @@ export interface Movie {
   poster_path: string;
   backdrop_path: string;
   release_date: string;
-  vote_average: number; 
-  vote_count: number;   
+  vote_average: number;
+  vote_count: number;
 }
 
 export default function Home() {
@@ -93,6 +93,15 @@ export default function Home() {
                   onClick={() => router.push(`/movies/${movie.id}`)}
                   className="movie-card mx-2"
                   key={movie.id}
+                  style={{
+                    position: "relative", // Đặt vị trí tương đối để làm gốc cho các phần tử con
+                    width: "150px",
+                    height: "270px",
+                    borderRadius: "8px",
+                    overflow: "hidden",
+                    cursor: "pointer",
+                    paddingBottom: "10px"
+                  }}
                 >
                   <img
                     src={
@@ -102,20 +111,47 @@ export default function Home() {
                     }
                     alt={movie.title}
                     style={{
-                      width: "150px",
-                      height: "225px",
-                      objectFit: "cover",
-                      borderRadius: "8px"
+                      width: "100%",
+                      height: "170px",
+                      objectFit: "cover"
                     }}
                   />
-                  <div className="movie-info mt-2 text-center">
+                  <div className="movie-info mt-4 text-center">
                     <h6>{movie.title}</h6>
                     <p>{movie.release_date || "Unknown"}</p>
-                    <div className="rating">
-                      <span>{(movie.vote_average * 10).toFixed(0)}%</span> {/* Hiển thị rating theo % */}
-                      <small> ({movie.vote_count} votes)</small> {/* Tổng số đánh giá */}
-                    </div>
-                    <UserScoreSection vote_average={movie.vote_average || 0} />
+                  </div>             
+                  <div
+                    className="rating"
+                    style={{
+                      position: 'absolute',
+                      bottom: '80px',
+                      left: '10px',
+                      width: '50px',
+                      height: '50px',
+                      borderRadius: '50%',
+                      background: `conic-gradient(#4caf50 ${(movie.vote_average * 10) * 3.6}deg, #e0e0e0 0deg)`, // Viền xanh lá theo phần trăm
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      margin: '0 auto'
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: '14px',
+                        fontWeight: 'bold',
+                        color: '#333',
+                        background: '#fff',
+                        borderRadius: '50%',
+                        width: '40px',
+                        height: '40px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}
+                    >
+                      {(movie.vote_average * 10).toFixed(0)}%
+                    </span>
                   </div>
                 </div>
               ))}
