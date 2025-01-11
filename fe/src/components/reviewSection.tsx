@@ -112,7 +112,7 @@ const ReviewSection: FC<ReviewSectionProps> = ({ movieId, email, onSubmit }) => 
   );
 };
 
-export const ReviewList: FC<{ reviews: Review[] }> = ({ reviews }) => {
+export const ReviewList: FC<{ reviews: Review[]; currentUserEmail: string; onEdit?: (review: Review) => void }> = ({ reviews, currentUserEmail, onEdit }) => {
   const MAX_CONTENT_LENGTH = 100;
   const [expandedReviewIds, setExpandedReviewIds] = useState<string[]>([]);
 
@@ -135,16 +135,15 @@ export const ReviewList: FC<{ reviews: Review[] }> = ({ reviews }) => {
           <div key={review.id} className="review-item">
             <div className="review-header">
               <img
-                src={
-                  review.author_details.avatar_path ||
-                  "https://via.placeholder.com/50"
-                }
+                src={review.author_details.avatar_path || "https://via.placeholder.com/50"}
                 alt={review.author_details.name}
                 className="avatar"
               />
               <div className="user-info">
                 <strong>{review.author_details.name}</strong>
                 <p className="rating">Rating: {review.author_details.rating}/10</p>
+              </div>
+              {review.author_details.username === currentUserEmail && (
                 <Tooltip title="Edit Review" arrow>
                   <IconButton
                     sx={{
@@ -153,12 +152,12 @@ export const ReviewList: FC<{ reviews: Review[] }> = ({ reviews }) => {
                       "&:hover": { backgroundColor: "#e3f2fd" },
                       marginTop: "10px"
                     }}
-                    // onClick={() => setIsEditing(true)}
+                    onClick={() => onEdit && onEdit(review)}
                   >
                     <Edit />
                   </IconButton>
                 </Tooltip>
-              </div>
+              )}
             </div>
             <div className="review-content">
               <p>{content}</p>

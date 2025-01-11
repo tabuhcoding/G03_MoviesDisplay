@@ -14,7 +14,19 @@
 .review-header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ddd;
 }
+
+.user-info {
+  flex: 1;
+}
+
+.review-header .MuiIconButton-root {
+  margin-left: auto;
+}
+
 
 .avatar {
   width: 50px;

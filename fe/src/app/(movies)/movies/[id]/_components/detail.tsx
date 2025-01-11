@@ -100,7 +100,7 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
     movieDetails?.poster_path ??
     movieDetails?.belongs_to_collection?.backdrop_path ??
     movieDetails?.belongs_to_collection?.poster_path
-  }`;
+    }`;
 
   const { data: color } = useColor(imageUrl, "rgbArray", {
     crossOrigin: "anonymous",
@@ -294,7 +294,14 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
                   Your Review
                 </Typography>
               </div>
-              <ReviewList reviews={[userReview]} />
+              <ReviewList
+                reviews={[userReview]}
+                currentUserEmail={user.email}
+                onEdit={(review) => {
+                  setUserReview(review);
+                  setIsEditing(true);
+                }}
+              />
             </div>
           ) : (
             !isEditing && (
@@ -310,7 +317,14 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
             />
           )}
 
-          <ReviewList reviews={reviews.filter((review) => review.id !== userReview?.id)} />
+          <ReviewList
+            reviews={reviews.filter((review) => review.id !== userReview?.id)}
+            currentUserEmail={user.email}
+            onEdit={(review) => {
+              setUserReview(review);
+              setIsEditing(true);
+            }}
+          />
         </>
       )}
 
