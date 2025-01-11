@@ -133,7 +133,6 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
         })
       });
       if (response.ok) {
-        console.log("Add to list successfully");
         setIsRated(true);
         setDialogType("success");
         setDialogMessage("Added movie to the list successfully!");
@@ -183,7 +182,6 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
         })
       });
       if (response.ok) {
-        console.log("Added rating and review successfully!");
         setDialogType("success");
         setDialogMessage("Added rating and review successfully!");
       } else {
@@ -276,16 +274,6 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
           </section>
         </div>
       </div>
-
-      {/* <ReviewSection movieId={movieDetails.id} email={user.email} onSubmit={handleSubmitReview} />
-
-      {loadingReviews ? (
-        <div className="loading-container">
-          <CircularProgress sx={{ color: "#1976d2" }} />
-        </div>
-      ) : (
-        <ReviewList reviews={reviews} />
-      )} */}
 
       {loadingReviews ? (
         <div className="loading-container">
