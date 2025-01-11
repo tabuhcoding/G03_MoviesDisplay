@@ -171,7 +171,7 @@ export const ReviewList: FC<{ reviews: Review[]; currentUserEmail: string; onEdi
               )}
             </div>
             <div className="review-footer">
-              <small>{new Date(review.created_at).toLocaleString()}</small>
+              <small>{new Date(review.update_at).toLocaleString()}</small>
             </div>
           </div>
         );
