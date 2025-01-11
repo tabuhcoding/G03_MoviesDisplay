@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useRouter } from 'next/navigation';
 import { useColor } from "color-thief-react";
 import { Button, IconButton, Tooltip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, CircularProgress, Typography } from "@mui/material";
-import { Favorite, Bookmark, Edit } from "@mui/icons-material";
+import { Favorite, Bookmark } from "@mui/icons-material";
 
 /* Package Application */
 import { useAuth } from '@/src/context/authContext';
@@ -100,7 +100,7 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
     movieDetails?.poster_path ??
     movieDetails?.belongs_to_collection?.backdrop_path ??
     movieDetails?.belongs_to_collection?.poster_path
-    }`;
+  }`;
 
   const { data: color } = useColor(imageUrl, "rgbArray", {
     crossOrigin: "anonymous",
@@ -214,19 +214,13 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
           movieId,
           email,
           rating,
-          review
+          reviews: review
         })
       });
   
       if (response.ok) {
         console.log("Review updated successfully!");
-        // Cập nhật lại danh sách reviews
-        const updatedReview = await response.json();
-        setReviews((prevReviews) =>
-          prevReviews.map((r) =>
-            r.id === reviewId ? { ...r, ...updatedReview } : r
-          )
-        );
+        window.location.reload();
       } else {
         console.error("Failed to update review.");
       }
@@ -329,7 +323,7 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
                     color: "#333",
                     padding: "10px 10px"
                   }}>
-                  Your Review
+                  Reviews
                 </Typography>
               </div>
               <ReviewList
@@ -347,11 +341,14 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
             )
           )}
 
-          {isEditing && (
+          {isEditing && userReview && (
             <ReviewSection
               movieId={movieDetails.id}
               email={user.email}
-              onSubmit={handleSubmitReview}
+              onSubmit={(movieId, email, rating, review) => {
+                handleEditReview(movieId, email, rating, review, userReview.id);
+                setIsEditing(!isEditing);
+              }}
             />
           )}
 
