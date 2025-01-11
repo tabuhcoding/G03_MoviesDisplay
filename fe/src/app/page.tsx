@@ -7,7 +7,6 @@ import "@styles/Homepage.css";
 import axios from 'axios';
 import { ErrorData, ErrorHandling } from '@components/errorHandling';
 import { END_POINT_URL_LIST } from '../util/constant';
-import UserScoreSection from "../components/userScoreSection";
 export interface Movie {
   id: string;
   title: string;
@@ -91,17 +90,8 @@ export default function Home() {
               {movies.map((movie) => (
                 <div
                   onClick={() => router.push(`/movies/${movie.id}`)}
-                  className="movie-card mx-2"
+                  className="movie-card mx-2 cus-card"
                   key={movie.id}
-                  style={{
-                    position: "relative", // Đặt vị trí tương đối để làm gốc cho các phần tử con
-                    width: "150px",
-                    height: "270px",
-                    borderRadius: "8px",
-                    overflow: "hidden",
-                    cursor: "pointer",
-                    paddingBottom: "10px"
-                  }}
                 >
                   <img
                     src={
@@ -121,35 +111,12 @@ export default function Home() {
                     <p>{movie.release_date || "Unknown"}</p>
                   </div>             
                   <div
-                    className="rating"
+                    className="rating container-rating"
                     style={{
-                      position: 'absolute',
-                      bottom: '80px',
-                      left: '10px',
-                      width: '50px',
-                      height: '50px',
-                      borderRadius: '50%',
                       background: `conic-gradient(#4caf50 ${(movie.vote_average * 10) * 3.6}deg, #e0e0e0 0deg)`, // Viền xanh lá theo phần trăm
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      margin: '0 auto'
                     }}
                   >
-                    <span
-                      style={{
-                        fontSize: '14px',
-                        fontWeight: 'bold',
-                        color: '#333',
-                        background: '#fff',
-                        borderRadius: '50%',
-                        width: '40px',
-                        height: '40px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                      }}
-                    >
+                    <span className='circle-rating'>
                       {(movie.vote_average * 10).toFixed(0)}%
                     </span>
                   </div>

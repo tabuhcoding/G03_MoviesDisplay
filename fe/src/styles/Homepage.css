@@ -1,74 +1,89 @@
 .toggle-switch {
-    display: flex;
-    border: 2px solid #032541;
-    border-radius: 50px;
-    overflow: hidden;
-  }
-  
-  .toggle-btn {
-    padding: 8px 20px;
-    border: none;
-    background-color: white;
-    color: #0a2540;
-    font-size: 14px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    
-  }
-  
-  .toggle-btn.active {
-    background-color: #032541; /* Màu nền cho nút active */
-    background-image: linear-gradient(90deg, #5eead4, #00d4ff);
-    border-radius: 50px; 
-    color: white;
-  }
-  
-  .toggle-btn:not(.active):hover {
-    background-color: #f8f9fa; /* Màu nền khi hover */
-  }
+  display: flex;
+  border: 2px solid #032541;
+  border-radius: 50px;
+  overflow: hidden;
+}
 
-  /* Đặt màu mũi tên mặc định là trắng */
+.toggle-btn {
+  padding: 8px 20px;
+  border: none;
+  background-color: white;
+  color: #0a2540;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+}
+
+.toggle-btn.active {
+  background-color: #032541;
+  /* Màu nền cho nút active */
+  background-image: linear-gradient(90deg, #5eead4, #00d4ff);
+  border-radius: 50px;
+  color: white;
+}
+
+.toggle-btn:not(.active):hover {
+  background-color: #f8f9fa;
+  /* Màu nền khi hover */
+}
+
+/* Đặt màu mũi tên mặc định là trắng */
 .dropdown-toggle::after {
-    color: white !important;  /* Đảm bảo màu trắng */
+  color: white !important;
+  /* Đảm bảo màu trắng */
 }
 
 /* Đảm bảo màu mũi tên vẫn trắng khi dropdown mở */
 .dropdown-toggle[aria-expanded="true"]::after {
-    color: white !important;  
+  color: white !important;
 }
 
 /* Đảm bảo màu mũi tên vẫn trắng khi hover */
 .dropdown-toggle:hover::after {
-    color: white !important;  /* Mũi tên trắng khi hover */
+  color: white !important;
+  /* Mũi tên trắng khi hover */
 }
 
 /* Container chính */
 .movie-list-container {
-  max-height: 500px; /* Chiều cao cố định để cuộn dọc */
-  overflow-y: auto; /* Cho phép cuộn dọc */
+  max-height: 500px;
+  /* Chiều cao cố định để cuộn dọc */
+  overflow-y: auto;
+  /* Cho phép cuộn dọc */
   padding: 10px;
-  border: 1px solid #ddd; /* Viền nhẹ cho rõ phần cuộn */
+  border: 1px solid #ddd;
+  /* Viền nhẹ cho rõ phần cuộn */
   border-radius: 8px;
 }
 
 .movie-list {
-  display: inline-flex; /* Giữ các card trên cùng một dòng */
-  gap: 16px; /* Khoảng cách giữa các card */
+  display: inline-flex;
+  /* Giữ các card trên cùng một dòng */
+  gap: 16px;
+  /* Khoảng cách giữa các card */
 }
 
 .movie-card {
-  flex: 0 0 auto; /* Không co giãn, giữ kích thước cố định */
-  width: 150px; /* Chiều rộng cố định */
+  flex: 0 0 auto;
+  /* Không co giãn, giữ kích thước cố định */
+  width: 150px;
+  /* Chiều rộng cố định */
   text-align: center;
   cursor: pointer;
 }
 
 .movie-card img {
-  width: 150px; /* Kích thước hình ảnh */
-  height: 225px; /* Chiều cao cố định */
-  object-fit: cover; /* Cắt hình ảnh phù hợp */
-  border-radius: 10px; /* Bo góc hình ảnh */
+  width: 150px;
+  /* Kích thước hình ảnh */
+  height: 225px;
+  /* Chiều cao cố định */
+  object-fit: cover;
+  /* Cắt hình ảnh phù hợp */
+  border-radius: 10px;
+  /* Bo góc hình ảnh */
 }
 
 .movie-info h5 {
@@ -77,14 +92,20 @@
 }
 
 .movie-info h6 {
-  font-size: 0.9rem; /* Kích thước chữ */
+  font-size: 0.9rem;
+  /* Kích thước chữ */
   font-weight: 600;
   margin-top: 5px;
-  width: 150px; /* Giới hạn chiều rộng */
-  white-space: normal; /* Cho phép xuống dòng */
-  word-wrap: break-word; /* Tự động xuống dòng khi vượt quá giới hạn */
-  overflow-wrap: break-word; /* Đảm bảo từ quá dài cũng xuống dòng */
-  margin: 0 auto; /* Canh giữa nếu cần */
+  width: 150px;
+  /* Giới hạn chiều rộng */
+  white-space: normal;
+  /* Cho phép xuống dòng */
+  word-wrap: break-word;
+  /* Tự động xuống dòng khi vượt quá giới hạn */
+  overflow-wrap: break-word;
+  /* Đảm bảo từ quá dài cũng xuống dòng */
+  margin: 0 auto;
+  /* Canh giữa nếu cần */
 }
 
 .movie-info p {
@@ -94,7 +115,8 @@
 
 .movie-info .rating {
   font-size: 14px;
-  color: #ffb400; /* Màu vàng cho rating */
+  color: #ffb400;
+  /* Màu vàng cho rating */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -102,7 +124,42 @@
 
 .movie-info .rating small {
   margin-left: 5px;
-  color: #6c757d; /* Màu xám cho số votes */
+  color: #6c757d;
+  /* Màu xám cho số votes */
 }
 
-  
+.container-rating {
+  position: absolute;
+  bottom: 80px;
+  left: 10px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin: 0 auto;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+
+.cus-card {
+  position: relative;
+  width: 150px;
+  height: 270px;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  padding-bottom: 10px;
+}
+
+.circle-rating {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  background: #fff;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
