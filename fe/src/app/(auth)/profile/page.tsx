@@ -202,15 +202,55 @@ export default function Profile() {
     case 'Favorites':
     default:
       return (
-        <div className="d-flex">
-          <div className="p-2">
-            <h4>My Favorite List</h4>
-            <p>You haven&apos;t created any lists.</p>
+        <>
+          <div className="d-flex">
+            <div className="p-2">
+              <h4>My Favorite List</h4>
+            </div>
           </div>
-          <div className="ms-auto p-2">
-            <button type='button' className='btn btn-primary'>Create List</button>
+          <div style={{marginBottom:'10px'}} className="white_column">
+            <section id="media_results" className="panel results movie-list-container">
+              {loadingFavorites ? (
+                <div className="loading-container">
+                  <CircularProgress sx={{ color: "#1976d2" }} />
+                </div>
+              ) : (
+                <div className="movie-list d-flex flex-wrap">
+                  {favorites.length > 0 ? (
+                    favorites.map((movie) => (
+                      <div
+                        onClick={() => router.push(`/movies/${movie.id}`)}
+                        className="movie-card mx-2"
+                        key={movie.id}
+                      >
+                        <img
+                          src={
+                            movie.poster_path
+                              ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+                              : "https://via.placeholder.com/150"
+                          }
+                          alt={movie.title}
+                          style={{
+                            width: "150px",
+                            height: "225px",
+                            objectFit: "cover",
+                            borderRadius: "8px"
+                          }}
+                        />
+                        <div className="movie-info mt-2 text-center">
+                          <h6>{movie.title}</h6>
+                          <p>{movie.release_date}</p>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p>You haven&apos;t added any movies to your favorites list.</p>
+                  )}
+                </div>
+              )}
+            </section>
           </div>
-        </div>
+        </>
       );
     }
   };
