@@ -177,8 +177,16 @@ export class ActionRepository {
   }
 
   async getMoviesDetails(items: any[], dbConnection: string) {
-    const movieIds = items.map((item) => item.movieId);
-    return this.moviesModel.find({ tmdb_id: { $in: movieIds } }).exec();
+    // const movieIds = items.map((item) => item.movieId);
+    // return this.moviesModel.find({ tmdb_id: { $in: movieIds } }).exec();
+    const result = items.map(async (item) => {
+      const movie = await this.moviesModel.findOne({ tmdb_id: item.movieId }).exec();
+      return {
+        ...movie.toObject(),
+        createdAt: item.createdAt,
+      };
+    })
+    return Promise.all(result);
   }
 
   async getMoviesDetailsWithRatings(ratings: any[], dbConnection: string) {
