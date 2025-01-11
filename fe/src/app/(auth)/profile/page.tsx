@@ -1,12 +1,15 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+/* Package System */
+import { useEffect, useState, Dispatch } from 'react';
 import { useRouter } from 'next/navigation';
 import { Avatar } from "@mui/material";
 import { User } from "lucide-react";
+import axios from 'axios';
+
+/* Package Application */
 import { useAuth } from "@context/authContext";
 import "@public/styles/user/profile.css";
-import axios from 'axios';
 import { END_POINT_URL_LIST } from '@/src/util/constant';
 import { AvatarUploadDialog } from './_component/avatarDialog';
 
@@ -17,12 +20,37 @@ export default function Profile() {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [favorites, setFavorites] = useState<any[]>([]);
+  const [loadingFavorites, setLoadingFavorites] = useState<boolean>(true);
+  const [watchlist, setWatchlist] = useState<any[]>([]);
+  const [loadingWatchlist, setLoadingWatchlist] = useState<boolean>(true);
 
   useEffect(() => {
     if (!isLogin) {
       router.push("/login");
     }
   }, [isLogin, router]);
+
+  useEffect(() => {
+    const fetchList = async (apiEndPoint: string, setState: Dispatch<React.SetStateAction<any[]>>, setLoading: Dispatch<React.SetStateAction<boolean>>) => {
+      setLoading(true);
+      try {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/${apiEndPoint}`);
+        setState(response.data.data ?? []);
+      } catch (err) {
+        console.error('Error fetching list:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (selectedTab === 'Favorites') {
+      fetchList(END_POINT_URL_LIST.favorite, setFavorites, setLoadingFavorites);
+    }
+    else if (selectedTab === 'Watchlist') {
+      fetchList(END_POINT_URL_LIST.watchlist, setWatchlist, setLoadingWatchlist);
+    }
+  }, [selectedTab, user.email]);
 
   if (!user || Object.keys(user).length === 0) {
     return null; // Hiển thị trống trong khi chờ chuyển hướng
@@ -133,7 +161,7 @@ export default function Profile() {
       return (
         <div className="d-flex">
           <div className="p-2">
-            <h4>My Lists</h4>
+            <h4>My Favorite List</h4>
             <p>You haven&apos;t created any lists.</p>
           </div>
           <div className="ms-auto p-2">
