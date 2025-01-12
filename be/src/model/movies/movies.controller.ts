@@ -49,9 +49,26 @@ export class MoviesController {
     return await this.moviesService.getGenres();
   }
 
+  @Get('lastest-trailers')
+  async getLastestTrailers(@Query('query') query: 'popular' | 'intheater') {
+    return await this.moviesService.getLastestTrailers(query);
+  }
+
+  @Get('recommendations')
+  async getRecommendationsUsersBased(@Query('email') email: String) {
+    return await this.moviesService.getRecommendationsUsersBased(email);
+  }
+
   @Get(':id')
   async getMovieDetails(@Param('id') movieId: number) {
     return await this.moviesService.getMovieDetails(movieId);
   }
+
+  @Get(':id/recommendations')
+  async getRecommendations(@Param('id') movieId: number) {
+    return await this.moviesService.getRecommendations(movieId);
+  }
+
+  
 
 }

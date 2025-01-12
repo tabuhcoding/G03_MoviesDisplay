@@ -122,8 +122,10 @@ export class UserService {
     return updatedUser;
   }
 
-  async updateAvatar(user: User, file: string): Promise<User> {
-    const updatedUser = await this.userRepository.updateAvatar(user.email, file);
-    return updatedUser;
+  async updateAvatar(email: string, file: string): Promise<{ token: string; user: User }> {
+    const updatedUser = await this.userRepository.updateAvatar(email, file);
+    const payload = { email: updatedUser.email, username: updatedUser.username, avatar: updatedUser.avatar, sub: updatedUser._id };
+    const token = this.jwtService.sign(payload);
+    return { token, user: updatedUser };
   }
 }

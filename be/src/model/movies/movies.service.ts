@@ -40,4 +40,19 @@ export class MoviesService {
   async getUpcomingMovies(page: number) {
     return this.moviesRepository.fetchUpcomingMovies(page);
   }
+
+  async getLastestTrailers(query: 'popular' | 'intheater') {
+    return this.moviesRepository.fetchLastestTrailers(query);
+  }
+
+  async getRecommendations(movieId: number) {
+    // return this.moviesRepository.getSameGenreMovies(movieId);
+    // return this.moviesRepository.getSameKeywordMovies(movieId);
+    return this.moviesRepository.getSameCollectionMovies(movieId);
+    // return this.moviesRepository.fetchRecommendations(movieId);
+  }
+
+  async getRecommendationsUsersBased(email: String) {
+    return this.moviesRepository.getSameMoviesByHistory(email);
+  }
 }
