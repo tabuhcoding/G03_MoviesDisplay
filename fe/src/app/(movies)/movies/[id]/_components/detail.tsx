@@ -5,15 +5,17 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from 'next/navigation';
 import { useColor } from "color-thief-react";
-import { Button, IconButton, Tooltip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, CircularProgress, Typography } from "@mui/material";
+import { IconButton, Tooltip, CircularProgress, Typography } from "@mui/material";
 import { Favorite, Bookmark } from "@mui/icons-material";
 
 /* Package Application */
 import { useAuth } from '@/src/context/authContext';
 import UserScoreSection from "@/src/components/userScoreSection";
-import { ReviewSection, ReviewList } from "@/src/components/reviewSection";
+import { ReviewSection, ReviewList } from "@/src/app/(movies)/movies/[id]/_components/reviewSection";
 import "@public/styles/movie/detail.css";
 import { END_POINT_URL_LIST } from "@/src/util/constant";
+import PopupDialog from "@/src/components/popupDialog";
+import { formatDateStringToDDMMYYY, formatRunTimeToHHMM } from "@/src/util/helpers";
 
 interface MovieDetailProps {
   movieDetails: {
@@ -49,21 +51,6 @@ interface Review {
   url: string;
 }
 
-const formatDate = (releaseDate: string) => {
-  const date = new Date(releaseDate);
-  return `${date.getDate().toString().padStart(2, "0")}/${(
-    date.getMonth() + 1
-  )
-    .toString()
-    .padStart(2, "0")}/${date.getFullYear()}`;
-}
-
-const formatRunTime = (runtime: number) => {
-  const hours = Math.floor(runtime / 60);
-  const minutes = runtime % 60;
-  return `${hours}h ${minutes}m`;
-}
-
 export default function MovieDetail({ movieDetails }: MovieDetailProps) {
   const router = useRouter();
   const { userInfo: user, isLogin } = useAuth();
@@ -71,30 +58,30 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogMessage, setDialogMessage] = useState("");
   const [dialogType, setDialogType] = useState<"error" | "success">("success");
-  const [isRated, setIsRated] = useState(false);
 
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loadingReviews, setLoadingReviews] = useState<boolean>(true);
   const [userReview, setUserReview] = useState<Review | null>(null);
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
+  const fetchReviews = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/movies/${movieDetails.id}`);
+      const data = await response.json();
+      const reviews = data.data.reviews ?? [];
+      const currentUserReview = reviews.find((review: Review) => review.author_details.username === user.email);
+      setUserReview(currentUserReview ?? null);
+      setReviews(data.data.reviews ?? []);
+    } catch (error) {
+      console.error("Failed to fetch reviews:", error);
+    } finally {
+      setLoadingReviews(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchReviews = async () => {
-      try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/movies/${movieDetails.id}`);
-        const data = await response.json();
-        const reviews = data.data.reviews ?? [];
-        const currentUserReview = reviews.find((review: Review) => review.author_details.username === user.email);
-        setUserReview(currentUserReview ?? null);
-        setReviews(data.data.reviews ?? []);
-      } catch (error) {
-        console.error("Failed to fetch reviews:", error);
-      } finally {
-        setLoadingReviews(false);
-      }
-    };
     fetchReviews();
-  }, [movieDetails.id, user.email]);
+  });
 
   const imageUrl = `https://media.themoviedb.org/t/p/original${movieDetails?.backdrop_path ??
     movieDetails?.poster_path ??
@@ -127,13 +114,9 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-          email: user.email,
-          movieId: movieDetails.id
-        })
+        body: JSON.stringify({ movieId: movieDetails.id, email: user.email })
       });
       if (response.ok) {
-        setIsRated(true);
         setDialogType("success");
         setDialogMessage("Added movie to the list successfully!");
       } else {
@@ -151,12 +134,12 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
 
   const handleDialogClose = () => {
     setDialogOpen(false);
-    if (dialogType === "error" && !isLogin) {
+    if (dialogType === "error") {
       router.push("/login");
     }
 
-    if (dialogType === "success" && isRated) {
-      router.push(`/movie/${movieDetails.id}`);
+    if (dialogType === "success") {
+      window.location.reload();
     }
   };
 
@@ -174,17 +157,12 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-          email,
-          movieId,
-          rating,
-          reviews
-        })
+        body: JSON.stringify({ movieId, email, rating, reviews })
       });
       if (response.ok) {
         setDialogType("success");
         setDialogMessage("Added rating and review successfully!");
-        window.location.reload();
+        
       } else {
         setDialogType("error");
         setDialogMessage("Failed to add rating and review. Please try again.");
@@ -211,18 +189,12 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-          movieId,
-          email,
-          rating,
-          reviews: review
-        })
+        body: JSON.stringify({ movieId, email, rating, reviews: review })
       });
   
       if (response.ok) {
         setDialogType("success");
         setDialogMessage("Updated rating and review successfully!");
-        window.location.reload();
       } else {
         setDialogType("error");
         setDialogMessage("Failed to update rating and review. Please try again.");
@@ -240,7 +212,6 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
     <>
       <div
         className="custom-bg"
-        // style={{ backgroundImage: `url(https://media.themoviedb.org/t/p/original${movieDetails?.belongs_to_collection?.backdrop_path ?? movieDetails?.belongs_to_collection?.poster_path ?? movieDetails.backdrop_path ?? movieDetails.poster_path})` }}
         style={{
           backgroundImage: `url(${imageUrl})`,
           backgroundColor: bgColor,
@@ -267,9 +238,9 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
                     <span className="tag release_date">({new Date(movieDetails.release_date).getFullYear()})</span>
                   </h2>
                   <div className="facts d-flex">
-                    <span className="release">{formatDate(movieDetails.release_date)}</span>
+                    <span className="release">{formatDateStringToDDMMYYY(movieDetails.release_date)}</span>
                     <span className="genres">{movieDetails.genres.map((genre) => genre.name).join(", ")}</span>
-                    <span className="runtime">{formatRunTime(movieDetails.runtime)}</span>
+                    <span className="runtime">{formatRunTimeToHHMM(movieDetails.runtime)}</span>
                   </div>
                   <UserScoreSection vote_average={movieDetails.vote_average ?? 0} />
 
@@ -370,92 +341,14 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
         </>
       )}
 
-      <Dialog
-        open={dialogOpen}
+      <PopupDialog
+        dialogOpen={dialogOpen}
         onClose={handleDialogClose}
-        PaperProps={{
-          style: {
-            borderRadius: "10px",
-            maxWidth: "400px",
-            width: "100%"
-          }
-        }}
-      >
-        <DialogTitle
-          sx={{
-            backgroundColor: dialogType === "error" ? "#f48fb1" : "#032541",
-            color: "#fff",
-            fontWeight: "bold",
-            textAlign: "center",
-            fontSize: "18px"
-          }}
-        >
-          {dialogType === "error" ? "Error" : "Success"}
-        </DialogTitle>
-
-        <div
-          style={{
-            borderBottom: "1px solid #ccc",
-            margin: "0 10px"
-          }}
-        ></div>
-
-        <DialogContent>
-          <DialogContentText
-            sx={{
-              textAlign: "center",
-              fontSize: "16px",
-              color: "#555",
-              margin: "10px 0"
-            }}
-          >
-            {dialogMessage}
-          </DialogContentText>
-        </DialogContent>
-
-        <DialogActions
-          sx={{
-            justifyContent: "center",
-            paddingBottom: "10px"
-          }}
-        >
-          {dialogType === "error" && !isLogin ? (
-            <Button
-              onClick={() => router.push("/login")}
-              sx={{
-                backgroundColor: "#f44336",
-                color: "#fff",
-                "&:hover": {
-                  backgroundColor: "#d32f2f"
-                },
-                textTransform: "none",
-                fontWeight: "bold",
-                padding: "8px 20px",
-                borderRadius: "5px"
-              }}
-            >
-              Login
-            </Button>
-          ) : (
-            <Button
-              onClick={handleDialogClose}
-              sx={{
-                backgroundColor: "#66bb6a",
-                color: "#fff",
-                "&:hover": {
-                  backgroundColor: "#388e3c"
-                },
-                textTransform: "none",
-                fontWeight: "bold",
-                padding: "8px 20px",
-                borderRadius: "5px"
-              }}
-            >
-              Close
-            </Button>
-          )}
-        </DialogActions>
-      </Dialog>
+        dialogMessage={dialogMessage}
+        dialogType={dialogType}
+        dialogCommand1="Login"
+        dialogCommand2="Close"
+      />
     </>
   )
 }
