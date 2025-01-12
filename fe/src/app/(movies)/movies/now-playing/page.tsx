@@ -171,7 +171,7 @@ export default function NowPlayingMovies() {
                                 borderRadius: "8px"
                               }}
                             />
-                            <div className="movie-info mt-2 text-center">
+                            <div className="movie-info mt-4 text-center">
                               <h6>{movie.title}</h6>
                               <p>{formatDateToMonthDayYear(movie.release_date) || "Unknown"}</p>
                             </div>
