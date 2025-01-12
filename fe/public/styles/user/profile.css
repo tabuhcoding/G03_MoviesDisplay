@@ -163,7 +163,7 @@
   width: 100%;
 }
 
-.movie-poster {
+.movie-poster-profile {
   width: 80px;
   height: 120px;
   object-fit: cover;
@@ -171,12 +171,12 @@
   box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
 }
 
-.movie-info {
+.movie-info-profile {
   flex: 1;
   margin-left: 15px;
 }
 
-.movie-info strong {
+.movie-info-profile strong {
   font-size: 16px;
   font-weight: bold;
   color: #032541;
