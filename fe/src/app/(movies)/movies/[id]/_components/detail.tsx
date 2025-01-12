@@ -33,6 +33,21 @@ interface MovieDetailProps {
       backdrop_path?: string;
       poster_path?: string;
     };
+    credits: {
+      cast: {
+        id: number;
+        name: string;
+        character: string;
+        profile_path: string | null;
+      }[];
+      crew: {
+        id: number;
+        name: string;
+        job: string;
+        department: string;
+        profile_path: string | null;
+      }[];
+    };
   };
 }
 
@@ -99,6 +114,13 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
       setBgColor(`rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.6)`);
     }
   }, [color]);
+
+  // Filter Director and Other Crews
+  const director = movieDetails?.credits?.crew?.filter(member => member.job === "Director");
+  const otherCrew = movieDetails?.credits?.crew?.filter(member => member.job !== "Director");
+
+  const [showAllCrew, setShowAllCrew] = useState(false);
+  const visibleCrew = showAllCrew ? otherCrew : otherCrew.slice(0, 10);
 
   const handleAddToList = async (apiEndPoint: string) => {
     if (!isLogin) {
@@ -278,6 +300,57 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
                   <div className="overview">
                     <p>{movieDetails.overview}</p>
                   </div>
+
+                  {/* Display Director */}
+                  <h3 className="h3-overview" dir="auto">Director </h3>
+                  <div className="overview">
+                    {director && director.length > 0 ? (
+                      director.map(directorMember => (
+                        <p key={directorMember.id}>
+                          {directorMember.name}
+                        </p>
+                      ))
+                    ) : (
+                      <p>No director found</p>
+                    )}
+                  </div>
+
+                  {/* Display Other Crews */}
+                  <h3 className="h3-overview" dir="auto">Other Crew</h3>
+                  <div className="overview">
+                    {otherCrew && otherCrew.length > 0 ? (
+                      <div>
+                        {visibleCrew.map((crewMember, index) => (
+                          <span key={`${crewMember.id}-${index}`}>
+                            {crewMember.name} ({crewMember.job})
+                            {index < visibleCrew.length - 1 && ", "}
+                          </span>
+                        ))}
+                        
+                        {/* Conditionally render the 'See More' or 'See Less' button with line breaks */}
+                        <div className="see-more-container">
+                          {!showAllCrew && otherCrew.length > 5 && (
+                            <button 
+                              onClick={() => setShowAllCrew(true)} 
+                              className="btn-see-more"
+                            >
+                              See More
+                            </button>
+                          )}
+                          {showAllCrew && otherCrew.length > 5 && (
+                            <button 
+                              onClick={() => setShowAllCrew(false)} 
+                              className="btn-see-more"
+                            >
+                              See Less
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    ) : (
+                      <p>No crew found</p>
+                    )}
+                  </div>
                 </div>
               </section>
             </div>
@@ -285,6 +358,31 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
         </div>
       </div>
 
+      <div className="container my-4">
+        <div className="d-flex justify-content-between align-items-center">
+          <h4>Top Billed Cast</h4>
+        </div>
+
+        <div className="movie-list-container my-3">
+          <div className="movie-list d-flex flex-wrap">
+            {movieDetails?.credits?.cast?.map((castMember) => (
+              <div key={castMember.id} className="movie-card mx-2">
+                <img
+                  src={castMember.profile_path
+                    ? `https://image.tmdb.org/t/p/w138_and_h175_face${castMember.profile_path}`
+                    : "/default-profile.jpg"}
+                  alt={castMember.name || "Unknown name"}
+                />
+                <div className="cast-info mt-2 text-center">
+                  <h6>{castMember.name}</h6>
+                  <p>{castMember.character}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+  
       {loadingReviews ? (
         <div className="loading-container">
           <CircularProgress sx={{ color: "#1976d2" }} />
