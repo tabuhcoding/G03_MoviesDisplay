@@ -271,9 +271,10 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
       );
       const result = await response.json();
       console.log("Movie recommendations for this movie:", result);
+      console.log("Same Genre:", result.data[0].movies);
 
       if (result.success && Array.isArray(result.data)) {
-        setMovieRecommendations(result.data); 
+        setMovieRecommendations(result.data[0].movies); 
       } else {
         console.error("Invalid data format:", result);
         setMovieRecommendations([]); 
