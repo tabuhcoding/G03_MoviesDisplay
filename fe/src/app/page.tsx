@@ -99,7 +99,7 @@ export default function Home() {
                         ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
                         : "https://via.placeholder.com/150"
                     }
-                    alt={movie.title}
+                    alt={movie.title || "Unknown title"}
                     style={{
                       width: "100%",
                       height: "170px",
