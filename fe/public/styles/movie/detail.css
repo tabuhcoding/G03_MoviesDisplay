@@ -222,12 +222,12 @@ body {
 }
 
 .re-movie-card img {
-  width: 250px;
+  width: 240px;
   height: 141px;
   object-fit: cover;
   border-radius: 10px;
 }
-.cast-info {
+.re-info {
   display: flex;
   justify-content: space-between;
   align-items: center;  
@@ -238,4 +238,12 @@ body {
   white-space: nowrap; 
   overflow: hidden; 
   text-overflow: ellipsis; 
+}
+
+.re-list-container {
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
 }

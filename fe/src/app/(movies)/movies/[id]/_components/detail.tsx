@@ -16,7 +16,6 @@ import "@public/styles/movie/detail.css";
 import { END_POINT_URL_LIST } from "@/src/util/constant";
 import PopupDialog from "@/src/components/popupDialog";
 import { formatDateStringToDDMMYYY, formatRunTimeToHHMM } from "@/src/util/helpers";
-
 interface MovieDetailProps {
   movieDetails: {
     id: string;
@@ -240,17 +239,28 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
   const [recommendations, setRecommendations] = useState<any>([]); // Collection 1 từ /movies/recommendations
   const [movieRecommendations, setMovieRecommendations] = useState<Movie[]>([]); // 3 Collection từ /movies/:id/recommendations
   const [loadingRecommendations, setLoadingRecommendations] = useState<boolean>(true);
+  const [loadingRecommendationsUser, setLoadingRecommendationsUser] = useState<boolean>(true);
 
   // Fetch general movie recommendations based on the user
   const fetchRecommendations = async () => {
     if (!user) return; // Nếu chưa có user thì không gọi API
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/movies/recommendations?email=${user.email}`);
-      const data = await response.json();
-      console.log('Movies recommendations:', data);
-      setRecommendations(data); 
+      const result = await response.json();
+      console.log('Movies recommendations:', result);
+
+      if (result.success && Array.isArray(result.data)) {
+        setRecommendations(result.data); 
+      } else {
+        console.error("Invalid data format:", result);
+        setRecommendations([]); 
+      }
+
     } catch (error) {
-      console.error("Failed to fetch recommendations:", error);
+      console.error("Error fetching movie recommendations:", error);
+      setRecommendations([]);
+    } finally {
+      setLoadingRecommendationsUser(false);
     }
   };
 
@@ -504,12 +514,41 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
 
       <hr></hr> 
       <div className="container my-4">
+        <h4>Movie recommendations</h4>
+        {loadingRecommendationsUser ? (
+          <CircularProgress />
+        ) : (
+          Array.isArray(recommendations) && recommendations.length > 0 ? (
+            <div className="re-list-container my-3">
+              <div className="movie-list d-flex flex-wrap">
+                {recommendations.map((movie) => (
+                  <div key={movie.id} className="re-movie-card mx-2">
+                    <img
+                      src={movie.poster_path ? `https://media.themoviedb.org/t/p/w500_and_h282_face${movie.poster_path}` : "default-image.jpg"}
+                      alt={movie.title || "Unknown name"}
+                    />
+                    <div className="re-info mt-2 d-flex justify-content-between">
+                      <h6 className="cast-name">{movie.title}</h6>
+                      <p className="mt-2">{(movie.vote_average * 10).toFixed(0)}%</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <p>No recommendations available</p>
+          )
+        )}
+      </div>
+
+      <hr></hr> 
+      <div className="container my-4">
         <h4>Movie recommendations for this movie</h4>
         {loadingRecommendations ? (
           <CircularProgress />
         ) : (
           Array.isArray(movieRecommendations) && movieRecommendations.length > 0 ? (
-            <div className="movie-list-container my-3">
+            <div className="re-list-container my-3">
               <div className="movie-list d-flex flex-wrap">
                 {movieRecommendations.map((movie) => (
                   <div key={movie.id} className="re-movie-card mx-2">
@@ -517,7 +556,7 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
                       src={movie.poster_path ? `https://media.themoviedb.org/t/p/w500_and_h282_face${movie.poster_path}` : "default-image.jpg"}
                       alt={movie.title || "Unknown name"}
                     />
-                    <div className="cast-info mt-2 d-flex justify-content-between">
+                    <div className="re-info mt-2 d-flex justify-content-between">
                       <h6 className="cast-name">{movie.title}</h6>
                       <p className="mt-2">{(movie.vote_average * 10).toFixed(0)}%</p>
                     </div>
