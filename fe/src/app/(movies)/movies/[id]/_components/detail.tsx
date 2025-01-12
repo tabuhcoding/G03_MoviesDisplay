@@ -275,15 +275,18 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
       if (result.success && Array.isArray(result.data)) {
         setMovieSameGenres(result.data[0].movies); 
         setMovieSameKeyword(result.data[1].movies);
+        setMovieSameCollection(result.data[2].movies);
       } else {
         console.error("Invalid data format:", result);
         setMovieSameGenres([]); 
         setMovieSameKeyword([]); 
+        setMovieSameCollection([]); 
       }
     } catch (error) {
       console.error("Error fetching movie recommendations:", error);
       setMovieSameGenres([]);
       setMovieSameKeyword([]); 
+      setMovieSameCollection([]); 
     } finally {
       setLoadingRecommendations(false);
     }
@@ -583,6 +586,35 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
             <div className="re-list-container my-3">
               <div className="movie-list d-flex flex-wrap">
                 {movieSameKeyword.map((movie) => (
+                  <div key={movie.id} className="re-movie-card mx-2" onClick={() => router.push(`/movies/${movie.id}`)}>
+                    <img
+                      src={movie.poster_path ? `https://media.themoviedb.org/t/p/w500_and_h282_face${movie.poster_path}` : "https://via.placeholder.com/150"}
+                      alt={movie.title || "Unknown name"}
+                    />
+                    <div className="re-info mt-2 d-flex justify-content-between">
+                      <h6 className="cast-name">{movie.title}</h6>
+                      <p className="mt-2">{(movie.vote_average * 10).toFixed(0)}%</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <p>No recommendations available</p>
+          )
+        )}
+      </div>
+
+      <hr></hr> 
+      <div className="container my-4">
+        <h4>Recommendations by Collection</h4>
+        {loadingRecommendations ? (
+          <CircularProgress />
+        ) : (
+          Array.isArray(movieSameCollection) && movieSameCollection.length > 0 ? (
+            <div className="re-list-container my-3">
+              <div className="movie-list d-flex flex-wrap">
+                {movieSameCollection.map((movie) => (
                   <div key={movie.id} className="re-movie-card mx-2" onClick={() => router.push(`/movies/${movie.id}`)}>
                     <img
                       src={movie.poster_path ? `https://media.themoviedb.org/t/p/w500_and_h282_face${movie.poster_path}` : "https://via.placeholder.com/150"}
