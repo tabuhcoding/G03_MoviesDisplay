@@ -236,8 +236,10 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
     }
   };  
 
-  const [recommendations, setRecommendations] = useState<any>([]); // Collection 1 từ /movies/recommendations
-  const [movieRecommendations, setMovieRecommendations] = useState<Movie[]>([]); // 3 Collection từ /movies/:id/recommendations
+  const [recommendations, setRecommendations] = useState<any>([]); 
+  const [movieSameGenres, setMovieSameGenres] = useState<Movie[]>([]); 
+  const [movieSameKeyword, setMovieSameKeyword] = useState<Movie[]>([]); 
+  const [movieSameCollection, setMovieSameCollection] = useState<Movie[]>([]); 
   const [loadingRecommendations, setLoadingRecommendations] = useState<boolean>(true);
   const [loadingRecommendationsUser, setLoadingRecommendationsUser] = useState<boolean>(true);
 
@@ -274,14 +276,14 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
       console.log("Same Genre:", result.data[0].movies);
 
       if (result.success && Array.isArray(result.data)) {
-        setMovieRecommendations(result.data[0].movies); 
+        setMovieSameGenres(result.data[0].movies); 
       } else {
         console.error("Invalid data format:", result);
-        setMovieRecommendations([]); 
+        setMovieSameGenres([]); 
       }
     } catch (error) {
       console.error("Error fetching movie recommendations:", error);
-      setMovieRecommendations([]);
+      setMovieSameGenres([]);
     } finally {
       setLoadingRecommendations(false);
     }
@@ -515,7 +517,7 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
 
       <hr></hr> 
       <div className="container my-4">
-        <h4>Movie recommendations</h4>
+        <h4>Recommendations</h4>
         {loadingRecommendationsUser ? (
           <CircularProgress />
         ) : (
@@ -544,14 +546,14 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
 
       <hr></hr> 
       <div className="container my-4">
-        <h4>Movie recommendations for this movie</h4>
+        <h4>Recommendations by Genre</h4>
         {loadingRecommendations ? (
           <CircularProgress />
         ) : (
-          Array.isArray(movieRecommendations) && movieRecommendations.length > 0 ? (
+          Array.isArray(movieSameGenres) && movieSameGenres.length > 0 ? (
             <div className="re-list-container my-3">
               <div className="movie-list d-flex flex-wrap">
-                {movieRecommendations.map((movie) => (
+                {movieSameGenres.map((movie) => (
                   <div key={movie.id} className="re-movie-card mx-2" onClick={() => router.push(`/movies/${movie.id}`)}>
                     <img
                       src={movie.poster_path ? `https://media.themoviedb.org/t/p/w500_and_h282_face${movie.poster_path}` : "https://via.placeholder.com/150"}
