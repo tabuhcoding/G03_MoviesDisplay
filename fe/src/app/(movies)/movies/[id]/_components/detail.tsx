@@ -370,7 +370,7 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
                 <img
                   src={castMember.profile_path
                     ? `https://image.tmdb.org/t/p/w138_and_h175_face${castMember.profile_path}`
-                    : "/default-profile.jpg"}
+                    : "https://res.cloudinary.com/de66mx8mw/image/upload/v1736666809/default-avatar-icon-of-social-media-user-vector.jpg.jpg?fbclid=IwZXh0bgNhZW0CMTAAAR37lSGPto_VWXAA1Y3MuumOfrd9p10OuqhxbrceKPMJTiNhxBvZCVzPCkA_aem_sW5L9fte01p2H5iziCBEog"}
                   alt={castMember.name || "Unknown name"}
                 />
                 <div className="cast-info mt-2 text-center">
