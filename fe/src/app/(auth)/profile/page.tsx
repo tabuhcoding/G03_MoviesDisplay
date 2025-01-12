@@ -1,7 +1,7 @@
 'use client';
 
 /* Package System */
-import { useEffect, useState, Dispatch, SetStateAction, ChangeEvent, useCallback, FC } from 'react';
+import { useEffect, useState, Dispatch, SetStateAction, ChangeEvent, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Avatar, CircularProgress } from "@mui/material";
 import { User } from "lucide-react";
@@ -12,97 +12,9 @@ import { useAuth } from "@context/authContext";
 import "@public/styles/user/profile.css";
 import { END_POINT_URL_LIST } from '@/src/util/constant';
 import { AvatarUploadDialog } from './_component/avatarDialog';
-
-interface Rating {
-  title: string;
-  poster_path: string;
-  id: string;
-  rating: number;
-  reviews: string;
-  createdAt: string;
-}
-
-interface RatingsListProps {
-  ratings: Rating[];
-  onEdit?: (rating: Rating) => void;
-}
-
-interface FormatDateToDDMMYYYY {
-  (isoString: string): string;
-}
-
-const formatDate = (dateString: string) => {
-  if (!dateString) return "";
-  const date = new Date(dateString);
-  return new Intl.DateTimeFormat('en-US', {
-    month: 'long',
-    year: 'numeric'
-  }).format(date);
-};
-
-const formatDateToDDMMYYYY: FormatDateToDDMMYYYY = (isoString) => {
-  const date = new Date(isoString);
-  const day = String(date.getDate()).padStart(2, '0');
-  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-  const year = date.getFullYear();
-  const hours = String(date.getHours()).padStart(2, '0');
-  const minutes = String(date.getMinutes()).padStart(2, '0');
-  const seconds = String(date.getSeconds()).padStart(2, '0');
-  return `${hours}:${minutes}:${seconds} ${day}/${month}/${year}`;
-};
-
-const RatingsList: FC<RatingsListProps> = ({ ratings }) => {
-  const MAX_CONTENT_LENGTH = 100;
-  const [expandedRatingIds, setExpandedRatingIds] = useState<string[]>([]);
-
-  const toggleExpand = (id: string) => {
-    setExpandedRatingIds((prev) =>
-      prev.includes(id) ? prev.filter((ratingId) => ratingId !== id) : [...prev, id]
-    );
-  };
-
-  return (
-    <div className="rating-list">
-      {ratings.map((rating) => {
-        const isExpanded = expandedRatingIds.includes(rating.id);
-        const content =
-          rating.reviews.length > MAX_CONTENT_LENGTH && !isExpanded
-            ? rating.reviews.slice(0, MAX_CONTENT_LENGTH) + "..."
-            : rating.reviews;
-
-        return (
-          <div key={rating.id} className="rating-item">
-            <div className="rating-header">
-              <img
-                src={
-                  rating.poster_path
-                    ? `https://image.tmdb.org/t/p/w500${rating.poster_path}`
-                    : "https://via.placeholder.com/150"
-                }
-                alt={rating.title}
-                className="movie-poster"
-              />
-              <div className="movie-info">
-                <strong>{rating.title}</strong>
-                <p className="rating-score">Rating: {rating.rating}/10</p>
-                <p><strong>Reviews: </strong>{content}</p>
-                {rating.reviews.length > MAX_CONTENT_LENGTH && (
-                  <button
-                    onClick={() => toggleExpand(rating.id)}
-                    className="see-more-button"
-                  >
-                    {isExpanded ? "Hide" : "Read More"}
-                  </button>
-                )}
-                <small>{formatDateToDDMMYYYY(rating.createdAt)}</small>
-              </div>
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-};
+import { formatDateToMonthYYYY } from '@/src/util/helpers';
+import MovieCard from '../../(movies)/movies/[id]/_components/moviesCard';
+import RatingsList from './_component/ratingList';
 
 export default function Profile() {
   const { userInfo: user, isLogin, login } = useAuth();
@@ -301,9 +213,7 @@ export default function Profile() {
               <CircularProgress sx={{ color: "#1976d2" }} />
             </div>
           ) : ratings.length > 0 ? (
-            <RatingsList
-              ratings={ratings}
-            />
+            <RatingsList ratings = {ratings} />
           ) : (
             <p>You haven&apos;t rated any movies.</p>
           )}
@@ -339,36 +249,7 @@ export default function Profile() {
                 </div>
               ) : (
                 <div className="movie-list d-flex flex-wrap">
-                  {watchlist.length > 0 ? (
-                    watchlist.map((movie) => (
-                      <div
-                        onClick={() => router.push(`/movies/${movie.id}`)}
-                        className="movie-card mx-2"
-                        key={movie.id}
-                      >
-                        <img
-                          src={
-                            movie.poster_path
-                              ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-                              : "https://via.placeholder.com/150"
-                          }
-                          alt={movie.title}
-                          style={{
-                            width: "150px",
-                            height: "225px",
-                            objectFit: "cover",
-                            borderRadius: "8px"
-                          }}
-                        />
-                        <div className="movie-info mt-2 text-center">
-                          <h6>{movie.title}</h6>
-                          <p><strong>Added: </strong>{formatDate(movie.createdAt)}</p>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <p>You haven&apos;t added any movies to your watchlist.</p>
-                  )}
+                  <MovieCard movies={watchlist}  emptyMessage='You haven&apos;t added any movies to your watchlist.'/>
                 </div>
               )}
             </section>
@@ -406,36 +287,7 @@ export default function Profile() {
                 </div>
               ) : (
                 <div className="movie-list d-flex flex-wrap">
-                  {favorites.length > 0 ? (
-                    favorites.map((movie) => (
-                      <div
-                        onClick={() => router.push(`/movies/${movie.id}`)}
-                        className="movie-card mx-2"
-                        key={movie.id}
-                      >
-                        <img
-                          src={
-                            movie.poster_path
-                              ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-                              : "https://via.placeholder.com/150"
-                          }
-                          alt={movie.title}
-                          style={{
-                            width: "150px",
-                            height: "225px",
-                            objectFit: "cover",
-                            borderRadius: "8px"
-                          }}
-                        />
-                        <div className="movie-info mt-2 text-center">
-                          <h6>{movie.title}</h6>
-                          <p><strong>Added: </strong>{formatDate(movie.createdAt)}</p>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <p>You haven&apos;t added any movies to your favorites list.</p>
-                  )}
+                  <MovieCard movies={favorites}  emptyMessage='You haven&apos;t added any movies to your watchlist.'/>
                 </div>
               )}
             </section>
@@ -461,10 +313,10 @@ export default function Profile() {
               </Avatar>
             </span>
             <div className='user_info'>
-              <div className='about_me'>
+              <div style={{marginLeft:'100px'}} className='about_me'>
                 <div className='content_wrapper flex'>
                   <h2>{user.username ?? ''}</h2>
-                  <h3>Member since {formatDate(user?.createdAt ?? '')}</h3>
+                  <h3>Member since {formatDateToMonthYYYY(user?.createdAt ?? '')}</h3>
                 </div>
                 <div className='content_wrapper flex'>
                   <span>Email: {user?.email ?? ''}</span>
