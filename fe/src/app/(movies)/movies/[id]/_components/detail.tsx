@@ -131,7 +131,7 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
 
         <div className="movie-list-container my-3">
           <div className="movie-list d-flex flex-wrap">
-            {movieDetails?.credits?.cast?.slice(0, 5).map((castMember) => (
+            {movieDetails?.credits?.cast?.map((castMember) => (
               <div key={castMember.id} className="movie-card mx-2">
                 <img
                   src={castMember.profile_path
