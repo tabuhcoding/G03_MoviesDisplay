@@ -184,6 +184,7 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
       if (response.ok) {
         setDialogType("success");
         setDialogMessage("Added rating and review successfully!");
+        window.location.reload();
       } else {
         setDialogType("error");
         setDialogMessage("Failed to add rating and review. Please try again.");
@@ -219,13 +220,19 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
       });
   
       if (response.ok) {
-        console.log("Review updated successfully!");
+        setDialogType("success");
+        setDialogMessage("Updated rating and review successfully!");
         window.location.reload();
       } else {
-        console.error("Failed to update review.");
+        setDialogType("error");
+        setDialogMessage("Failed to update rating and review. Please try again.");
       }
     } catch (error) {
-      console.error("Failed to update review:", error);
+      console.log(error);
+      setDialogType("error");
+      setDialogMessage("Failed to add rating and review. Please try again.");
+    } finally {
+      setDialogOpen(true);
     }
   };  
 
