@@ -79,24 +79,24 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
   const [userReview, setUserReview] = useState<Review | null>(null);
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
-  const fetchReviews = async () => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/movies/${movieDetails.id}`);
-      const data = await response.json();
-      const reviews = data.data.reviews ?? [];
-      const currentUserReview = reviews.find((review: Review) => review.author_details.username === user.email);
-      setUserReview(currentUserReview ?? null);
-      setReviews(data.data.reviews ?? []);
-    } catch (error) {
-      console.error("Failed to fetch reviews:", error);
-    } finally {
-      setLoadingReviews(false);
-    }
-  };
-
   useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/movies/${movieDetails.id}`);
+        const data = await response.json();
+        const reviews = data.data.reviews ?? [];
+        const currentUserReview = reviews.find((review: Review) => review.author_details.username === user.email);
+        setUserReview(currentUserReview ?? null);
+        setReviews(data.data.reviews ?? []);
+      } catch (error) {
+        console.error("Failed to fetch reviews:", error);
+      } finally {
+        setLoadingReviews(false);
+      }
+    };
+
     fetchReviews();
-  });
+  }, [movieDetails.id, user.email]);
 
   const imageUrl = `https://media.themoviedb.org/t/p/original${movieDetails?.backdrop_path ??
     movieDetails?.poster_path ??
@@ -366,11 +366,12 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
         <div className="movie-list-container my-3">
           <div className="movie-list d-flex flex-wrap">
             {movieDetails?.credits?.cast?.map((castMember) => (
-              <div key={castMember.id} className="movie-card mx-2">
+              <div key={castMember.id} className="movie-card mx-2" onClick={() => router.push(`/people/${castMember.id}`)
+              }>
                 <img
                   src={castMember.profile_path
                     ? `https://image.tmdb.org/t/p/w138_and_h175_face${castMember.profile_path}`
-                    : "/default-profile.jpg"}
+                    : "https://res.cloudinary.com/de66mx8mw/image/upload/v1736666809/default-avatar-icon-of-social-media-user-vector.jpg.jpg"}
                   alt={castMember.name || "Unknown name"}
                 />
                 <div className="cast-info mt-2 text-center">
