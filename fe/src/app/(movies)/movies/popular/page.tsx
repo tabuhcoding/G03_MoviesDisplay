@@ -35,32 +35,32 @@ export default function PopularMovies() {
     setIsLoading(true);
     await new Promise((resolve) => setTimeout(resolve, 500));
     switch (sortOrder) {
-      case "popularity.desc":
-        setMovies(movies.sort((a, b) => b.popularity - a.popularity));
-        break;
-      case "popularity.asc":
-        setMovies(movies.sort((a, b) => a.popularity - b.popularity));
-        break;
-      case "vote_average.asc":
-        setMovies(movies.sort((a, b) => a.vote_average - b.vote_average));
-        break;
-      case "vote_average.desc":
-        setMovies(movies.sort((a, b) => b.vote_average - a.vote_average));
-        break;
-      case "release_date.asc":
-        setMovies(movies.sort((a, b) => new Date(a.release_date).getTime() - new Date(b.release_date).getTime()));
-        break;
-      case "release_date.desc":
-        setMovies(movies.sort((a, b) => new Date(b.release_date).getTime() - new Date(a.release_date).getTime()));
-        break;
-      case "title.asc":
-        setMovies(movies.sort((a, b) => a.title.localeCompare(b.title)));
-        break;
-      case "title.desc":
-        setMovies(movies.sort((a, b) => b.title.localeCompare(a.title)));
-        break;
-      default:
-        break;
+    case "popularity.desc":
+      setMovies(movies.sort((a, b) => b.popularity - a.popularity));
+      break;
+    case "popularity.asc":
+      setMovies(movies.sort((a, b) => a.popularity - b.popularity));
+      break;
+    case "vote_average.asc":
+      setMovies(movies.sort((a, b) => a.vote_average - b.vote_average));
+      break;
+    case "vote_average.desc":
+      setMovies(movies.sort((a, b) => b.vote_average - a.vote_average));
+      break;
+    case "release_date.asc":
+      setMovies(movies.sort((a, b) => new Date(a.release_date).getTime() - new Date(b.release_date).getTime()));
+      break;
+    case "release_date.desc":
+      setMovies(movies.sort((a, b) => new Date(b.release_date).getTime() - new Date(a.release_date).getTime()));
+      break;
+    case "title.asc":
+      setMovies(movies.sort((a, b) => a.title.localeCompare(b.title)));
+      break;
+    case "title.desc":
+      setMovies(movies.sort((a, b) => b.title.localeCompare(a.title)));
+      break;
+    default:
+      break;
     }
     setIsLoading(false);
   }
@@ -74,7 +74,7 @@ export default function PopularMovies() {
     if (movies.length > 0) {
       sortMovies(sortOrder);
     }
-  }, [sortOrder]);
+  });
 
   const fetchPopularMovies = async () => {
     setIsLoading(true);
@@ -154,7 +154,7 @@ export default function PopularMovies() {
                         movies.map((movie) => (
                           <div
                             onClick={() => router.push(`/movies/${movie.id}`)}
-                            className="movie-card mx-2"
+                            className="movie-card mx-2 cus-list-card"
                             key={movie.id}
                           >
                             <img
@@ -171,9 +171,19 @@ export default function PopularMovies() {
                                 borderRadius: "8px"
                               }}
                             />
-                            <div className="movie-info mt-2 text-center">
+                            <div className="movie-info mt-4 text-center">
                               <h6>{movie.title}</h6>
                               <p>{formatDateToMonthDayYear(movie.release_date) || "Unknown"}</p>
+                            </div>
+                            <div
+                              className="rating container-rating-movie-list"
+                              style={{
+                                background: `conic-gradient(#4caf50 ${(movie.vote_average * 10) * 3.6}deg, #e0e0e0 0deg)`
+                              }}
+                            >
+                              <span className='circle-rating-movie-list'>
+                                {(movie.vote_average * 10).toFixed(0)}%
+                              </span>
                             </div>
                           </div>
                         ))
