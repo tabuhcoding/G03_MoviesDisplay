@@ -16,6 +16,7 @@ export interface Movie {
   release_date: string;
   vote_average: number;
   vote_count: number;
+  trailer_key?: string; 
 }
 
 export default function Home() {
@@ -53,8 +54,37 @@ export default function Home() {
     }
   }, [active]);
 
+  // Fetch Latest Trailers
+  const fetchLatestTrailers = async (query: 'popular' | 'intheater') => {
+    setLoading(true);
+    setError({} as ErrorData);
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}${END_POINT_URL_LIST.LASTEST_TRAILER}?query=${query}`
+      );
+      const trailers = Array.isArray(response.data.data) ? response.data.data : []; // Kiểm tra trailers có phải là mảng
+      setMovies(prevMovies => {
+        return prevMovies.map(movie => {
+          const trailer = trailers.find((trailer: any) => trailer.movie_id === movie.id);
+          return trailer ? { ...movie, trailer_key: trailer.key } : movie; // Gán trailer key cho mỗi phim
+        });
+      });
+    } catch (err: any) {
+      console.error("Error fetching trailers:", err);
+      const errorData = {
+        message: err.response?.data?.message?.message as string || "Failed to fetch trailers",
+        detail: "Backend Error: " + err.response?.data?.message?.details || "Unknown error occurred",
+        statusCode: err.response?.data?.message?.statusCode?.toString() as string || "500" as string
+      };
+      setError(errorData);
+    } finally {
+      setLoading(false);
+    }
+  };  
+
   useEffect(() => {
     fetchTrendingMovies();
+    fetchLatestTrailers('popular');
   }, [fetchTrendingMovies]);
 
   return (
@@ -127,19 +157,20 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Latest Trailers Section */}
       <div className="container my-4">
         <div className="d-flex justify-content-between align-items-center">
           <h4>Latest Trailers</h4>
           <div className="toggle-switch">
             <button
               className={`toggle-btn ${active === "day" ? "active" : ""}`}
-              onClick={() => setActive("day")}
+              onClick={() => fetchLatestTrailers('popular')}
             >
               Popular
             </button>
             <button
               className={`toggle-btn ${active === "week" ? "active" : ""}`}
-              onClick={() => setActive("week")}
+              onClick={() => fetchLatestTrailers('intheater')}
             >
               In Theaters
             </button>
@@ -150,12 +181,12 @@ export default function Home() {
           {loading ? (
             <p>Loading...</p>
           ) : error?.message ? (
-            <ErrorHandling error={error} callback={fetchTrendingMovies} />
+            <ErrorHandling error={error} callback={() => fetchLatestTrailers} />
           ) : (
             <div className="movie-list d-flex flex-wrap">
               {movies.map((movie) => (
                 <div key={movie.id} className="movie-card mx-2 cus-card">
-                  {movies.length > 0 ? (
+                  {movie.trailer_key ? (
                     <div className="trailer-video">
                       <iframe
                         width="100%"
