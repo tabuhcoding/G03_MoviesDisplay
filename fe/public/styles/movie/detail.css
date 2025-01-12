@@ -169,3 +169,35 @@ body {
   font-size: 0.875rem;
   color: #555;
 }
+/* Container for the buttons */
+.see-more-container {
+  margin-top: 10px; 
+  text-align: center; 
+}
+
+/* Style for buttons */
+.btn-see-more {
+  background: linear-gradient(90deg, #5eead4, #02b7db);
+  color: #003d80; 
+  border: none;
+  padding: 10px 20px; 
+  cursor: pointer;
+  border-radius: 25px; 
+  font-size: 14px;
+  font-weight: bold;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease; 
+}
+
+/* Hover effect */
+.btn-see-more:hover {
+  background: linear-gradient(90deg, #0056b3, #003d80); 
+  color: white;
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); 
+  transform: translateY(-2px); 
+}
+
+.btn-see-more:active {
+  transform: translateY(0); 
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.15); 
+}

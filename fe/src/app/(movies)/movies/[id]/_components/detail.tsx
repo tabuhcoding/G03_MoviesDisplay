@@ -33,7 +33,13 @@ interface MovieDetailProps {
         character: string;
         profile_path: string | null;
       }[];
-      crew: any[];
+      crew: {
+        id: number;
+        name: string;
+        job: string;
+        department: string;
+        profile_path: string | null;
+      }[];
     };
   };
 }
@@ -74,11 +80,17 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
     }
   }, [color]);
 
+  // Filter Director and Other Crews
+  const director = movieDetails?.credits?.crew?.filter(member => member.job === "Director");
+  const otherCrew = movieDetails?.credits?.crew?.filter(member => member.job !== "Director");
+
+  const [showAllCrew, setShowAllCrew] = useState(false);
+  const visibleCrew = showAllCrew ? otherCrew : otherCrew.slice(0, 10);
+
   return (
     <>
       <div
         className="custom-bg"
-        // style={{ backgroundImage: `url(https://media.themoviedb.org/t/p/original${movieDetails?.belongs_to_collection?.backdrop_path ?? movieDetails?.belongs_to_collection?.poster_path ?? movieDetails.backdrop_path ?? movieDetails.poster_path})` }}
         style={{
           backgroundImage: `url(${imageUrl})`,
           backgroundColor: bgColor,
@@ -116,6 +128,57 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
                   <h3 className="h3-overview" dir="auto">Overview</h3>
                   <div className="overview">
                     <p>{movieDetails.overview}</p>
+                  </div>
+
+                  {/* Display Director */}
+                  <h3 className="h3-overview" dir="auto">Director </h3>
+                  <div className="overview">
+                    {director && director.length > 0 ? (
+                      director.map(directorMember => (
+                        <p key={directorMember.id}>
+                          {directorMember.name}
+                        </p>
+                      ))
+                    ) : (
+                      <p>No director found</p>
+                    )}
+                  </div>
+
+                  {/* Display Other Crews */}
+                  <h3 className="h3-overview" dir="auto">Other Crew</h3>
+                  <div className="overview">
+                    {otherCrew && otherCrew.length > 0 ? (
+                      <p>
+                        {visibleCrew.map((crewMember, index) => (
+                          <span key={crewMember.id}>
+                            {crewMember.name} ({crewMember.job})
+                            {index < visibleCrew.length - 1 && ", "}
+                          </span>
+                        ))}
+                        
+                        {/* Conditionally render the 'See More' or 'See Less' button with line breaks */}
+                        <div className="see-more-container">
+                          {!showAllCrew && otherCrew.length > 5 && (
+                            <button 
+                              onClick={() => setShowAllCrew(true)} 
+                              className="btn-see-more"
+                            >
+                              See More
+                            </button>
+                          )}
+                          {showAllCrew && otherCrew.length > 5 && (
+                            <button 
+                              onClick={() => setShowAllCrew(false)} 
+                              className="btn-see-more"
+                            >
+                              See Less
+                            </button>
+                          )}
+                        </div>
+                      </p>
+                    ) : (
+                      <p>No crew found</p>
+                    )}
                   </div>
                 </div>
               </section>
