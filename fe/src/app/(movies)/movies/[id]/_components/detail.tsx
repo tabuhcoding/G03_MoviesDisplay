@@ -148,9 +148,9 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
                   <h3 className="h3-overview" dir="auto">Other Crew</h3>
                   <div className="overview">
                     {otherCrew && otherCrew.length > 0 ? (
-                      <p>
+                      <div>
                         {visibleCrew.map((crewMember, index) => (
-                          <span key={crewMember.id}>
+                          <span key={`${crewMember.id}-${index}`}>
                             {crewMember.name} ({crewMember.job})
                             {index < visibleCrew.length - 1 && ", "}
                           </span>
@@ -175,7 +175,7 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
                             </button>
                           )}
                         </div>
-                      </p>
+                      </div>
                     ) : (
                       <p>No crew found</p>
                     )}
