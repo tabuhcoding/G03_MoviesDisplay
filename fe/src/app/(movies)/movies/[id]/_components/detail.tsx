@@ -447,6 +447,8 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
         dialogCommand1="Login"
         dialogCommand2="Close"
       />
+
+      <hr></hr> 
     </>
   )
 }
