@@ -74,7 +74,7 @@ export default function NowPlayingMovies() {
     if (movies.length > 0) {
       sortMovies(sortOrder);
     }
-  }, [movies, sortOrder]);
+  }, [sortOrder]);
 
   const fetchPopularMovies = async () => {
     setIsLoading(true);
