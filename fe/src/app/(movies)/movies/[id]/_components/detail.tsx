@@ -524,7 +524,7 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
                 {recommendations.map((movie) => (
                   <div key={movie.id} className="re-movie-card mx-2">
                     <img
-                      src={movie.poster_path ? `https://media.themoviedb.org/t/p/w500_and_h282_face${movie.poster_path}` : "default-image.jpg"}
+                      src={movie.poster_path ? `https://media.themoviedb.org/t/p/w500_and_h282_face${movie.poster_path}` : "https://via.placeholder.com/150"}
                       alt={movie.title || "Unknown name"}
                     />
                     <div className="re-info mt-2 d-flex justify-content-between">
@@ -553,7 +553,7 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
                 {movieRecommendations.map((movie) => (
                   <div key={movie.id} className="re-movie-card mx-2">
                     <img
-                      src={movie.poster_path ? `https://media.themoviedb.org/t/p/w500_and_h282_face${movie.poster_path}` : "default-image.jpg"}
+                      src={movie.poster_path ? `https://media.themoviedb.org/t/p/w500_and_h282_face${movie.poster_path}` : "https://via.placeholder.com/150"}
                       alt={movie.title || "Unknown name"}
                     />
                     <div className="re-info mt-2 d-flex justify-content-between">
