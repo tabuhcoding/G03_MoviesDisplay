@@ -36,6 +36,7 @@ async function fetchMovieDetails(id: string) {
 async function MovieContent({ id }: { id: string }) {
   try {
     const movieDetails = await fetchMovieDetails(id);
+    console.log(movieDetails);
     return <MovieDetail movieDetails={movieDetails} />;
   } catch (error) {
     const err = error as ErrorData;
