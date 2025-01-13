@@ -99,4 +99,10 @@ export class UserController {
   async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
     return this.userService.resetPassword(resetPasswordDto);
   }
+
+  @Post('send-otp')
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async sendOTP(@Body() body: { email: string }) {
+    return this.userService.sendOTP(body.email);
+  }
 }
