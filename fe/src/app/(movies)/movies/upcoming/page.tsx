@@ -2,7 +2,6 @@
 
 /* Package System */
 import { useEffect, useState, ChangeEvent } from "react";
-import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -10,7 +9,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { END_POINT_URL_LIST } from "@/src/util/constant";
 import { ErrorData, ErrorHandling } from "@components/errorHandling";
 import '@public/styles/movie/upcoming.css'
-import { formatDateToMonthDayYear } from "@/src/util/helpers";
+import MovieList from "../[id]/_components/moviesList";
 
 export interface Movie {
   id: string;
@@ -24,7 +23,6 @@ export interface Movie {
 }
 
 export default function UpcomingMovies() {
-  const router = useRouter();
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<ErrorData>({} as ErrorData);
@@ -151,42 +149,7 @@ export default function UpcomingMovies() {
                   <section id="media_results" className="panel results movie-list-container">
                     <div className="movie-list d-flex flex-wrap">
                       {movies.length > 0 && (
-                        movies.map((movie) => (
-                          <div
-                            onClick={() => router.push(`/movies/${movie.id}`)}
-                            className="movie-card mx-2 cus-list-card"
-                            key={movie.id}
-                          >
-                            <img
-                              src={
-                                movie.poster_path
-                                  ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-                                  : "https://via.placeholder.com/150"
-                              }
-                              alt={movie.title}
-                              style={{
-                                width: "150px",
-                                height: "225px",
-                                objectFit: "cover",
-                                borderRadius: "8px"
-                              }}
-                            />
-                            <div className="movie-info mt-4 text-center">
-                              <h6>{movie.title}</h6>
-                              <p>{formatDateToMonthDayYear(movie.release_date) || "Unknown"}</p>
-                            </div>
-                            <div
-                              className="rating container-rating-movie-list"
-                              style={{
-                                background: `conic-gradient(#4caf50 ${(movie.vote_average * 10) * 3.6}deg, #e0e0e0 0deg)`
-                              }}
-                            >
-                              <span className='circle-rating-movie-list'>
-                                {(movie.vote_average * 10).toFixed(0)}%
-                              </span>
-                            </div>
-                          </div>
-                        ))
+                        <MovieList movies={movies} />
                       )}
                     </div>
                   </section>
