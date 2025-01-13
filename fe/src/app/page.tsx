@@ -16,6 +16,14 @@ export interface Movie {
   release_date: string;
   vote_average: number;
   vote_count: number;
+  trailer_key?: string; 
+}
+
+export interface MovieLastest {
+  moviesID: string;
+  original_title: string;
+  key: string;
+  name: string;
 }
 
 export default function Home() {
@@ -25,6 +33,9 @@ export default function Home() {
   const [error, setError] = useState<ErrorData>({} as ErrorData);
   const [loading, setLoading] = useState(false);
   const [movies, setMovies] = useState<Movie[]>([]);
+  const [trailerMovies, setTrailerMovies] = useState<MovieLastest[]>([]);
+  const [activeTrailers, setActiveTrailers] = useState<'popular' | 'intheater'>('popular');
+  const [isPlaying, setIsPlaying] = useState<string | null>(null);
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
@@ -53,9 +64,37 @@ export default function Home() {
     }
   }, [active]);
 
+  // Fetch Latest Trailers
+  const fetchLatestTrailers = useCallback(async (query: 'popular' | 'intheater') => {
+    setLoading(true);
+    setError({} as ErrorData);
+    try {
+      const response = await axios.get(
+        'http://localhost:3001/movies/lastest-trailers', {
+          params: {
+            query
+          }
+        }
+      );
+      const trailers = response.data.data; 
+      setTrailerMovies(trailers);
+    } catch (err: any) {
+      console.error("Error fetching trailers:", err);
+      const errorData = {
+        message: err.response?.data?.message?.message as string || "Failed to fetch trailers",
+        detail: "Backend Error: " + err.response?.data?.message?.details || "Unknown error occurred",
+        statusCode: err.response?.data?.message?.statusCode?.toString() as string || "500" as string
+      };
+      setError(errorData);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     fetchTrendingMovies();
-  }, [fetchTrendingMovies]);
+    fetchLatestTrailers(activeTrailers);
+  }, [fetchTrendingMovies, fetchLatestTrailers, activeTrailers]);
 
   return (
     <>
@@ -126,6 +165,82 @@ export default function Home() {
           )}
         </div>
       </div>
+
+      <hr></hr>
+
+      {/* Latest Trailers Section */}
+      <div className="container my-4">
+        <div className="d-flex justify-content-between align-items-center">
+          <h4>Latest Trailers</h4>
+          <div className="toggle-switch">
+            <button
+              className={`toggle-btn ${activeTrailers === "popular" ? "active" : ""}`}
+              onClick={() => setActiveTrailers('popular')}
+            >
+              Popular
+            </button>
+            <button
+              className={`toggle-btn ${activeTrailers === "intheater" ? "active" : ""}`}
+              onClick={() => setActiveTrailers('intheater')}
+            >
+              In Theaters
+            </button>
+          </div>
+        </div>
+
+        <div className="movie-list-container my-3">
+          {loading ? (
+            <p>Loading...</p>
+          ) : error?.message ? (
+            <ErrorHandling error={error} callback={() => fetchLatestTrailers(activeTrailers)} />
+          ) : (
+            <div className="movie-list d-flex flex-wrap">
+              {trailerMovies.map((movie) => (
+                <div
+                  key={movie.moviesID}
+                  onClick={() => setIsPlaying(movie.key)}
+                  className="movie-card-trailer mx-2 cus-card"
+                >
+                  <img
+                    src={`https://img.youtube.com/vi/${movie.key}/0.jpg`} 
+                    alt={movie.original_title}
+                    className="img-fluid"
+                  />
+                  <div>
+                    <button className="btn btn-play">Play</button>
+                  </div>
+                  <div className="movie-info mt-2 text-center" onClick={() => router.push(`/movies/${movie.moviesID}`)}>
+                    <h6>{movie.original_title}</h6>
+                    <p>{movie.name || "Unknown"}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Show the iframe in a modal if a trailer is being played */}
+      {isPlaying && (
+        <div className="trailer-overlay">
+          <div className="trailer-modal">
+            <iframe
+              width="80%"
+              height="450"
+              src={`https://www.youtube.com/embed/${isPlaying}`}
+              frameBorder="0"
+              allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+            <button
+              onClick={() => setIsPlaying(null)}  // Close the trailer modal
+              className="close-button"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 }
