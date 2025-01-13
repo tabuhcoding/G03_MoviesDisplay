@@ -55,3 +55,20 @@ export const formatDateToMonthYYYY = (dateString: string) => {
     year: 'numeric'
   }).format(date);
 };
+
+export const calcAgeYYYYMMDD = (dateString: string) => {
+  const birthDate = new Date(dateString);
+  const today = new Date();
+
+  let age = today.getFullYear() - birthDate.getFullYear();
+
+  const hasBirthdayPassed =
+    today.getMonth() > birthDate.getMonth() || 
+    (today.getMonth() === birthDate.getMonth() && today.getDate() >= birthDate.getDate());
+
+  if (!hasBirthdayPassed) {
+    age--;
+  }
+
+  return age;
+}
