@@ -24,7 +24,7 @@
   align-content: flex-start;
 }
 
-.filter_panel {
+.sort_panel {
   min-width: 260px;
   width: 260px;
   border: 1px solid #e3e3e3;
@@ -41,7 +41,7 @@
   background-color: #fff;
 }
 
-.filter_panel .name {
+.sort_panel .name {
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -50,13 +50,13 @@
   padding: 14px 16px;
 }
 
-.filter_panel .filter {
+.sort_panel .sort_by {
   width: 100%;
   border-top: 1px solid #eee;
   padding: 14px 16px 16px;
 }
 
-.filter_panel .filter h5 {
+.sort_panel .sort_by h5 {
   display: inline-flex;
   align-items: center;
   width: 100%;
@@ -65,7 +65,7 @@
   margin-bottom: 10px;
 }
 
-.filter_panel .filter .form-select {
+.sort_panel .sort_by .form-select {
   background-color: #e9ecef;
   border: 1px solid #ced4da;
   border-radius: 8px;
@@ -76,7 +76,7 @@
   margin-top: 10px;
 }
 
-.filter_panel .filter .form-select:focus {
+.sort_panel .sort_by .form-select:focus {
   border-color: #80bdff;
   outline: 0;
   box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
@@ -85,7 +85,7 @@
 
 .apply-btn {
   width: 100%;
-  background-color: lightblue;
+  background-color: #00a0d8;
   margin-top: 20px;
   display: flex;
   justify-content: center;
@@ -93,6 +93,17 @@
   align-content: center;
   border-radius: 20px;
   height: 44px;
+  cursor: pointer;
+  border: none;
+}
+
+.apply-btn.disabled {
+  background-color: #ccc;
+  pointer-events: none;
+}
+
+.apply-btn:hover {
+  background-color: #3b10b2;
 }
 
 .apply-btn p,
@@ -240,4 +251,105 @@ section.panel:first-of-type {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.filter_panel {
+  min-width: 260px;
+  width: 260px;
+  border: 1px solid #e3e3e3;
+  border-radius: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.filter_panel .name {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  align-items: center;
+  padding: 14px 16px;
+}
+
+.filter_panel .filter_release_date {
+  width: 100%;
+  border-top: 1px solid #eee;
+  padding: 14px 16px 16px;
+}
+
+.filter_panel .filter_release_date h5,
+.filter_panel .filter_genres h5 {
+  display: inline-flex;
+  align-items: center;
+  width: 100%;
+  font-size: 1em;
+  font-weight: 300;
+  margin-bottom: 10px;
+}
+
+.filter_release_date,
+.filter_genres
+{
+  border-top: 1px solid #ddd;
+  padding: 16px;
+  background-color: #fff;
+}
+
+.filter_release_date h5,
+.filter_genres h5
+{
+  margin-bottom: 16px;
+}
+
+.filter_release_date .form-control,
+.filter_genres .form-control
+{
+  border: 1px solid #ced4da;
+  padding: 10px;
+  font-size: 14px;
+  color: #495057;
+}
+
+.filter_release_date .form-control:focus,
+.filter_genres .form-control:focus
+{
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.filter_panel .filter_release_date label {
+  display: inline-flex;
+  align-items: center;
+  font-size: .8em;
+  font-weight: 300;
+  margin-bottom: 10px;
+  width: 20%;
+}
+
+.genres-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.genre-button {
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  background-color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.genre-button:hover {
+  background-color: #00a0d8;
+  color: #fff;
+}
+
+.genre-button.selected {
+  background-color: #00a0d8;
+  color: #fff;
+  border-color: #00a0d8;
 }
