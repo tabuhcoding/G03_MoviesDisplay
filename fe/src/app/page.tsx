@@ -60,13 +60,20 @@ export default function Home() {
     setError({} as ErrorData);
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}${END_POINT_URL_LIST.LASTEST_TRAILER}?query=${query}`
-      );
-      const trailers = Array.isArray(response.data.data) ? response.data.data : []; // Kiểm tra trailers có phải là mảng
+        'http://localhost:3001/movies/lastest-trailers', {
+          params: {
+            query: 'popular'
+          }
+        }
+      );      
+
+      const trailers = Array.isArray(response.data.data) ? response.data.data : []; 
+      console.log("Trailers: ", trailers)
+
       setMovies(prevMovies => {
         return prevMovies.map(movie => {
           const trailer = trailers.find((trailer: any) => trailer.movie_id === movie.id);
-          return trailer ? { ...movie, trailer_key: trailer.key } : movie; // Gán trailer key cho mỗi phim
+          return trailer ? { ...movie, trailer_key: trailer.key } : movie; 
         });
       });
     } catch (err: any) {
@@ -191,7 +198,7 @@ export default function Home() {
                       <iframe
                         width="100%"
                         height="200"
-                        src={`https://www.youtube.com/embed/`}
+                        src={`https://media.themoviedb.org/t/p/w355_and_h200_multi_faces/xBrx6O1RIhjtWmVthZIANuQz7Z2.jpg`}
                         frameBorder="0"
                         allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
