@@ -22,3 +22,12 @@
     border: none;
     transition: background 0.5s ease, color 0.5s ease;
 }
+
+.form-select {
+    width: 150px;
+}
+
+.btn-search {
+    transition: all 0.3s ease;
+}
+

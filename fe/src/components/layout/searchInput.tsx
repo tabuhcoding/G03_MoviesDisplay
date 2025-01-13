@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent } from "react";
+import { ChangeEvent, useState } from "react";
 import "@styles/Searchbar.css";
 
 interface SearchInputProps {
@@ -10,6 +10,8 @@ interface SearchInputProps {
 }
 
 const SearchInput: React.FC<SearchInputProps> = ({ value, onChange, onSubmit }) => {
+  const [searchType2, setSearchType2] = useState('movies'); 
+
   return (
     <div className="p-5 text-center bg-image bg-image-search">
       <div className="mask mask-style">
@@ -26,6 +28,40 @@ const SearchInput: React.FC<SearchInputProps> = ({ value, onChange, onSubmit }) 
                 value={value}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => onChange(e.target.value)}
               />
+              <button
+                className="btn btn-outline-light btn-lg btn-search"
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'linear-gradient(to right, rgb(30, 213, 169), rgb(1, 180, 228))';
+                  e.currentTarget.style.color = '#01647e';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'linear-gradient(to right, rgba(30, 213, 169, 0.7), rgba(1, 180, 228, 0.7))';
+                  e.currentTarget.style.color = '#fff';
+                }}
+              >
+                Search
+              </button>
+            </form>
+
+            {/* Thanh tìm kiếm thứ hai với lựa chọn "Movies" và "People" */}
+            <form className="d-flex mt-4" role="search" onSubmit={onSubmit}>
+              <input
+                className="form-control me-2"
+                type="search"
+                placeholder="Search"
+                aria-label="Search"
+                value={value}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => onChange(e.target.value)}
+              />
+              {/* Dropdown để chọn loại tìm kiếm */}
+              <select
+                className="form-select me-2"
+                value={searchType2}
+                onChange={(e) => setSearchType2(e.target.value)}
+              >
+                <option value="movies">Movies</option>
+                <option value="people">People</option>
+              </select>
               <button
                 className="btn btn-outline-light btn-lg btn-search"
                 onMouseEnter={(e) => {
