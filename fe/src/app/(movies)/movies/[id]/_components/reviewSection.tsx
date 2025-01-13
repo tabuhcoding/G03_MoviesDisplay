@@ -135,7 +135,7 @@ export const ReviewList: FC<{ reviews: Review[]; currentUserEmail: string; onEdi
           <div key={review.id} className="review-item">
             <div className="review-header">
               <img
-                src={review.author_details.avatar_path || "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"}
+                src={review.author_details.avatar_path || "https://res.cloudinary.com/de66mx8mw/image/upload/v1736666809/default-avatar-icon-of-social-media-user-vector.jpg.jpg"}
                 alt={review.author_details.name}
                 className="avatar"
               />
