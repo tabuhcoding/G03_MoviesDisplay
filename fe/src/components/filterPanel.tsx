@@ -4,12 +4,18 @@
 import { FC } from "react";
 
 interface FilterPanelProps {
+  // filter by date
   fromDate: Date | null;
   toDate: Date | null;
   onFromDateChange: (newDate: Date | null) => void;
   onToDateChange: (newDate: Date | null) => void;
   isFilterChanged: boolean;
   onFilterSubmit: () => void;
+
+  // filter by genres
+  genres: { id: number; name: string }[];
+  selectedGenres: number[];
+  onToggleGenre: (id: number) => void;
 }
 
 const FilterPanel: FC<FilterPanelProps> = ({
@@ -18,7 +24,10 @@ const FilterPanel: FC<FilterPanelProps> = ({
   onFromDateChange,
   onToDateChange,
   isFilterChanged,
-  onFilterSubmit
+  onFilterSubmit,
+  genres,
+  selectedGenres,
+  onToggleGenre
 }) => {
   return (
     <>
@@ -62,6 +71,17 @@ const FilterPanel: FC<FilterPanelProps> = ({
         </div>
         <div className="filter_genres">
           <h5>Genres</h5>
+          <div className="genres-container">
+            {genres.map((genre) => (
+              <button
+                key={genre.id}
+                onClick={() => onToggleGenre(genre.id)}
+                className={`genre-button ${selectedGenres.includes(genre.id) ? "selected" : ""}`}
+              >
+                {genre.name}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
       <button
