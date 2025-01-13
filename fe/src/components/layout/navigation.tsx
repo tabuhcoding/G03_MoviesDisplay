@@ -16,6 +16,7 @@ const Navigation: React.FC = () => {
   const { userInfo, isLogin, logout } = useAuth();
   const router = useRouter();
   const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const [isMovieDropdownOpen, setMovieDropdownOpen] = useState(false);
 
   const handleProfileClick = () => {
     router.push("/profile");
@@ -25,15 +26,24 @@ const Navigation: React.FC = () => {
     setDropdownOpen(prev => !prev); // Toggle dropdown state
   };
 
+  const movieToggleDown = () => {
+    setMovieDropdownOpen(prev => !prev);
+  }
+
   const closeDropdown = () => {
     setDropdownOpen(false); // Close dropdown when clicking outside
   };
+
+  const closeMovieDropdown = () => {
+    setMovieDropdownOpen(false);
+  }
 
   useEffect(() => {
     // Add event listener to close dropdown if clicked outside
     const handleClickOutside = (event: MouseEvent) => {
       if ((event.target as HTMLElement).closest('.dropdown') === null) {
         closeDropdown();
+        closeMovieDropdown();
       }
     };
 
@@ -63,10 +73,10 @@ const Navigation: React.FC = () => {
               <Link href="/" className="nav-link" style={{ color: "white" }}>Home</Link>
             </li>
             <li className="nav-item dropdown">
-              <Link href="#" className="nav-link dropdown-toggle" role="button" aria-expanded="false" style={{ color: "white" }}>
+              <Link onClick={movieToggleDown} href="#" className="nav-link dropdown-toggle" role="button" aria-expanded="false" style={{ color: "white" }}>
                 Movies
               </Link>
-              <ul className="dropdown-menu">
+              <ul style={{right: '-60px'}} className={`dropdown-menu ${isMovieDropdownOpen ? 'show' : ''}`}>
                 <li><Link href="/movies/popular" className="dropdown-item">Popular</Link></li>
                 <li><hr className="dropdown-divider" /></li>
                 <li><Link href="/movies/now-playing" className="dropdown-item">Now playing</Link></li>

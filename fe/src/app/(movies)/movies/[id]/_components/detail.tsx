@@ -89,24 +89,24 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [active, setActive] = useState('genre');
 
-  const fetchReviews = async () => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/movies/${movieDetails.id}`);
-      const data = await response.json();
-      const reviews = data.data.reviews ?? [];
-      const currentUserReview = reviews.find((review: Review) => review.author_details.username === user.email);
-      setUserReview(currentUserReview ?? null);
-      setReviews(data.data.reviews ?? []);
-    } catch (error) {
-      console.error("Failed to fetch reviews:", error);
-    } finally {
-      setLoadingReviews(false);
-    }
-  };
-
   useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/movies/${movieDetails.id}`);
+        const data = await response.json();
+        const reviews = data.data.reviews ?? [];
+        const currentUserReview = reviews.find((review: Review) => review.author_details.username === user.email);
+        setUserReview(currentUserReview ?? null);
+        setReviews(data.data.reviews ?? []);
+      } catch (error) {
+        console.error("Failed to fetch reviews:", error);
+      } finally {
+        setLoadingReviews(false);
+      }
+    };
+
     fetchReviews();
-  });
+  }, [movieDetails.id, user.email]);
 
   const imageUrl = `https://media.themoviedb.org/t/p/original${movieDetails?.backdrop_path ??
     movieDetails?.poster_path ??
@@ -323,7 +323,7 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
             <div className="poster-wrapper">
               <Image
                 className="movie-poster"
-                src={`https://media.themoviedb.org/t/p/w300_and_h450_bestv2${movieDetails.poster_path}`}
+                src={`https://media.themoviedb.org/t/p/w300_and_h450_bestv2${movieDetails.poster_path ?? movieDetails.belongs_to_collection?.poster_path}`}
                 alt={movieDetails.title}
                 width={300}
                 height={450}
@@ -444,11 +444,12 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
         <div className="movie-list-container my-3">
           <div className="movie-list d-flex flex-wrap">
             {movieDetails?.credits?.cast?.map((castMember) => (
-              <div key={castMember.id} className="movie-card mx-2">
+              <div key={castMember.id} className="movie-card mx-2" onClick={() => router.push(`/people/${castMember.id}`)
+              }>
                 <img
                   src={castMember.profile_path
                     ? `https://image.tmdb.org/t/p/w138_and_h175_face${castMember.profile_path}`
-                    : "https://res.cloudinary.com/de66mx8mw/image/upload/v1736666809/default-avatar-icon-of-social-media-user-vector.jpg.jpg?fbclid=IwZXh0bgNhZW0CMTAAAR37lSGPto_VWXAA1Y3MuumOfrd9p10OuqhxbrceKPMJTiNhxBvZCVzPCkA_aem_sW5L9fte01p2H5iziCBEog"}
+                    : "https://res.cloudinary.com/de66mx8mw/image/upload/v1736666809/default-avatar-icon-of-social-media-user-vector.jpg.jpg"}
                   alt={castMember.name || "Unknown name"}
                 />
                 <div className="cast-info mt-2 text-center">

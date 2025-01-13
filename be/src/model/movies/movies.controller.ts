@@ -27,7 +27,6 @@ export class MoviesController {
 
   @Get('upcoming')
   async getUpcomingMovies(@Query('page') page: number) {
-    console.log('page:', page);
     return await this.moviesService.getUpcomingMovies(page);
   }
 
