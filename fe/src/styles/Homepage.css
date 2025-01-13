@@ -163,3 +163,7 @@
   align-items: center;
   justify-content: center;
 }
+
+.video-frame {
+  border-radius: 10px;
+}

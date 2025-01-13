@@ -205,6 +205,7 @@ export default function Home() {
                         frameBorder="0"
                         allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
+                        className="video-frame"
                       ></iframe>
                       <div className="movie-info text-center">
                         <h6>{movie.original_title}</h6>
