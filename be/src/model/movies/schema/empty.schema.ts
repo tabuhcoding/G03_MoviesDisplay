@@ -21,6 +21,8 @@ export class Movies extends Document {
     backdrop_path: string;
   };
   keywords: [{ id: Number, name: string }];
+  original_title: string;
+  title: string;
 }
 
 @Schema({ collection: 'scrap_movies_upcoming', strict: false })
