@@ -53,25 +53,41 @@ export class MoviesRepository {
 
   async searchMovies(query: string, page: number): Promise<any> {
     try {
-      const { data } = await axios.get(`${this.baseUrl}/search/movie`, {
-        params: {
-          api_key: this.apiKey,
-          query,
-          page,
-          include_adult: false,
-          language: 'en-US',
-        },
+      console.log("Query:", query);
+      const nomalQuery = query.toLowerCase();
+
+      // Tìm kết quả khớp với truy vấn
+      const results = await this.moviesNoSQLModel
+        .find({
+          $or: [
+            { title: { $regex: nomalQuery, $options: "i" } },
+            { original_title: { $regex: nomalQuery, $options: "i" } },
+          ],
+        })
+        .skip((page - 1) * 20)
+        .limit(20)
+        .exec();
+
+      // Đếm tổng số bản ghi khớp với truy vấn
+      const totalRecords = await this.moviesNoSQLModel.countDocuments({
+        $or: [
+          { title: { $regex: nomalQuery, $options: "i" } },
+          { original_title: { $regex: nomalQuery, $options: "i" } },
+        ],
       });
-      return data;
-      // return await this.moviesNoSQLModel
-      //   .find({ name: { $regex: query, $options: 'i' } })
-      //   .skip(((page - 1) * 10) >> 0)
-      //   .limit(10)
-      //   .exec();
+
+      // Tính tổng số trang
+      const totalPages = Math.ceil(totalRecords / 20);
+
+      return { results, totalPages };
     } catch (error) {
-      this.handleApiError(error, 'Failed to fetch movie search results');
+      console.error("Error:", error);
+      this.handleApiError(error, "Failed to fetch movie search results");
+      throw error;
     }
   }
+  
+
 
   async fetchGenres() {
     try{

@@ -39,8 +39,9 @@ export default function SearchPage() {
             params: { query, page }
           }
         );
+        console.log("response", response.data);
         setMovies(response.data.data.results || []);
-        setTotalPages(response.data.data.total_pages || 1);
+        setTotalPages(response.data.data.totalPages || 1);
       } catch (error) {
         console.error("Error fetching movies:", error);
       } finally {
@@ -53,7 +54,7 @@ export default function SearchPage() {
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const inputQuery = (e.target as HTMLFormElement).searchInput.value.trim();
+    const inputQuery = (e.target as HTMLFormElement).searchInput?.value.trim();
     if (inputQuery) {
       router.push(`/movies/search?query=${inputQuery}&page=1`);
     }
