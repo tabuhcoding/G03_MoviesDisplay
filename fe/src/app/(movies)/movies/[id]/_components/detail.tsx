@@ -17,6 +17,8 @@ import "@public/styles/movie/detail.css";
 import { END_POINT_URL_LIST } from "@/src/util/constant";
 import PopupDialog from "@/src/components/popupDialog";
 import { formatDateStringToDDMMYYY, formatRunTimeToHHMM } from "@/src/util/helpers";
+import MovieRecommendations from "./movieRecommendations";
+
 interface MovieDetailProps {
   movieDetails: {
     id: string;
@@ -110,7 +112,7 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
     movieDetails?.poster_path ??
     movieDetails?.belongs_to_collection?.backdrop_path ??
     movieDetails?.belongs_to_collection?.poster_path
-  }`;
+    }`;
 
   const { data: color } = useColor(imageUrl, "rgbArray", {
     crossOrigin: "anonymous",
@@ -192,7 +194,7 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
       if (response.ok) {
         setDialogType("success");
         setDialogMessage("Added rating and review successfully!");
-        
+
       } else {
         setDialogType("error");
         setDialogMessage("Failed to add rating and review. Please try again.");
@@ -221,7 +223,7 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
         },
         body: JSON.stringify({ movieId, email, rating, reviews: review })
       });
-  
+
       if (response.ok) {
         setDialogType("success");
         setDialogMessage("Updated rating and review successfully!");
@@ -236,27 +238,27 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
     } finally {
       setDialogOpen(true);
     }
-  };  
+  };
 
-  const [recommendations, setRecommendations] = useState<any>([]); 
-  const [movieSameGenres, setMovieSameGenres] = useState<Movie[]>([]); 
-  const [movieSameKeyword, setMovieSameKeyword] = useState<Movie[]>([]); 
-  const [movieSameCollection, setMovieSameCollection] = useState<Movie[]>([]); 
+  const [recommendations, setRecommendations] = useState<any>([]);
+  const [movieSameGenres, setMovieSameGenres] = useState<Movie[]>([]);
+  const [movieSameKeyword, setMovieSameKeyword] = useState<Movie[]>([]);
+  const [movieSameCollection, setMovieSameCollection] = useState<Movie[]>([]);
   const [loadingRecommendations, setLoadingRecommendations] = useState<boolean>(true);
   const [loadingRecommendationsUser, setLoadingRecommendationsUser] = useState<boolean>(true);
 
   // Fetch general movie recommendations based on the user
   const fetchRecommendations = async () => {
-    if (!user) return; 
+    if (!user) return;
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/movies/recommendations?email=${user.email}`);
       const result = await response.json();
 
       if (result.success && Array.isArray(result.data)) {
-        setRecommendations(result.data); 
+        setRecommendations(result.data);
       } else {
         console.error("Invalid data format:", result);
-        setRecommendations([]); 
+        setRecommendations([]);
       }
 
     } catch (error) {
@@ -275,20 +277,20 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
       const result = await response.json();
 
       if (result.success && Array.isArray(result.data)) {
-        setMovieSameGenres(result.data[0].movies); 
+        setMovieSameGenres(result.data[0].movies);
         setMovieSameKeyword(result.data[1].movies);
         setMovieSameCollection(result.data[2].movies);
       } else {
         console.error("Invalid data format:", result);
-        setMovieSameGenres([]); 
-        setMovieSameKeyword([]); 
-        setMovieSameCollection([]); 
+        setMovieSameGenres([]);
+        setMovieSameKeyword([]);
+        setMovieSameCollection([]);
       }
     } catch (error) {
       console.error("Error fetching movie recommendations:", error);
       setMovieSameGenres([]);
-      setMovieSameKeyword([]); 
-      setMovieSameCollection([]); 
+      setMovieSameKeyword([]);
+      setMovieSameCollection([]);
     } finally {
       setLoadingRecommendations(false);
     }
@@ -296,11 +298,15 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
 
   useEffect(() => {
     fetchRecommendations();
-    
+
     if (movieDetails?.id) {
-      fetchMovieRecommendations(movieDetails.id); 
+      fetchMovieRecommendations(movieDetails.id);
     }
   }, [movieDetails]);
+
+  const handleMovieClick = (movieId: string) => {
+    router.push(`/movies/${movieId}`);
+  };
 
   return (
     <>
@@ -398,20 +404,20 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
                             {index < visibleCrew.length - 1 && ", "}
                           </span>
                         ))}
-                        
+
                         {/* Conditionally render the 'See More' or 'See Less' button with line breaks */}
                         <div className="see-more-container">
                           {!showAllCrew && otherCrew.length > 5 && (
-                            <button 
-                              onClick={() => setShowAllCrew(true)} 
+                            <button
+                              onClick={() => setShowAllCrew(true)}
                               className="btn-see-more"
                             >
                               See More
                             </button>
                           )}
                           {showAllCrew && otherCrew.length > 5 && (
-                            <button 
-                              onClick={() => setShowAllCrew(false)} 
+                            <button
+                              onClick={() => setShowAllCrew(false)}
                               className="btn-see-more"
                             >
                               See Less
@@ -454,7 +460,7 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
           </div>
         </div>
       </div>
-  
+
       {loadingReviews ? (
         <div className="loading-container">
           <CircularProgress sx={{ color: "#1976d2" }} />
@@ -520,126 +526,33 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
         dialogCommand2="Close"
       />
 
-      <hr></hr> 
-      <div className="container my-4">
-        <h4>Recommendations</h4>
-        {loadingRecommendationsUser ? (
-          <CircularProgress />
-        ) : (
-          Array.isArray(recommendations) && recommendations.length > 0 ? (
-            <div className="re-list-container my-3">
-              <div className="movie-list d-flex flex-wrap">
-                {recommendations.map((movie) => (
-                  <div key={movie.id} className="re-movie-card mx-2" onClick={() => router.push(`/movies/${movie.id}`)}>
-                    <img
-                      src={movie.poster_path ? `https://media.themoviedb.org/t/p/w500_and_h282_face${movie.poster_path}` : "https://via.placeholder.com/150"}
-                      alt={movie.title || "Unknown name"}
-                    />
-                    <div className="re-info mt-2 d-flex justify-content-between">
-                      <h6 className="cast-name">{movie.title}</h6>
-                      <p className="mt-2">{(movie.vote_average * 10).toFixed(0)}%</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ) : (
-            <p>No recommendations available because there are no movies on WatchList & Favorite List</p>
-          )
-        )}
-      </div>
+      <hr />
+      
+      <MovieRecommendations
+        loadingRecommendations={loadingRecommendations || loadingRecommendationsUser}
+        recommendations={recommendations}
+        onMovieClick={handleMovieClick}
+        showTitle="Recommendations"
+      />
 
-      <div className="container my-4">
-        <div className="toggle-switch mb-4" style={{width: '280px'}}>
-          <button
-            className={`toggle-btn ${active === "genre" ? "active" : ""}`}
-            onClick={() => setActive("genre")}
-          >
-            Genre
-          </button>
-          <button
-            className={`toggle-btn ${active === "keyword" ? "active" : ""}`}
-            onClick={() => setActive("keyword")}
-          >
-            Keyword
-          </button>
-          <button
-            className={`toggle-btn ${active === "collection" ? "active" : ""}`}
-            onClick={() => setActive("collection")}
-          >
-            Collection
-          </button>
+      <div className="container">
+        <div className="toggle-switch mt-4 mb-2" style={{ width: '280px' }}>
+          <button className={`toggle-btn ${active === "genre" ? "active" : ""}`} onClick={() => setActive("genre")}>Genre</button>
+          <button className={`toggle-btn ${active === "keyword" ? "active" : ""}`} onClick={() => setActive("keyword")}>Keyword</button>
+          <button className={`toggle-btn ${active === "collection" ? "active" : ""}`} onClick={() => setActive("collection")}>Collection</button>
         </div>
-
-        {loadingRecommendations ? (
-          <CircularProgress />
-        ) : (
-          active === "genre" ? (
-            Array.isArray(movieSameGenres) && movieSameGenres.length > 0 ? (
-              <div className="re-list-container my-3">
-                <div className="movie-list d-flex flex-wrap">
-                  {movieSameGenres.map((movie) => (
-                    <div key={movie.id} className="re-movie-card mx-2" onClick={() => router.push(`/movies/${movie.id}`)}>
-                      <img
-                        src={movie.poster_path ? `https://media.themoviedb.org/t/p/w500_and_h282_face${movie.poster_path}` : "https://via.placeholder.com/150"}
-                        alt={movie.title || "Unknown name"}
-                      />
-                      <div className="re-info mt-2 d-flex justify-content-between">
-                        <h6 className="cast-name">{movie.title}</h6>
-                        <p className="mt-2">{(movie.vote_average * 10).toFixed(0)}%</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <p>No recommendations available</p>
-            )
-          ) : active === "keyword" ? (
-            Array.isArray(movieSameKeyword) && movieSameKeyword.length > 0 ? (
-              <div className="re-list-container my-3">
-                <div className="movie-list d-flex flex-wrap">
-                  {movieSameKeyword.map((movie) => (
-                    <div key={movie.id} className="re-movie-card mx-2" onClick={() => router.push(`/movies/${movie.id}`)}>
-                      <img
-                        src={movie.poster_path ? `https://media.themoviedb.org/t/p/w500_and_h282_face${movie.poster_path}` : "https://via.placeholder.com/150"}
-                        alt={movie.title || "Unknown name"}
-                      />
-                      <div className="re-info mt-2 d-flex justify-content-between">
-                        <h6 className="cast-name">{movie.title}</h6>
-                        <p className="mt-2">{(movie.vote_average * 10).toFixed(0)}%</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <p>No recommendations available</p>
-            )
-          ) : active === "collection" ? (
-            Array.isArray(movieSameCollection) && movieSameCollection.length > 0 ? (
-              <div className="re-list-container my-3">
-                <div className="movie-list d-flex flex-wrap">
-                  {movieSameCollection.map((movie) => (
-                    <div key={movie.id} className="re-movie-card mx-2" onClick={() => router.push(`/movies/${movie.id}`)}>
-                      <img
-                        src={movie.poster_path ? `https://media.themoviedb.org/t/p/w500_and_h282_face${movie.poster_path}` : "https://via.placeholder.com/150"}
-                        alt={movie.title || "Unknown name"}
-                      />
-                      <div className="re-info mt-2 d-flex justify-content-between">
-                        <h6 className="cast-name">{movie.title}</h6>
-                        <p className="mt-2">{(movie.vote_average * 10).toFixed(0)}%</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <p>No recommendations available</p>
-            )
-          ) : null
-        )}
       </div>
+
+      <MovieRecommendations
+        loadingRecommendations={loadingRecommendations || loadingRecommendationsUser}
+        recommendations={recommendations}
+        active={active}
+        movieSameGenres={movieSameGenres}
+        movieSameKeyword={movieSameKeyword}
+        movieSameCollection={movieSameCollection}
+        onMovieClick={handleMovieClick}
+        showTitle=""
+      />
     </>
   )
 }
