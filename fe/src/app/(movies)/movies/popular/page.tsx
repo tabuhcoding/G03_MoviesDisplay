@@ -24,6 +24,7 @@ export interface Movie {
   release_date: string;
   popularity: number;
   vote_average: number;
+  vote_count: number;
 }
 
 export default function PopularMovies() {
@@ -43,6 +44,14 @@ export default function PopularMovies() {
   const [selectedGenres, setSelectedGenres] = useState<number[]>([]);
   const [initialSelectedGenres, setInitialSelectedGenres] = useState<number[]>([]);
 
+  // filter by user score
+  const [userScore, setUserScore] = useState<[number, number]>([0, 10]);
+  const [initialUserScore, setInitialUserScore] = useState<[number, number]>([0, 10]);
+
+  // filter by minimum user votes
+  const [minVotes, setMinVotes] = useState<number>(0);
+  const [initialMinVotes, setInitialMinVotes] = useState<number>(0);
+
   const [isFilterChanged, setIsFilterChanged] = useState(false);
 
   const handleFromDateChange = (newDate: Date | null) => {
@@ -53,16 +62,26 @@ export default function PopularMovies() {
     setToDate(newDate);
   }
 
+  const handleUserScoreChange = (newRange: [number, number]) => {
+    setUserScore(newRange);
+  };
+  
+  const handleMinVotesChange = (newValue: number) => {
+    setMinVotes(newValue);
+  };
+
   useEffect(() => {
     const hasChanged =
-      fromDate !== initialFromDate || toDate !== initialToDate || !arraysAreEqual(selectedGenres, initialSelectedGenres);
+      fromDate !== initialFromDate || toDate !== initialToDate || !arraysAreEqual(selectedGenres, initialSelectedGenres) || !arraysAreEqual(userScore, initialUserScore) || minVotes !== initialMinVotes;
     setIsFilterChanged(hasChanged);
-  }, [fromDate, toDate, initialFromDate, initialToDate, selectedGenres, initialSelectedGenres]);
+  }, [fromDate, toDate, initialFromDate, initialToDate, selectedGenres, initialSelectedGenres, userScore, initialUserScore, minVotes, initialMinVotes]);
 
   const handleFilterSubmit = () => {
     setInitialFromDate(fromDate);
     setInitialToDate(toDate);
-    setInitialSelectedGenres([...selectedGenres]); 
+    setInitialSelectedGenres([...selectedGenres]);
+    setInitialUserScore([...userScore]);
+    setInitialMinVotes(minVotes); 
 
     setIsFilterChanged(false);
     filterMovies();
@@ -105,6 +124,13 @@ export default function PopularMovies() {
         selectedGenres.some((genreId) => movie.genre_ids.includes(genreId))
       );
     }
+
+    tempMovies = tempMovies.filter(
+      (movie) =>
+        movie.vote_average >= userScore[0] &&
+        movie.vote_average <= userScore[1] &&
+        movie.vote_count >= minVotes
+    );
 
     setMovies(tempMovies);
     setIsLoading(false);
@@ -198,11 +224,15 @@ export default function PopularMovies() {
                 toDate={toDate}
                 onFromDateChange={handleFromDateChange}
                 onToDateChange={handleToDateChange}
-                isFilterChanged={isFilterChanged}
-                onFilterSubmit={handleFilterSubmit}
                 genres={genres}
                 selectedGenres={selectedGenres}
                 onToggleGenre={toggleGenre}
+                userScore={userScore}
+                onUserScoreChange={handleUserScoreChange}
+                minVotes={minVotes}
+                onMinVotesChange={handleMinVotesChange}
+                isFilterChanged={isFilterChanged}
+                onFilterSubmit={handleFilterSubmit}
               />
             </div>
             <div style={{ width: '100%' }}>

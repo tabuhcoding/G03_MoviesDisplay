@@ -152,7 +152,7 @@ section.panel:first-of-type {
 }
 
 .movie-list-container {
-  max-height: 750px;
+  max-height: 1215px;
   overflow-y: auto;
   padding: 10px;
   border: 1px solid #ddd;
@@ -280,7 +280,10 @@ section.panel:first-of-type {
 }
 
 .filter_panel .filter_release_date h5,
-.filter_panel .filter_genres h5 {
+.filter_panel .filter_genres h5,
+.filter_panel .filter_user_score h5,
+.filter_genres .filter_min_votes h5
+{
   display: inline-flex;
   align-items: center;
   width: 100%;
@@ -290,7 +293,9 @@ section.panel:first-of-type {
 }
 
 .filter_release_date,
-.filter_genres
+.filter_genres,
+.filter_user_score,
+.filter_min_votes
 {
   border-top: 1px solid #ddd;
   padding: 16px;
@@ -298,13 +303,17 @@ section.panel:first-of-type {
 }
 
 .filter_release_date h5,
-.filter_genres h5
+.filter_genres h5,
+.filter_user_score h5,
+.filter_min_votes h5
 {
   margin-bottom: 16px;
 }
 
 .filter_release_date .form-control,
-.filter_genres .form-control
+.filter_genres .form-control,
+.filter_user_score .form-control,
+.filter_min_votes .form-control
 {
   border: 1px solid #ced4da;
   padding: 10px;
@@ -313,7 +322,9 @@ section.panel:first-of-type {
 }
 
 .filter_release_date .form-control:focus,
-.filter_genres .form-control:focus
+.filter_genres .form-control:focus,
+.filter_user_score .form-control:focus,
+.filter_min_votes .form-control:focus
 {
   border-color: #80bdff;
   box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
@@ -352,4 +363,16 @@ section.panel:first-of-type {
   background-color: #00a0d8;
   color: #fff;
   border-color: #00a0d8;
+}
+
+.slider-values {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+  font-size: 14px;
+  color: #555;
+}
+
+.slider-values span {
+  font-weight: 600;
 }
