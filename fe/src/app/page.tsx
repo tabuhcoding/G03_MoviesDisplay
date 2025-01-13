@@ -19,6 +19,13 @@ export interface Movie {
   trailer_key?: string; 
 }
 
+export interface MovieLastest {
+  moviesID: string;
+  original_title: string;
+  key: string;
+  name: string;
+}
+
 export default function Home() {
   const router = useRouter();
   const [active, setActive] = useState<string>("day");
@@ -26,6 +33,8 @@ export default function Home() {
   const [error, setError] = useState<ErrorData>({} as ErrorData);
   const [loading, setLoading] = useState(false);
   const [movies, setMovies] = useState<Movie[]>([]);
+  const [trailerMovies, setTrailerMovies] = useState<MovieLastest[]>([]);
+  const [activeTrailers, setActiveTrailers] = useState<'popular' | 'intheater'>('popular');
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
@@ -55,27 +64,19 @@ export default function Home() {
   }, [active]);
 
   // Fetch Latest Trailers
-  const fetchLatestTrailers = async (query: 'popular' | 'intheater') => {
+  const fetchLatestTrailers = useCallback(async (query: 'popular' | 'intheater') => {
     setLoading(true);
     setError({} as ErrorData);
     try {
       const response = await axios.get(
         'http://localhost:3001/movies/lastest-trailers', {
           params: {
-            query: 'popular'
+            query
           }
         }
-      );      
-
-      const trailers = Array.isArray(response.data.data) ? response.data.data : []; 
-      console.log("Trailers: ", trailers)
-
-      setMovies(prevMovies => {
-        return prevMovies.map(movie => {
-          const trailer = trailers.find((trailer: any) => trailer.movie_id === movie.id);
-          return trailer ? { ...movie, trailer_key: trailer.key } : movie; 
-        });
-      });
+      );
+      const trailers = response.data.data; 
+      setTrailerMovies(trailers);
     } catch (err: any) {
       console.error("Error fetching trailers:", err);
       const errorData = {
@@ -87,12 +88,12 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
-  };  
+  }, []);
 
   useEffect(() => {
     fetchTrendingMovies();
-    fetchLatestTrailers('popular');
-  }, [fetchTrendingMovies]);
+    fetchLatestTrailers(activeTrailers);
+  }, [fetchTrendingMovies, fetchLatestTrailers, activeTrailers]);
 
   return (
     <>
@@ -164,20 +165,22 @@ export default function Home() {
         </div>
       </div>
 
+      <hr></hr>
+
       {/* Latest Trailers Section */}
       <div className="container my-4">
         <div className="d-flex justify-content-between align-items-center">
           <h4>Latest Trailers</h4>
           <div className="toggle-switch">
             <button
-              className={`toggle-btn ${active === "day" ? "active" : ""}`}
-              onClick={() => fetchLatestTrailers('popular')}
+              className={`toggle-btn ${activeTrailers === "popular" ? "active" : ""}`}
+              onClick={() => setActiveTrailers('popular')}
             >
               Popular
             </button>
             <button
-              className={`toggle-btn ${active === "week" ? "active" : ""}`}
-              onClick={() => fetchLatestTrailers('intheater')}
+              className={`toggle-btn ${activeTrailers === "intheater" ? "active" : ""}`}
+              onClick={() => setActiveTrailers('intheater')}
             >
               In Theaters
             </button>
@@ -191,18 +194,22 @@ export default function Home() {
             <ErrorHandling error={error} callback={() => fetchLatestTrailers} />
           ) : (
             <div className="movie-list d-flex flex-wrap">
-              {movies.map((movie) => (
-                <div key={movie.id} className="movie-card mx-2 cus-card">
-                  {movie.trailer_key ? (
+              {trailerMovies.map((movie) => (
+                <div key={movie.moviesID} className="movie-card mx-2 cus-card">
+                  {movie.key ? (
                     <div className="trailer-video">
                       <iframe
                         width="100%"
                         height="200"
-                        src={`https://media.themoviedb.org/t/p/w355_and_h200_multi_faces/xBrx6O1RIhjtWmVthZIANuQz7Z2.jpg`}
+                        src={`https://www.youtube.com/embed/${movie.key}`}
                         frameBorder="0"
                         allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
                       ></iframe>
+                      <div className="movie-info text-center">
+                        <h6>{movie.original_title}</h6>
+                        <p>{movie.name || "Unknown"}</p>
+                      </div>     
                     </div>
                   ) : (
                     <p>No trailers available</p>
