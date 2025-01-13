@@ -10,6 +10,8 @@ import { END_POINT_URL_LIST } from "@/src/util/constant";
 import { ErrorData, ErrorHandling } from "@components/errorHandling";
 import '@public/styles/movie/popular.css'
 import MovieList from "../[id]/_components/moviesList";
+import SortPanel from "@/src/components/sortPanel";
+import FilterPanel from "@/src/components/filterPanel";
 
 export interface Movie {
   id: string;
@@ -23,11 +25,56 @@ export interface Movie {
 }
 
 export default function PopularMovies() {
-
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<ErrorData>({} as ErrorData);
   const [movies, setMovies] = useState<Movie[]>([]);
   const [sortOrder, setSortOrder] = useState<string>("popularity.desc");
+
+  const [fromDate, setFromDate] = useState<Date | null>(null);
+  const [toDate, setToDate] = useState<Date | null>(null);
+
+  const [initialFromDate, setInitialFromDate] = useState<Date | null>(null);
+  const [initialToDate, setInitialToDate] = useState<Date | null>(null);
+
+  const [isFilterChanged, setIsFilterChanged] = useState(false);
+
+  const handleFromDateChange = (newDate: Date | null) => {
+    setFromDate(newDate);
+  }
+
+  const handleToDateChange = (newDate: Date | null) => {
+    setToDate(newDate);
+  }
+
+  useEffect(() => {
+    const hasChanged =
+      fromDate !== initialFromDate || toDate !== initialToDate;
+    setIsFilterChanged(hasChanged);
+  }, [fromDate, toDate, initialFromDate, initialToDate]);
+
+  const handleFilterSubmit = () => {
+    setInitialFromDate(fromDate);
+    setInitialToDate(toDate);
+
+    fiterMovies();
+  }
+
+  const fiterMovies = async () => {
+    setIsLoading(true);
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    let tempMovies = [...movies];
+
+    if (fromDate && toDate) {
+      tempMovies = tempMovies.filter((movie) => {
+        const movieDate = new Date(movie.release_date);
+        return movieDate >= fromDate && movieDate <= toDate;
+      });
+    }
+
+    setMovies(tempMovies);
+    setIsLoading(false);
+  }
 
   const sortMovies = async (sortOrder: string) => {
     setIsLoading(true);
@@ -82,6 +129,7 @@ export default function PopularMovies() {
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}${END_POINT_URL_LIST.MOVIES_POPULAR}`
       );
+      console.log("🚀 ~ fetchPopularMovies ~ response.data.data.results:", response.data.data.results);
       setMovies(response.data.data.results ?? []);
     } catch (err: any) {
       console.error("Error fetching popular movies:", err);
@@ -110,32 +158,15 @@ export default function PopularMovies() {
           </div>
           <div className="content">
             <div style={{ marginRight: '10px' }}>
-              <div className="filter_panel card">
-                <div className="name">
-                  <h5>Sort</h5>
-                </div>
-                <div className="filter">
-                  <h5>Sort Results By</h5>
-                  <select
-                    className="form-select"
-                    onChange={handleSortChange}
-                  >
-                    <option value="popularity.desc">Popularity Descending</option>
-                    <option value="popularity.asc">Popularity Ascending</option>
-                    <option value="vote_average.asc">Rating Ascending</option>
-                    <option value="vote_average.desc">Rating Descending</option>
-                    <option value="release_date.asc">Release Date Ascending</option>
-                    <option value="release_date.desc">Release Date Descending</option>
-                    <option value="title.asc">Title (A-Z)</option>
-                    <option value="title.desc">Title (Z-A)</option>
-                  </select>
-                </div>
-              </div>
-              <div className="apply-btn">
-                <p className="load_more">
-                  <a className="no_click load_more" data-next-page="2" data-current-page="1" data-partial>Search</a>
-                </p>
-              </div>
+              <SortPanel sortOrder={sortOrder} onSortChange={handleSortChange} />
+              <FilterPanel
+                fromDate={fromDate}
+                toDate={toDate}
+                onFromDateChange={handleFromDateChange}
+                onToDateChange={handleToDateChange}
+                isFilterChanged={isFilterChanged}
+                onFilterSubmit={handleFilterSubmit}
+              />
             </div>
             <div style={{ width: '100%' }}>
               {isLoading ? (
@@ -147,7 +178,12 @@ export default function PopularMovies() {
               ) : (
                 <div className="white_column">
                   <section id="media_results" className="panel results movie-list-container">
-                    <div className="movie-list d-flex flex-wrap">
+                    <div 
+                      className="movie-list d-flex flex-wrap"
+                      style={{
+                        justifyContent: movies.length >= 5 ? 'space-between' : 'flex-start'
+                      }}
+                    >
                       {movies.length > 0 && (
                         <MovieList movies={movies} />
                       )}
