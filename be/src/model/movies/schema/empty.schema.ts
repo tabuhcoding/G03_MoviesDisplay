@@ -3,22 +3,43 @@ import { Document } from "mongoose"
 
 @Schema({ collection: 'scrap_movies_trending_week', strict: false })
 export class ScrapMoviesTrendingWeek extends Document {}
+
 @Schema({ collection: 'scrap_movies_trending_day', strict: false })
 export class ScrapMoviesTrendingDay extends Document {}
+
 @Schema({ collection: 'scrap_movie_genres', strict: false })
 export class ScrapMovieGenres extends Document {}
+
 @Schema({ collection: 'movies', strict: false })
-export class Movies extends Document {}
+export class Movies extends Document {
+  genres: [{ id: Number, name: string }];
+  tmdb_id: Number;
+  belongs_to_collection: {
+    id: Number;
+    name: string;
+    poster_path: string;
+    backdrop_path: string;
+  };
+  keywords: [{ id: Number, name: string }];
+  original_title: string;
+  title: string;
+}
+
 @Schema({ collection: 'scrap_movies_upcoming', strict: false })
 export class ScrapMoviesUpcoming extends Document {}
+
 @Schema({ collection: 'scrap_movies_now_playing', strict: false })
 export class ScrapMoviesNowPlaying extends Document {}
+
 @Schema({ collection: 'scrap_movies_popular', strict: false })
 export class ScrapMoviesPopular extends Document {}
+
 @Schema({ collection: 'scrap_movies_top_rated', strict: false })
 export class ScrapMoviesTopRated extends Document {}
+
 @Schema({ collection: 'lastest_trailers_intheaters', strict: false })
 export class LastestTrailersIntheaters extends Document {}
+
 @Schema({ collection: 'lastest_trailers_populars', strict: false })
 export class LastestTrailersPopular extends Document {}
 

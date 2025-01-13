@@ -161,11 +161,6 @@ export class ActionRepository {
   }
 
   async deleteReview(email: string, movieId: Number) {
-    const findReview = await this.moviesModel.findOne(
-      { tmdb_id: movieId, 'reviews.author_details.username': email },
-      { 'reviews.$': 1 }
-    );
-    console.log(findReview);
     const result = await this.moviesModel.updateOne(
       { tmdb_id: movieId },
       { $pull: { reviews: { 'author_details.username': { $regex: new RegExp(`^${email.trim()}$`, 'i') } }, } },
@@ -177,8 +172,16 @@ export class ActionRepository {
   }
 
   async getMoviesDetails(items: any[], dbConnection: string) {
-    const movieIds = items.map((item) => item.movieId);
-    return this.moviesModel.find({ tmdb_id: { $in: movieIds } }).exec();
+    // const movieIds = items.map((item) => item.movieId);
+    // return this.moviesModel.find({ tmdb_id: { $in: movieIds } }).exec();
+    const result = items.map(async (item) => {
+      const movie = await this.moviesModel.findOne({ tmdb_id: item.movieId }).exec();
+      return {
+        ...movie.toObject(),
+        createdAt: item.createdAt,
+      };
+    })
+    return Promise.all(result);
   }
 
   async getMoviesDetailsWithRatings(ratings: any[], dbConnection: string) {
@@ -187,8 +190,9 @@ export class ActionRepository {
 
     return movies.map((movie) => ({
       ...movie.toObject(),
-      rating: ratings.find((r) => r.movieId === movie._id.toString())?.rating,
-      reviews: ratings.find((r) => r.movieId === movie._id.toString())?.reviews,
+      rating: ratings.find((r) => r.movieId === movie.tmdb_id)?.rating,
+      reviews: ratings.find((r) => r.movieId === movie.tmdb_id)?.reviews,
+      createdAt: ratings.find((r) => r.movieId === movie.tmdb_id)?.createdAt,
     }));
   }
 }

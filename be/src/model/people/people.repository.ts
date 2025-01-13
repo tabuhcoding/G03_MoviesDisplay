@@ -33,27 +33,41 @@ export class PeopleRepository {
     }
   }
 
-  async searchPeople(query: string, page: number): Promise<any> {
+  async searchPeople(query: string, page: number) {
     try {
-      const { data } = await axios.get(`${this.baseUrl}/search/movie`, {
-        params: {
-          api_key: this.apiKey,
-          query,
-          page,
-          include_adult: false,
-          language: 'en-US',
-        },
+      console.log("Query:", query);
+      const nomalQuery = query.toLowerCase();
+  
+      // Tìm kết quả khớp với truy vấn
+      const results = await this.peopleNoSQLModel
+        .find({
+          $or: [
+            { name: { $regex: nomalQuery, $options: "i" } },
+            { also_known_as: { $regex: nomalQuery, $options: "i" } }, // Tìm trong mảng
+          ],
+        })
+        .skip((page - 1) * 20) // Bỏ qua số bản ghi theo trang
+        .limit(20) // Giới hạn số bản ghi
+        .exec();
+  
+      // Đếm tổng số bản ghi khớp với truy vấn
+      const totalRecords = await this.peopleNoSQLModel.countDocuments({
+        $or: [
+          { name: { $regex: nomalQuery, $options: "i" } },
+          { also_known_as: { $regex: nomalQuery, $options: "i" } }, // Tìm trong mảng
+        ],
       });
-      return data;
-      // return await this.peopleNoSQLModel
-      //   .find({ name: { $regex: query, $options: 'i' } })
-      //   .skip((page - 1) * 10)
-      //   .limit(10)
-      //   .exec();
+  
+      // Tính tổng số trang
+      const totalPages = Math.ceil(totalRecords / 20);
+  
+      return { results, totalPages };
     } catch (error) {
-      this.handleApiError(error, 'Failed to fetch movie search results');
+      this.handleApiError(error, "Failed to fetch people search results");
+      throw error;
     }
   }
+  
 
   async fetchPopularPeople(page: number = 1) {
     try {
