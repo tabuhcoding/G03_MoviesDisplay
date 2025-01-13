@@ -36,7 +36,10 @@ async function fetchMovieDetails(id: string) {
 async function MovieContent({ id }: { id: string }) {
   try {
     const movieDetails = await fetchMovieDetails(id);
-    return <MovieDetail movieDetails={movieDetails} />;
+    if (movieDetails) {
+      return <MovieDetail movieDetails={movieDetails} />;
+    }
+    return <p style={{marginTop:'56px'}}>Movie {id} has no data</p>
   } catch (error) {
     const err = error as ErrorData;
     return <ErrorHandling error={err} callback={() => fetchMovieDetails(id)} />;
