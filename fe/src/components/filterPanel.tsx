@@ -2,6 +2,7 @@
 
 /* Package System */
 import { FC } from "react";
+import { Slider } from "@mui/material";
 
 interface FilterPanelProps {
   // filter by date
@@ -9,13 +10,23 @@ interface FilterPanelProps {
   toDate: Date | null;
   onFromDateChange: (newDate: Date | null) => void;
   onToDateChange: (newDate: Date | null) => void;
-  isFilterChanged: boolean;
-  onFilterSubmit: () => void;
 
   // filter by genres
   genres: { id: number; name: string }[];
   selectedGenres: number[];
   onToggleGenre: (id: number) => void;
+
+  // filter by user score
+  userScore: [number, number];
+  onUserScoreChange: (newRange: [number, number]) => void;
+
+  // filter by minimum user votes
+  minVotes: number;
+  onMinVotesChange: (newValue: number) => void;
+
+  // others
+  isFilterChanged: boolean;
+  onFilterSubmit: () => void;
 }
 
 const FilterPanel: FC<FilterPanelProps> = ({
@@ -23,11 +34,15 @@ const FilterPanel: FC<FilterPanelProps> = ({
   toDate,
   onFromDateChange,
   onToDateChange,
-  isFilterChanged,
-  onFilterSubmit,
   genres,
   selectedGenres,
-  onToggleGenre
+  onToggleGenre,
+  userScore,
+  onUserScoreChange,
+  minVotes,
+  onMinVotesChange,
+  isFilterChanged,
+  onFilterSubmit
 }) => {
   return (
     <>
@@ -81,6 +96,35 @@ const FilterPanel: FC<FilterPanelProps> = ({
                 {genre.name}
               </button>
             ))}
+          </div>
+        </div>
+        <div className="filter_user_score mt-4">
+          <h5>User Score</h5>
+          <Slider
+            value={userScore}
+            onChange={(e, newValue) => onUserScoreChange(newValue as [number, number])}
+            valueLabelDisplay="auto"
+            min={0}
+            max={10}
+            step={0.1}
+          />
+          <div className="slider-values">
+            <span>Min: {userScore[0]}</span>
+            <span>Max: {userScore[1]}</span>
+          </div>
+        </div>
+        <div className="filter_min_votes mt-4">
+          <h5>Minimum User Votes</h5>
+          <Slider
+            value={minVotes}
+            onChange={(e, newValue) => onMinVotesChange(newValue as number)}
+            valueLabelDisplay="auto"
+            min={0}
+            max={500}
+            step={50}
+          />
+          <div className="slider-values">
+            <span>Current: {minVotes}</span>
           </div>
         </div>
       </div>
