@@ -189,7 +189,6 @@ export default function PopularMovies() {
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}${END_POINT_URL_LIST.MOVIES_POPULAR}`
       );
-      console.log("🚀 ~ fetchPopularMovies ~ response.data.data.results:", response.data.data.results);
       setMovies(response.data.data.results ?? []);
     } catch (err: any) {
       console.error("Error fetching popular movies:", err);
