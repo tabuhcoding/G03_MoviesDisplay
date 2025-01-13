@@ -175,6 +175,27 @@ export default function PeopleDetail({ peopleDetails }: { peopleDetails: PeopleD
                     ) : <p>No movies found.</p>}
                   </ul>
                 </div>
+                <h4 style={{ marginTop: '30px' }} dir="auto">TV</h4>
+                <div id="known_for_scroller" className="scroller_wrap should_fade is_fading">
+                  <ul className="grid_media_list scroller">
+                    {tv_credits?.cast?.length > 0 ? (
+                      tv_credits.cast.map((tv, index) => (
+                        <li key={index} className="media">
+                          <div className="image">
+                            <a href="#">
+                              <img
+                                src={tv.poster_path ? `https://media.themoviedb.org/t/p/w300_and_h450_bestv2${tv.poster_path}` : 'https://res.cloudinary.com/de66mx8mw/image/upload/v1736666809/default-avatar-icon-of-social-media-user-vector.jpg.jpg'}
+                                alt={tv.name}
+                                className="poster"
+                              />
+                            </a>
+                          </div>
+                          <p className="movie-title">{tv.name}</p>
+                        </li>
+                      ))
+                    ) : <p>No TV found.</p>}
+                  </ul>
+                </div>
               </div>
             </section>
             <section className="full_wrapper">
