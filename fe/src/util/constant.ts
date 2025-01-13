@@ -17,6 +17,7 @@ export class END_POINT_URL_LIST {
   static RESET_PASSWORD = "/user/reset-password";
   static VERIFY_OTP = "/otp/verify";
   static UPDATE_AVATAR = "/user/update-avatar";
+  static SEND_OTP = "/user/send-otp";
 
   // IMAGE
   static IMAGE = "/image";
