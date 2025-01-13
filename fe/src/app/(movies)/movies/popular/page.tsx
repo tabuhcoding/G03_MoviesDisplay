@@ -12,11 +12,13 @@ import '@public/styles/movie/popular.css'
 import MovieList from "../[id]/_components/moviesList";
 import SortPanel from "@/src/components/sortPanel";
 import FilterPanel from "@/src/components/filterPanel";
+import { arraysAreEqual } from "@/src/util/helpers";
 
 export interface Movie {
   id: string;
   title: string;
   overview: string;
+  genre_ids: number[];
   poster_path: string;
   backdrop_path: string;
   release_date: string;
@@ -30,11 +32,16 @@ export default function PopularMovies() {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [sortOrder, setSortOrder] = useState<string>("popularity.desc");
 
+  // filter by date
   const [fromDate, setFromDate] = useState<Date | null>(null);
   const [toDate, setToDate] = useState<Date | null>(null);
-
   const [initialFromDate, setInitialFromDate] = useState<Date | null>(null);
   const [initialToDate, setInitialToDate] = useState<Date | null>(null);
+
+  // filter by genres
+  const [genres, setGenres] = useState<{ id: number; name: string }[]>([]);
+  const [selectedGenres, setSelectedGenres] = useState<number[]>([]);
+  const [initialSelectedGenres, setInitialSelectedGenres] = useState<number[]>([]);
 
   const [isFilterChanged, setIsFilterChanged] = useState(false);
 
@@ -48,18 +55,39 @@ export default function PopularMovies() {
 
   useEffect(() => {
     const hasChanged =
-      fromDate !== initialFromDate || toDate !== initialToDate;
+      fromDate !== initialFromDate || toDate !== initialToDate || !arraysAreEqual(selectedGenres, initialSelectedGenres);
     setIsFilterChanged(hasChanged);
-  }, [fromDate, toDate, initialFromDate, initialToDate]);
+  }, [fromDate, toDate, initialFromDate, initialToDate, selectedGenres, initialSelectedGenres]);
 
   const handleFilterSubmit = () => {
     setInitialFromDate(fromDate);
     setInitialToDate(toDate);
+    setInitialSelectedGenres([...selectedGenres]); 
 
-    fiterMovies();
+    setIsFilterChanged(false);
+    filterMovies();
   }
 
-  const fiterMovies = async () => {
+  const toggleGenre = (id: number) => {
+    setSelectedGenres((prev) =>
+      prev.includes(id) ? prev.filter((genreId) => genreId !== id) : [...prev, id]
+    );
+  };
+
+  const fetchGenres = async () => {
+    try {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}${END_POINT_URL_LIST.MOVIES_GENRES}`);
+      setGenres(response.data.data ?? []);
+    } catch (err) {
+      console.error("Error fetching genres:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchGenres();
+  }, []);
+
+  const filterMovies = async () => {
     setIsLoading(true);
     await new Promise((resolve) => setTimeout(resolve, 500));
 
@@ -70,6 +98,12 @@ export default function PopularMovies() {
         const movieDate = new Date(movie.release_date);
         return movieDate >= fromDate && movieDate <= toDate;
       });
+    }
+
+    if (selectedGenres.length > 0) {
+      tempMovies = tempMovies.filter((movie) =>
+        selectedGenres.some((genreId) => movie.genre_ids.includes(genreId))
+      );
     }
 
     setMovies(tempMovies);
@@ -166,6 +200,9 @@ export default function PopularMovies() {
                 onToDateChange={handleToDateChange}
                 isFilterChanged={isFilterChanged}
                 onFilterSubmit={handleFilterSubmit}
+                genres={genres}
+                selectedGenres={selectedGenres}
+                onToggleGenre={toggleGenre}
               />
             </div>
             <div style={{ width: '100%' }}>
