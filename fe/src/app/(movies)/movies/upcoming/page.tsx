@@ -10,24 +10,131 @@ import { END_POINT_URL_LIST } from "@/src/util/constant";
 import { ErrorData, ErrorHandling } from "@components/errorHandling";
 import '@public/styles/movie/upcoming.css'
 import MovieList from "../[id]/_components/moviesList";
+import SortPanel from "@/src/components/sortPanel";
+import FilterPanel from "@/src/components/filterPanel";
+import { arraysAreEqual } from "@/src/util/helpers";
 
 export interface Movie {
   id: string;
   title: string;
   overview: string;
+  genre_ids: number[];
   poster_path: string;
   backdrop_path: string;
   release_date: string;
   popularity: number;
   vote_average: number;
+  vote_count: number;
 }
 
-export default function UpcomingMovies() {
-
+export default function PopularMovies() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<ErrorData>({} as ErrorData);
   const [movies, setMovies] = useState<Movie[]>([]);
   const [sortOrder, setSortOrder] = useState<string>("popularity.desc");
+
+  // filter by date
+  const [fromDate, setFromDate] = useState<Date | null>(null);
+  const [toDate, setToDate] = useState<Date | null>(null);
+  const [initialFromDate, setInitialFromDate] = useState<Date | null>(null);
+  const [initialToDate, setInitialToDate] = useState<Date | null>(null);
+
+  // filter by genres
+  const [genres, setGenres] = useState<{ id: number; name: string }[]>([]);
+  const [selectedGenres, setSelectedGenres] = useState<number[]>([]);
+  const [initialSelectedGenres, setInitialSelectedGenres] = useState<number[]>([]);
+
+  // filter by user score
+  const [userScore, setUserScore] = useState<[number, number]>([0, 10]);
+  const [initialUserScore, setInitialUserScore] = useState<[number, number]>([0, 10]);
+
+  // filter by minimum user votes
+  const [minVotes, setMinVotes] = useState<number>(0);
+  const [initialMinVotes, setInitialMinVotes] = useState<number>(0);
+
+  const [isFilterChanged, setIsFilterChanged] = useState(false);
+
+  const handleFromDateChange = (newDate: Date | null) => {
+    setFromDate(newDate);
+  }
+
+  const handleToDateChange = (newDate: Date | null) => {
+    setToDate(newDate);
+  }
+
+  const handleUserScoreChange = (newRange: [number, number]) => {
+    setUserScore(newRange);
+  };
+  
+  const handleMinVotesChange = (newValue: number) => {
+    setMinVotes(newValue);
+  };
+
+  useEffect(() => {
+    const hasChanged =
+      fromDate !== initialFromDate || toDate !== initialToDate || !arraysAreEqual(selectedGenres, initialSelectedGenres) || !arraysAreEqual(userScore, initialUserScore) || minVotes !== initialMinVotes;
+    setIsFilterChanged(hasChanged);
+  }, [fromDate, toDate, initialFromDate, initialToDate, selectedGenres, initialSelectedGenres, userScore, initialUserScore, minVotes, initialMinVotes]);
+
+  const handleFilterSubmit = () => {
+    setInitialFromDate(fromDate);
+    setInitialToDate(toDate);
+    setInitialSelectedGenres([...selectedGenres]);
+    setInitialUserScore([...userScore]);
+    setInitialMinVotes(minVotes); 
+
+    setIsFilterChanged(false);
+    filterMovies();
+  }
+
+  const toggleGenre = (id: number) => {
+    setSelectedGenres((prev) =>
+      prev.includes(id) ? prev.filter((genreId) => genreId !== id) : [...prev, id]
+    );
+  };
+
+  const fetchGenres = async () => {
+    try {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}${END_POINT_URL_LIST.MOVIES_GENRES}`);
+      setGenres(response.data.data ?? []);
+    } catch (err) {
+      console.error("Error fetching genres:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchGenres();
+  }, []);
+
+  const filterMovies = async () => {
+    setIsLoading(true);
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    let tempMovies = [...movies];
+
+    if (fromDate && toDate) {
+      tempMovies = tempMovies.filter((movie) => {
+        const movieDate = new Date(movie.release_date);
+        return movieDate >= fromDate && movieDate <= toDate;
+      });
+    }
+
+    if (selectedGenres.length > 0) {
+      tempMovies = tempMovies.filter((movie) =>
+        selectedGenres.some((genreId) => movie.genre_ids.includes(genreId))
+      );
+    }
+
+    tempMovies = tempMovies.filter(
+      (movie) =>
+        movie.vote_average >= userScore[0] &&
+        movie.vote_average <= userScore[1] &&
+        movie.vote_count >= minVotes
+    );
+
+    setMovies(tempMovies);
+    setIsLoading(false);
+  }
 
   const sortMovies = async (sortOrder: string) => {
     setIsLoading(true);
@@ -80,7 +187,7 @@ export default function UpcomingMovies() {
 
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}${END_POINT_URL_LIST.MOVIES_NOW_PLAYING}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}${END_POINT_URL_LIST.MOVIES_UPCOMING}`
       );
       setMovies(response.data.data.results ?? []);
     } catch (err: any) {
@@ -110,32 +217,22 @@ export default function UpcomingMovies() {
           </div>
           <div className="content">
             <div style={{ marginRight: '10px' }}>
-              <div className="filter_panel card">
-                <div className="name">
-                  <h5>Sort</h5>
-                </div>
-                <div className="filter">
-                  <h5>Sort Results By</h5>
-                  <select
-                    className="form-select"
-                    onChange={handleSortChange}
-                  >
-                    <option value="popularity.desc">Popularity Descending</option>
-                    <option value="popularity.asc">Popularity Ascending</option>
-                    <option value="vote_average.asc">Rating Ascending</option>
-                    <option value="vote_average.desc">Rating Descending</option>
-                    <option value="release_date.asc">Release Date Ascending</option>
-                    <option value="release_date.desc">Release Date Descending</option>
-                    <option value="title.asc">Title (A-Z)</option>
-                    <option value="title.desc">Title (Z-A)</option>
-                  </select>
-                </div>
-              </div>
-              <div className="apply-btn">
-                <p className="load_more">
-                  <a className="no_click load_more" data-next-page="2" data-current-page="1" data-partial>Search</a>
-                </p>
-              </div>
+              <SortPanel sortOrder={sortOrder} onSortChange={handleSortChange} />
+              <FilterPanel
+                fromDate={fromDate}
+                toDate={toDate}
+                onFromDateChange={handleFromDateChange}
+                onToDateChange={handleToDateChange}
+                genres={genres}
+                selectedGenres={selectedGenres}
+                onToggleGenre={toggleGenre}
+                userScore={userScore}
+                onUserScoreChange={handleUserScoreChange}
+                minVotes={minVotes}
+                onMinVotesChange={handleMinVotesChange}
+                isFilterChanged={isFilterChanged}
+                onFilterSubmit={handleFilterSubmit}
+              />
             </div>
             <div style={{ width: '100%' }}>
               {isLoading ? (
@@ -147,7 +244,12 @@ export default function UpcomingMovies() {
               ) : (
                 <div className="white_column">
                   <section id="media_results" className="panel results movie-list-container">
-                    <div className="movie-list d-flex flex-wrap">
+                    <div 
+                      className="movie-list d-flex flex-wrap"
+                      style={{
+                        justifyContent: movies.length >= 5 ? 'space-between' : 'flex-start'
+                      }}
+                    >
                       {movies.length > 0 && (
                         <MovieList movies={movies} />
                       )}
