@@ -83,11 +83,11 @@ export default function PeopleDetail({ peopleDetails }: { peopleDetails: PeopleD
               <div
                 className="blurred"
                 style={{
-                  backgroundImage: `url(https://media.themoviedb.org/t/p/w300_and_h450_multi_faces_filter(blur)/${profile_path})`
+                  backgroundImage: profile_path ? `url(https://media.themoviedb.org/t/p/w300_and_h450_bestv2${profile_path})` : 'url(https://res.cloudinary.com/de66mx8mw/image/upload/v1736666809/default-avatar-icon-of-social-media-user-vector.jpg.jpg)'
                 }}
               >
                 <Image
-                  src={`https://media.themoviedb.org/t/p/w300_and_h450_bestv2${profile_path}`}
+                  src={profile_path ? `https://media.themoviedb.org/t/p/w300_and_h450_bestv2${profile_path}` : 'https://res.cloudinary.com/de66mx8mw/image/upload/v1736666809/default-avatar-icon-of-social-media-user-vector.jpg.jpg'}
                   alt={name}
                   width={300}
                   height={450}
@@ -154,6 +154,7 @@ export default function PeopleDetail({ peopleDetails }: { peopleDetails: PeopleD
             <section className="full_wrapper">
               <div id="known-for">
                 <h3 dir="auto">Known For</h3>
+                <h4 dir="auto">Movies</h4>
                 <div id="known_for_scroller" className="scroller_wrap should_fade is_fading">
                   <ul className="grid_media_list scroller">
                     {movie_credits?.cast?.length > 0 ? (
@@ -203,7 +204,7 @@ export default function PeopleDetail({ peopleDetails }: { peopleDetails: PeopleD
                         <p className="acting-year">{tv.first_air_date?.slice(0, 4) || <HelpOutline fontSize="small" titleAccess="No data available" />}</p>
                         <div className="acting-detail">
                           <p className="acting-title">
-                            <a href={`/tv/${tv.id}`}>
+                            <a href="#">
                               {tv.name}
                             </a>
                           </p>
