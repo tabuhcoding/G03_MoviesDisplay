@@ -14,6 +14,8 @@ export interface Movie {
   poster_path: string;
   backdrop_path: string;
   release_date: string;
+  vote_average: number;
+  vote_count: number;
 }
 
 export default function Home() {
@@ -88,7 +90,7 @@ export default function Home() {
               {movies.map((movie) => (
                 <div
                   onClick={() => router.push(`/movies/${movie.id}`)}
-                  className="movie-card mx-2"
+                  className="movie-card mx-2 cus-card"
                   key={movie.id}
                 >
                   <img
@@ -97,17 +99,26 @@ export default function Home() {
                         ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
                         : "https://via.placeholder.com/150"
                     }
-                    alt={movie.title}
+                    alt={movie.title || "Unknown title"}
                     style={{
-                      width: "150px",
-                      height: "225px",
-                      objectFit: "cover",
-                      borderRadius: "8px"
+                      width: "100%",
+                      height: "170px",
+                      objectFit: "cover"
                     }}
                   />
-                  <div className="movie-info mt-2 text-center">
+                  <div className="movie-info mt-4 text-center">
                     <h6>{movie.title}</h6>
                     <p>{movie.release_date || "Unknown"}</p>
+                  </div>             
+                  <div
+                    className="rating container-rating"
+                    style={{
+                      background: `conic-gradient(#4caf50 ${(movie.vote_average * 10) * 3.6}deg, #e0e0e0 0deg)`, // Viền xanh lá theo phần trăm
+                    }}
+                  >
+                    <span className='circle-rating'>
+                      {(movie.vote_average * 10).toFixed(0)}%
+                    </span>
                   </div>
                 </div>
               ))}
