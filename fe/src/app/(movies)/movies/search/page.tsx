@@ -114,13 +114,13 @@ export default function SearchPage() {
         onChange={(value) => router.push(`/movies/search?query=${value}&page=1`)}
         onSubmit={handleSearch}
       />
-      <div className="container my-4">
+      <div className="container">
         {isLoading ? (
           <p>Loading...</p>
         ) : movies.length > 0 ? (
           <>
             <div className="d-flex justify-content-end align-items-center m-3">
-              <div className="toggle-switch">
+              <div className="toggle-switch mt-3">
                 <button
                   className={`toggle-btn ${active === "movies" ? "active" : ""}`}
                   onClick={() => setActive("movies")}
@@ -140,7 +140,7 @@ export default function SearchPage() {
               <div className="col-2">
                 <FilterComponent setSortOption={setSortOption} sortOption={sortOption}/>
               </div>
-              <div className="col-10">
+              <div className="col-10 mb-4">
                 <MoviesGrid movies={movies} />
                 <Pagination
                   currentPage={page}

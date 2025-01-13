@@ -51,11 +51,11 @@ const MoviesGrid: React.FC<MoviesGridProps> = ({ movies, lastMovieElementRef }) 
                 alt={movie.title || 'Movie'}
               />
               <div className="movies-info">
-                <h4 className={isExpanded ? "expanded-title" : "truncated-title"}>
+                <h5 className={isExpanded ? "expanded-title" : "truncated-title"}>
                   {isExpanded || movie.title.length <= 30
                     ? movie.title
                     : `${movie.title.substring(0, 30)}...`}
-                </h4>
+                </h5>
                 <p>Rating: {(movie.vote_average ?? 0).toFixed(1)}</p>
                 <p>{movie.release_date ? new Date(movie.release_date).toLocaleDateString() : 'Unknown'}</p> {/* Hiển thị ngày đầy đủ */}
                 <p>Popularity: {(movie.popularity ?? 0).toFixed(1)}</p>

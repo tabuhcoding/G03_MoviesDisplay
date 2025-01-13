@@ -31,7 +31,6 @@ const FilterComponent: React.FC<FilterComponentProps> = ({ setSortOption, sortOp
     setIsOpen(false);
   };
   
-
   const handleGenreChange = (genre: string) => {
     setGenres((prevGenres) => {
       if (prevGenres.includes(genre)) {
