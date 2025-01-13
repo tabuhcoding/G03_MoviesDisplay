@@ -53,6 +53,16 @@ const SearchInput: React.FC<SearchInputProps> = ({ value, onChange, onSubmit }) 
                 value={value}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => onChange(e.target.value)}
               />
+              
+              {/* Thêm input mới ở giữa */}
+              <input
+                className="form-control me-2 form-popular"
+                type="text"
+                placeholder="With popular"
+                aria-label="Popular"
+                onChange={(e: ChangeEvent<HTMLInputElement>) => {}}
+              />
+              
               {/* Dropdown để chọn loại tìm kiếm */}
               <select
                 className="form-select me-2"
