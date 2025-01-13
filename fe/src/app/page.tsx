@@ -35,6 +35,7 @@ export default function Home() {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [trailerMovies, setTrailerMovies] = useState<MovieLastest[]>([]);
   const [activeTrailers, setActiveTrailers] = useState<'popular' | 'intheater'>('popular');
+  const [isPlaying, setIsPlaying] = useState<string | null>(null);
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
@@ -191,39 +192,55 @@ export default function Home() {
           {loading ? (
             <p>Loading...</p>
           ) : error?.message ? (
-            <ErrorHandling error={error} callback={() => fetchLatestTrailers} />
+            <ErrorHandling error={error} callback={() => fetchLatestTrailers(activeTrailers)} />
           ) : (
             <div className="movie-list d-flex flex-wrap">
               {trailerMovies.map((movie) => (
-                <div 
-                  key={movie.moviesID} 
-                  onClick={() => router.push(`/movies/${movie.moviesID}`)}
-                  className="movie-card mx-2 cus-card">
-                  {movie.key ? (
-                    <div className="trailer-video">
-                      <iframe
-                        width="100%"
-                        height="200"
-                        src={`https://www.youtube.com/embed/${movie.key}`}
-                        frameBorder="0"
-                        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                        className="video-frame"
-                      ></iframe>
-                      <div className="movie-info text-center">
-                        <h6>{movie.original_title}</h6>
-                        <p>{movie.name || "Unknown"}</p>
-                      </div>     
-                    </div>
-                  ) : (
-                    <p>No trailers available</p>
-                  )}
+                <div
+                  key={movie.moviesID}
+                  onClick={() => setIsPlaying(movie.key)}
+                  className="movie-card-trailer mx-2 cus-card"
+                >
+                  <img
+                    src={`https://img.youtube.com/vi/${movie.key}/0.jpg`} 
+                    alt={movie.original_title}
+                    className="img-fluid"
+                  />
+                  <div>
+                    <button className="btn btn-play">Play</button>
+                  </div>
+                  <div className="movie-info mt-2 text-center" onClick={() => router.push(`/movies/${movie.moviesID}`)}>
+                    <h6>{movie.original_title}</h6>
+                    <p>{movie.name || "Unknown"}</p>
+                  </div>
                 </div>
               ))}
             </div>
           )}
         </div>
       </div>
+
+      {/* Show the iframe in a modal if a trailer is being played */}
+      {isPlaying && (
+        <div className="trailer-overlay">
+          <div className="trailer-modal">
+            <iframe
+              width="80%"
+              height="450"
+              src={`https://www.youtube.com/embed/${isPlaying}`}
+              frameBorder="0"
+              allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+            <button
+              onClick={() => setIsPlaying(null)}  // Close the trailer modal
+              className="close-button"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 }
