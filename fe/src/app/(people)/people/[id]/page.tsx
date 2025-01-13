@@ -37,7 +37,10 @@ async function fetchPeopleDetails(id: string) {
 async function PeopleContent({ id }: { id: string }) {
   try {
     const peopleDetails = await fetchPeopleDetails(id);
-    return <PeopleDetail peopleDetails={peopleDetails} />;
+    if (peopleDetails) {
+      return <PeopleDetail peopleDetails={peopleDetails} />;
+    }
+    return <p style={{marginTop:'56px'}}>People {id} has no data</p>
   } catch (error) {
     const err = error as ErrorData;
     return <ErrorHandling error={err} callback={() => fetchPeopleDetails(id)} />;
