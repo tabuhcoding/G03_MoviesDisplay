@@ -37,7 +37,7 @@ const MovieCard: FC<MovieCardListProps> = ({ movies, emptyMessage = "No movies f
             src={
               movie.poster_path
                 ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-                : "https://via.placeholder.com/150"
+                : "https://res.cloudinary.com/de66mx8mw/image/upload/v1736666809/default-avatar-icon-of-social-media-user-vector.jpg.jpg"
             }
             alt={movie.title}
             style={{

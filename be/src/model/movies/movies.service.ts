@@ -45,11 +45,31 @@ export class MoviesService {
     return this.moviesRepository.fetchLastestTrailers(query);
   }
 
+  // async getRecommendations(movieId: number) {
+  //   // return this.moviesRepository.getSameGenreMovies(movieId);
+  //   // return this.moviesRepository.getSameKeywordMovies(movieId);
+  //   return this.moviesRepository.getSameCollectionMovies(movieId);
+  //   // return this.moviesRepository.fetchRecommendations(movieId);
+  // }
+
   async getRecommendations(movieId: number) {
-    // return this.moviesRepository.getSameGenreMovies(movieId);
-    // return this.moviesRepository.getSameKeywordMovies(movieId);
-    return this.moviesRepository.getSameCollectionMovies(movieId);
-    // return this.moviesRepository.fetchRecommendations(movieId);
+    const genreList = await this.moviesRepository.getSameGenreMovies(movieId);
+    const keywordList = await this.moviesRepository.getSameKeywordMovies(movieId);
+    const collectionList = await this.moviesRepository.getSameCollectionMovies(movieId);
+    return [
+        {
+          name: "Same Genre",
+          movies: genreList,
+        },
+        {
+          name: "Same Keyword",
+          movies: keywordList,
+        },
+        {
+          name: "Same Collection",
+          movies: collectionList,
+        }
+      ]
   }
 
   async getRecommendationsUsersBased(email: String) {

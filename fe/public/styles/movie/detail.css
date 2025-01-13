@@ -220,3 +220,30 @@ body {
   transform: translateY(0); 
   box-shadow: 0 3px 5px rgba(0, 0, 0, 0.15); 
 }
+
+.re-movie-card img {
+  width: 240px;
+  height: 141px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+.re-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;  
+}
+
+.cast-name {
+  max-width: 180px; 
+  white-space: nowrap; 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+}
+
+.re-list-container {
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}

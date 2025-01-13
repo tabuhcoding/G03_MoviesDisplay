@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useColor } from "color-thief-react";
 import { IconButton, Tooltip, CircularProgress, Typography } from "@mui/material";
 import { Favorite, Bookmark } from "@mui/icons-material";
+import "@styles/Homepage.css";
 
 /* Package Application */
 import { useAuth } from '@/src/context/authContext';
@@ -16,6 +17,7 @@ import "@public/styles/movie/detail.css";
 import { END_POINT_URL_LIST } from "@/src/util/constant";
 import PopupDialog from "@/src/components/popupDialog";
 import { formatDateStringToDDMMYYY, formatRunTimeToHHMM } from "@/src/util/helpers";
+import MovieRecommendations from "./movieRecommendations";
 
 interface MovieDetailProps {
   movieDetails: {
@@ -66,6 +68,13 @@ interface Review {
   url: string;
 }
 
+interface Movie {
+  id: string;
+  title: string;
+  poster_path: string;
+  vote_average: number;
+}
+
 export default function MovieDetail({ movieDetails }: MovieDetailProps) {
   const router = useRouter();
   const { userInfo: user, isLogin } = useAuth();
@@ -78,31 +87,32 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
   const [loadingReviews, setLoadingReviews] = useState<boolean>(true);
   const [userReview, setUserReview] = useState<Review | null>(null);
   const [isEditing, setIsEditing] = useState<boolean>(false);
-
-  const fetchReviews = async () => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/movies/${movieDetails.id}`);
-      const data = await response.json();
-      const reviews = data.data.reviews ?? [];
-      const currentUserReview = reviews.find((review: Review) => review.author_details.username === user.email);
-      setUserReview(currentUserReview ?? null);
-      setReviews(data.data.reviews ?? []);
-    } catch (error) {
-      console.error("Failed to fetch reviews:", error);
-    } finally {
-      setLoadingReviews(false);
-    }
-  };
+  const [active, setActive] = useState('genre');
 
   useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/movies/${movieDetails.id}`);
+        const data = await response.json();
+        const reviews = data.data.reviews ?? [];
+        const currentUserReview = reviews.find((review: Review) => review.author_details.username === user.email);
+        setUserReview(currentUserReview ?? null);
+        setReviews(data.data.reviews ?? []);
+      } catch (error) {
+        console.error("Failed to fetch reviews:", error);
+      } finally {
+        setLoadingReviews(false);
+      }
+    };
+
     fetchReviews();
-  });
+  }, [movieDetails.id, user.email]);
 
   const imageUrl = `https://media.themoviedb.org/t/p/original${movieDetails?.backdrop_path ??
     movieDetails?.poster_path ??
     movieDetails?.belongs_to_collection?.backdrop_path ??
     movieDetails?.belongs_to_collection?.poster_path
-  }`;
+    }`;
 
   const { data: color } = useColor(imageUrl, "rgbArray", {
     crossOrigin: "anonymous",
@@ -184,7 +194,7 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
       if (response.ok) {
         setDialogType("success");
         setDialogMessage("Added rating and review successfully!");
-        
+
       } else {
         setDialogType("error");
         setDialogMessage("Failed to add rating and review. Please try again.");
@@ -213,7 +223,7 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
         },
         body: JSON.stringify({ movieId, email, rating, reviews: review })
       });
-  
+
       if (response.ok) {
         setDialogType("success");
         setDialogMessage("Updated rating and review successfully!");
@@ -228,7 +238,75 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
     } finally {
       setDialogOpen(true);
     }
-  };  
+  };
+
+  const [recommendations, setRecommendations] = useState<any>([]);
+  const [movieSameGenres, setMovieSameGenres] = useState<Movie[]>([]);
+  const [movieSameKeyword, setMovieSameKeyword] = useState<Movie[]>([]);
+  const [movieSameCollection, setMovieSameCollection] = useState<Movie[]>([]);
+  const [loadingRecommendations, setLoadingRecommendations] = useState<boolean>(true);
+  const [loadingRecommendationsUser, setLoadingRecommendationsUser] = useState<boolean>(true);
+
+  // Fetch general movie recommendations based on the user
+  const fetchRecommendations = async () => {
+    if (!user) return;
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/movies/recommendations?email=${user.email}`);
+      const result = await response.json();
+
+      if (result.success && Array.isArray(result.data)) {
+        setRecommendations(result.data);
+      } else {
+        console.error("Invalid data format:", result);
+        setRecommendations([]);
+      }
+
+    } catch (error) {
+      console.error("Error fetching movie recommendations:", error);
+      setRecommendations([]);
+    } finally {
+      setLoadingRecommendationsUser(false);
+    }
+  };
+
+  const fetchMovieRecommendations = async (movieId: string) => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/movies/${movieId}/recommendations`
+      );
+      const result = await response.json();
+
+      if (result.success && Array.isArray(result.data)) {
+        setMovieSameGenres(result.data[0].movies);
+        setMovieSameKeyword(result.data[1].movies);
+        setMovieSameCollection(result.data[2].movies);
+      } else {
+        console.error("Invalid data format:", result);
+        setMovieSameGenres([]);
+        setMovieSameKeyword([]);
+        setMovieSameCollection([]);
+      }
+    } catch (error) {
+      console.error("Error fetching movie recommendations:", error);
+      setMovieSameGenres([]);
+      setMovieSameKeyword([]);
+      setMovieSameCollection([]);
+    } finally {
+      setLoadingRecommendations(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchRecommendations();
+
+    if (movieDetails?.id) {
+      fetchMovieRecommendations(movieDetails.id);
+    }
+  }, [movieDetails]);
+
+  const handleMovieClick = (movieId: string) => {
+    router.push(`/movies/${movieId}`);
+  };
 
   return (
     <>
@@ -245,7 +323,7 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
             <div className="poster-wrapper">
               <Image
                 className="movie-poster"
-                src={`https://media.themoviedb.org/t/p/w300_and_h450_bestv2${movieDetails.poster_path}`}
+                src={`https://media.themoviedb.org/t/p/w300_and_h450_bestv2${movieDetails.poster_path ?? movieDetails.belongs_to_collection?.poster_path}`}
                 alt={movieDetails.title}
                 width={300}
                 height={450}
@@ -326,20 +404,20 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
                             {index < visibleCrew.length - 1 && ", "}
                           </span>
                         ))}
-                        
+
                         {/* Conditionally render the 'See More' or 'See Less' button with line breaks */}
                         <div className="see-more-container">
                           {!showAllCrew && otherCrew.length > 5 && (
-                            <button 
-                              onClick={() => setShowAllCrew(true)} 
+                            <button
+                              onClick={() => setShowAllCrew(true)}
                               className="btn-see-more"
                             >
                               See More
                             </button>
                           )}
                           {showAllCrew && otherCrew.length > 5 && (
-                            <button 
-                              onClick={() => setShowAllCrew(false)} 
+                            <button
+                              onClick={() => setShowAllCrew(false)}
                               className="btn-see-more"
                             >
                               See Less
@@ -366,11 +444,12 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
         <div className="movie-list-container my-3">
           <div className="movie-list d-flex flex-wrap">
             {movieDetails?.credits?.cast?.map((castMember) => (
-              <div key={castMember.id} className="movie-card mx-2">
+              <div key={castMember.id} className="movie-card mx-2" onClick={() => router.push(`/people/${castMember.id}`)
+              }>
                 <img
                   src={castMember.profile_path
                     ? `https://image.tmdb.org/t/p/w138_and_h175_face${castMember.profile_path}`
-                    : "https://res.cloudinary.com/de66mx8mw/image/upload/v1736666809/default-avatar-icon-of-social-media-user-vector.jpg.jpg?fbclid=IwZXh0bgNhZW0CMTAAAR37lSGPto_VWXAA1Y3MuumOfrd9p10OuqhxbrceKPMJTiNhxBvZCVzPCkA_aem_sW5L9fte01p2H5iziCBEog"}
+                    : "https://res.cloudinary.com/de66mx8mw/image/upload/v1736666809/default-avatar-icon-of-social-media-user-vector.jpg.jpg"}
                   alt={castMember.name || "Unknown name"}
                 />
                 <div className="cast-info mt-2 text-center">
@@ -382,7 +461,7 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
           </div>
         </div>
       </div>
-  
+
       {loadingReviews ? (
         <div className="loading-container">
           <CircularProgress sx={{ color: "#1976d2" }} />
@@ -446,6 +525,34 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
         dialogType={dialogType}
         dialogCommand1="Login"
         dialogCommand2="Close"
+      />
+
+      <hr />
+      
+      <MovieRecommendations
+        loadingRecommendations={loadingRecommendations || loadingRecommendationsUser}
+        recommendations={recommendations}
+        onMovieClick={handleMovieClick}
+        showTitle="Recommendations"
+      />
+
+      <div className="container">
+        <div className="toggle-switch mt-4 mb-2" style={{ width: '280px' }}>
+          <button className={`toggle-btn ${active === "genre" ? "active" : ""}`} onClick={() => setActive("genre")}>Genre</button>
+          <button className={`toggle-btn ${active === "keyword" ? "active" : ""}`} onClick={() => setActive("keyword")}>Keyword</button>
+          <button className={`toggle-btn ${active === "collection" ? "active" : ""}`} onClick={() => setActive("collection")}>Collection</button>
+        </div>
+      </div>
+
+      <MovieRecommendations
+        loadingRecommendations={loadingRecommendations || loadingRecommendationsUser}
+        recommendations={recommendations}
+        active={active}
+        movieSameGenres={movieSameGenres}
+        movieSameKeyword={movieSameKeyword}
+        movieSameCollection={movieSameCollection}
+        onMovieClick={handleMovieClick}
+        showTitle=""
       />
     </>
   )

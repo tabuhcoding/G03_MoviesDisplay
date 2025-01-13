@@ -1,0 +1,272 @@
+.column_wrapper, .content-wrapper {
+  display: flex;
+  align-items: flex-start;
+  align-content: flex-start;
+  padding: 0 20px;
+  margin-top: 28px;
+}
+
+.people-detail-container {
+  justify-content: center;
+  min-width: 100%;
+}
+
+.people-content {
+  max-width: 1400px;
+  width: 100%;
+  padding: 30px 40px;
+}
+
+div.reverse div.grey-column {
+  min-width: 300px;
+  width: 300px;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.info-column {
+  min-width: 260px;
+  width: 260px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+section.images section.inner_content {
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+section.images section.inner_content div.profile {
+  display: block;
+  min-width: 300px;
+  width: 300px;
+  height: 450px;
+  position: relative;
+  top: 0;
+  left: 0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+section.images div.image_content {
+  min-width: 300px;
+  width: 300px;
+  height: 450px;
+}
+
+section.inner_content section.images div.poster div.blurred, section.inner_content section.images div.profile div.blurred {
+  width: 100%;
+  height: 100%;
+  background-position: 0 0;
+  background-size: cover;
+}
+
+section.inner_content section.images div.poster img, section.inner_content section.images div.profile img {
+  display: block;
+  width: 100%;
+  min-width: 100%;
+  height: 100%;
+  min-height: 100%;
+  border-width: 0;
+  outline: 0;
+}
+
+.information-column {
+  width: 100%;
+}
+
+section.facts+section, section.images+div.information-column {
+  margin-top: 30px;
+}
+
+section.inner_content h3 {
+  font-weight: 600;
+  font-size: 1.3em;
+  margin-bottom: 8px;
+}
+
+
+.facts {
+  display: block;
+}
+
+section.facts p {
+  box-sizing: border-box;
+}
+
+.k-tooltip table, div.episode_title h3, section.facts ul {
+  margin: 0;
+}
+
+div.information-column p {
+  margin: 0 0 20px;
+  font-size: 1em;
+}
+
+div.information-column .facts p strong {
+  display: block;
+  font-weight: 600;
+}
+
+div.information-column .facts ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+div.information-column .facts ul li {
+  list-style-type: none;
+  margin-top: 5px;
+}
+
+div.white-column {
+  max-width: 920px;
+  width: calc(100vw - 80px - 300px);
+  background-color: #fff;
+  display: flex;
+  flex-wrap: wrap;
+  flex: 0 1 auto;
+  padding-right: 0;
+  padding-left: 30px;
+}
+
+
+div.white-column section:first-of-type {
+  margin-top: 0;
+}
+
+div.title {
+  width: 100%;
+}
+
+section.inner_content div.title h2 {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  font-size: 2.2rem;
+}
+
+h2.title {
+  display: inline-block;
+}
+
+h2.title a {
+  font-weight: 700;
+  color: #000;
+  text-decoration: none;
+}
+
+.full_wrapper {
+  width: 100%;
+  margin-top: 30px;
+}
+
+.biography .content {
+  position: relative;
+  top: 0;
+  left: 0;
+}
+
+#known-for {
+  width: 100%;
+}
+
+.scroller_wrap {
+  position: relative;
+  max-height: 277px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+ul.grid_media_list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 15px;
+}
+
+ul.grid_media_list li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+ul.grid_media_list li .image {
+  width: 150px;
+  height: 225px; 
+  border-radius: 8px; 
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+ul.grid_media_list li .image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+ul.grid_media_list li .movie-title {
+  margin-top: 8px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+}
+
+#acting-credits {
+  margin-top: 20px;
+}
+
+.acting-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px 0;
+}
+
+.acting-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  border-bottom: 1px solid #ddd;
+  padding: 10px 0;
+}
+
+.acting-year {
+  flex-shrink: 0;
+  width: 50px;
+  font-size: 14px;
+  color: #888;
+}
+
+.acting-detail {
+  flex-grow: 1;
+}
+
+.acting-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.acting-title a {
+  text-decoration: none;
+  color: #000;
+}
+
+.acting-title a:hover {
+  text-decoration: underline;
+}
+
+.acting-role {
+  font-size: 14px;
+  color: #555;
+}
