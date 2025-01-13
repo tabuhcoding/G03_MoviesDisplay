@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useColor } from "color-thief-react";
 import { IconButton, Tooltip, CircularProgress, Typography } from "@mui/material";
 import { Favorite, Bookmark } from "@mui/icons-material";
+import "@styles/Homepage.css";
 
 /* Package Application */
 import { useAuth } from '@/src/context/authContext';
@@ -84,6 +85,7 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
   const [loadingReviews, setLoadingReviews] = useState<boolean>(true);
   const [userReview, setUserReview] = useState<Review | null>(null);
   const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [active, setActive] = useState('genre');
 
   const fetchReviews = async () => {
     try {
@@ -542,95 +544,100 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
               </div>
             </div>
           ) : (
-            <p>No recommendations available</p>
+            <p>No recommendations available because there are no movies on WatchList & Favorite List</p>
           )
         )}
       </div>
 
-      <hr></hr> 
       <div className="container my-4">
-        <h4>Recommendations by Genre</h4>
-        {loadingRecommendations ? (
-          <CircularProgress />
-        ) : (
-          Array.isArray(movieSameGenres) && movieSameGenres.length > 0 ? (
-            <div className="re-list-container my-3">
-              <div className="movie-list d-flex flex-wrap">
-                {movieSameGenres.map((movie) => (
-                  <div key={movie.id} className="re-movie-card mx-2" onClick={() => router.push(`/movies/${movie.id}`)}>
-                    <img
-                      src={movie.poster_path ? `https://media.themoviedb.org/t/p/w500_and_h282_face${movie.poster_path}` : "https://via.placeholder.com/150"}
-                      alt={movie.title || "Unknown name"}
-                    />
-                    <div className="re-info mt-2 d-flex justify-content-between">
-                      <h6 className="cast-name">{movie.title}</h6>
-                      <p className="mt-2">{(movie.vote_average * 10).toFixed(0)}%</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ) : (
-            <p>No recommendations available</p>
-          )
-        )}
-      </div>
+        <div className="toggle-switch mb-4" style={{width: '280px'}}>
+          <button
+            className={`toggle-btn ${active === "genre" ? "active" : ""}`}
+            onClick={() => setActive("genre")}
+          >
+            Genre
+          </button>
+          <button
+            className={`toggle-btn ${active === "keyword" ? "active" : ""}`}
+            onClick={() => setActive("keyword")}
+          >
+            Keyword
+          </button>
+          <button
+            className={`toggle-btn ${active === "collection" ? "active" : ""}`}
+            onClick={() => setActive("collection")}
+          >
+            Collection
+          </button>
+        </div>
 
-      <hr></hr> 
-      <div className="container my-4">
-        <h4>Recommendations by Keyword</h4>
         {loadingRecommendations ? (
           <CircularProgress />
         ) : (
-          Array.isArray(movieSameKeyword) && movieSameKeyword.length > 0 ? (
-            <div className="re-list-container my-3">
-              <div className="movie-list d-flex flex-wrap">
-                {movieSameKeyword.map((movie) => (
-                  <div key={movie.id} className="re-movie-card mx-2" onClick={() => router.push(`/movies/${movie.id}`)}>
-                    <img
-                      src={movie.poster_path ? `https://media.themoviedb.org/t/p/w500_and_h282_face${movie.poster_path}` : "https://via.placeholder.com/150"}
-                      alt={movie.title || "Unknown name"}
-                    />
-                    <div className="re-info mt-2 d-flex justify-content-between">
-                      <h6 className="cast-name">{movie.title}</h6>
-                      <p className="mt-2">{(movie.vote_average * 10).toFixed(0)}%</p>
+          active === "genre" ? (
+            Array.isArray(movieSameGenres) && movieSameGenres.length > 0 ? (
+              <div className="re-list-container my-3">
+                <div className="movie-list d-flex flex-wrap">
+                  {movieSameGenres.map((movie) => (
+                    <div key={movie.id} className="re-movie-card mx-2" onClick={() => router.push(`/movies/${movie.id}`)}>
+                      <img
+                        src={movie.poster_path ? `https://media.themoviedb.org/t/p/w500_and_h282_face${movie.poster_path}` : "https://via.placeholder.com/150"}
+                        alt={movie.title || "Unknown name"}
+                      />
+                      <div className="re-info mt-2 d-flex justify-content-between">
+                        <h6 className="cast-name">{movie.title}</h6>
+                        <p className="mt-2">{(movie.vote_average * 10).toFixed(0)}%</p>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-          ) : (
-            <p>No recommendations available</p>
-          )
-        )}
-      </div>
-
-      <hr></hr> 
-      <div className="container my-4">
-        <h4>Recommendations by Collection</h4>
-        {loadingRecommendations ? (
-          <CircularProgress />
-        ) : (
-          Array.isArray(movieSameCollection) && movieSameCollection.length > 0 ? (
-            <div className="re-list-container my-3">
-              <div className="movie-list d-flex flex-wrap">
-                {movieSameCollection.map((movie) => (
-                  <div key={movie.id} className="re-movie-card mx-2" onClick={() => router.push(`/movies/${movie.id}`)}>
-                    <img
-                      src={movie.poster_path ? `https://media.themoviedb.org/t/p/w500_and_h282_face${movie.poster_path}` : "https://via.placeholder.com/150"}
-                      alt={movie.title || "Unknown name"}
-                    />
-                    <div className="re-info mt-2 d-flex justify-content-between">
-                      <h6 className="cast-name">{movie.title}</h6>
-                      <p className="mt-2">{(movie.vote_average * 10).toFixed(0)}%</p>
+            ) : (
+              <p>No recommendations available</p>
+            )
+          ) : active === "keyword" ? (
+            Array.isArray(movieSameKeyword) && movieSameKeyword.length > 0 ? (
+              <div className="re-list-container my-3">
+                <div className="movie-list d-flex flex-wrap">
+                  {movieSameKeyword.map((movie) => (
+                    <div key={movie.id} className="re-movie-card mx-2" onClick={() => router.push(`/movies/${movie.id}`)}>
+                      <img
+                        src={movie.poster_path ? `https://media.themoviedb.org/t/p/w500_and_h282_face${movie.poster_path}` : "https://via.placeholder.com/150"}
+                        alt={movie.title || "Unknown name"}
+                      />
+                      <div className="re-info mt-2 d-flex justify-content-between">
+                        <h6 className="cast-name">{movie.title}</h6>
+                        <p className="mt-2">{(movie.vote_average * 10).toFixed(0)}%</p>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-          ) : (
-            <p>No recommendations available</p>
-          )
+            ) : (
+              <p>No recommendations available</p>
+            )
+          ) : active === "collection" ? (
+            Array.isArray(movieSameCollection) && movieSameCollection.length > 0 ? (
+              <div className="re-list-container my-3">
+                <div className="movie-list d-flex flex-wrap">
+                  {movieSameCollection.map((movie) => (
+                    <div key={movie.id} className="re-movie-card mx-2" onClick={() => router.push(`/movies/${movie.id}`)}>
+                      <img
+                        src={movie.poster_path ? `https://media.themoviedb.org/t/p/w500_and_h282_face${movie.poster_path}` : "https://via.placeholder.com/150"}
+                        alt={movie.title || "Unknown name"}
+                      />
+                      <div className="re-info mt-2 d-flex justify-content-between">
+                        <h6 className="cast-name">{movie.title}</h6>
+                        <p className="mt-2">{(movie.vote_average * 10).toFixed(0)}%</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <p>No recommendations available</p>
+            )
+          ) : null
         )}
       </div>
     </>
