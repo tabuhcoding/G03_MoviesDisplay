@@ -195,7 +195,10 @@ export default function Home() {
           ) : (
             <div className="movie-list d-flex flex-wrap">
               {trailerMovies.map((movie) => (
-                <div key={movie.moviesID} className="movie-card mx-2 cus-card">
+                <div 
+                  key={movie.moviesID} 
+                  onClick={() => router.push(`/movies/${movie.moviesID}`)}
+                  className="movie-card mx-2 cus-card">
                   {movie.key ? (
                     <div className="trailer-video">
                       <iframe
