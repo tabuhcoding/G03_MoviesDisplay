@@ -78,6 +78,10 @@ export class UserService {
     return this.otpService.sendOtpMail(email);
   }  
 
+  async sendOTP(email: string): Promise<{ expiresAt: Date; remainingAttempts: number }> {
+    return this.otpService.sendOtpMail(email);
+  }
+
   async resetPassword(resetPasswordDto: ResetPasswordDto) : Promise<{ message: string }> {
     const { email, newPassword } = resetPasswordDto;
 

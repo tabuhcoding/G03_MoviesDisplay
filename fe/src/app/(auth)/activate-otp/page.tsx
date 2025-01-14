@@ -1,7 +1,7 @@
 "use client"
 
 /* Package System */
-import { useState, ChangeEvent, FormEvent, useEffect } from "react"
+import { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import {
   Button,
   TextField,
@@ -24,62 +24,41 @@ import { useAuth } from "@/src/context/authContext";
 const TIMELEFT = 60;
 const ATTEMPTS = 0;
 
-export default function VerifyOTP() {
+export default function VerifyOTPActivateAccount() {
   const [formData, setFormData] = useState({ email: '', otp: '' });
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [isResendAllowed, setisResendAllowed] = useState(false);
+  const [isResendAllowed, setIsResendAllowed] = useState(false);
   const [attempts, setAttempts] = useState(0);
-  const [countAttempts, setCountAttempts] = useState(0);
   const [timeLeft, setTimeLeft] = useState(60);
-  const [isVerified, setIsVerified] = useState(false);
   const [errors, setErrors] = useState({ otp: '' });
   const [email, setEmail] = useState<string | null>(null);
 
   const router = useRouter();
-  const {isLogin} = useAuth();
-  useEffect(() => {
-    if (isLogin) {
-      return router.push('/');
-    }
-  }, [isLogin, router]);
+  const { login, isLogin } = useAuth()
 
   useEffect(() => {
-    const expiresAt = localStorage.getItem('expiresAt');
-    const remainingAttempts = localStorage.getItem('remainingAttempts');
-    if (expiresAt) {
-      const expiryTime = new Date(expiresAt).getTime();
-      const currentTime = new Date().getTime();
-      const remainingTime = Math.floor((expiryTime - currentTime) / 1000);
-      setTimeLeft(remainingTime > 0 ? remainingTime : 0);
+    const storedData = localStorage.getItem('tempRegisterData');
+    if (storedData) {
+      const parsedData = JSON.parse(storedData);
+      setEmail(parsedData.email);
+      formData.email = parsedData.email;
+    } else {
+      router.push('/register');
     }
-    if (remainingAttempts) {
-      setAttempts(parseInt(remainingAttempts));
-    }
-  }, []);
+  }, [router]);
 
   useEffect(() => {
-    if (timeLeft == 0) {
-      setisResendAllowed(true);
-    }
-    else {
-      setisResendAllowed(false);
+    if (timeLeft === 0) {
+      setIsResendAllowed(true);
+    } else {
+      setIsResendAllowed(false);
       const timer = setInterval(() => {
-        setTimeLeft(prev => prev - 1);
+        setTimeLeft((prev) => prev - 1);
       }, 1000);
       return () => clearInterval(timer);
     }
   }, [timeLeft]);
-
-  useEffect(() => {
-    const storedEmail = localStorage.getItem('forgotPasswordEmail');
-    if (storedEmail) {
-      setEmail(storedEmail);
-      formData.email = storedEmail;
-    } else {
-      router.push('/forgot-password');
-    }
-  }, [router]);
 
   const formatTime = (time: number) => {
     const minutes = Math.floor((time % 3600) / 60);
@@ -89,31 +68,30 @@ export default function VerifyOTP() {
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prevState => ({
+    setFormData((prevState) => ({
       ...prevState,
       [name]: value
     }));
 
-    setErrors(prevState => ({
+    setErrors((prevState) => ({
       ...prevState,
       [name]: ''
     }));
-  }
+  };
 
   const validateForm = () => {
     const newErrors: any = {};
 
     if (!formData.otp) {
       newErrors.otp = 'Mã OTP không được để trống';
-    }
-    else if (formData.otp.length !== 6) {
+    } else if (formData.otp.length !== 6) {
       newErrors.otp = 'Mã OTP phải có 6 ký tự';
     }
 
     setErrors(newErrors);
 
     return Object.keys(newErrors).length === 0;
-  }
+  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -124,45 +102,55 @@ export default function VerifyOTP() {
     setIsLoading(true);
 
     try {
-      const res = await fetch(END_POINT_URL_LIST.V2_VERIFY_OTP, {
+      const otpRes = await fetch(END_POINT_URL_LIST.V2_VERIFY_OTP, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({ email: formData.email, otp: formData.otp })
       });
 
-      const data = await res.json();
+      const otpData = await otpRes.json();
 
-      if (res.ok) {
-        setMessage(data?.message);
-        setIsVerified(true);
-        setTimeout(() => {
-          router.push('/reset-password');
-        }, 2000);
-        return;
-      } 
-      
-      const errorMessage = data?.message?.message || "Đã xảy ra lỗi không xác định";
-      throw new Error(typeof errorMessage === 'string' ? errorMessage : JSON.stringify(errorMessage));
+      if (otpRes.ok) {
+        const tempData = localStorage.getItem('tempRegisterData');
+        if (!tempData) throw new Error('Không tìm thấy dữ liệu đăng ký.');
+
+        const registerData = JSON.parse(tempData);
+
+        const registerRes = await fetch(END_POINT_URL_LIST.V2_REGISTER, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(registerData)
+        });
+
+        const registerResponseData = await registerRes.json();
+
+        if (registerRes.ok) {
+          login(registerResponseData);
+          setMessage('Tài khoản của bạn đã được kích hoạt thành công!');
+          localStorage.removeItem('tempRegisterData');
+          setTimeout(() => {
+            router.push('/login');
+          }, 2000);
+          return;
+        }
+
+        throw new Error(registerResponseData?.message || 'Đăng ký tài khoản thất bại.');
+      }
+
+      throw new Error(otpData?.message || 'Mã OTP không hợp lệ.');
     } catch (error: any) {
-      setMessage(error.message);
+      setMessage(error.message || 'Đã xảy ra lỗi.');
     } finally {
       setIsLoading(false);
     }
-  }
+  };
 
   const handleResendOtp = async () => {
     setIsLoading(true);
-    setCountAttempts(countAttempts + 1);
     setMessage('');
 
-    if (countAttempts >= attempts) {
-      setMessage('Bạn đã hết số lần gửi lại mã OTP.');
-      setIsLoading(false);
-      return;
-    }
-
     try {
-      const res = await fetch(END_POINT_URL_LIST.V2_FORGOT_PASSWORD, {
+      const res = await fetch(END_POINT_URL_LIST.FORGOT_PASSWORD, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })
@@ -173,7 +161,6 @@ export default function VerifyOTP() {
       if (res.ok) {
         setMessage('Mã OTP mới đã được gửi lại thành công.');
         setTimeLeft(data.timeLeft || TIMELEFT);
-        setAttempts(data.remainingAttempts || ATTEMPTS);
       } else {
         setMessage(data?.message?.message || 'Không thể gửi lại OTP.');
         throw new Error(data?.message?.message || 'Không thể gửi lại OTP.');
@@ -200,7 +187,7 @@ export default function VerifyOTP() {
     >
       <Card sx={{ p: 2, borderRadius: 3, boxShadow: 5, maxWidth: 400, width: '100%' }}>
         <CardHeader
-          title={<Typography variant="h5" align="center">Nhập mã xác thực</Typography>}
+          title={<Typography variant="h5" align="center">Xác thực tài khoản</Typography>}
           subheader={<Typography variant="body2" color="textSecondary">Chúng tôi đã gửi mã OTP đến email {email}</Typography>}
           sx={{ textAlign: 'center', fontWeight: 'bold', color: '#01647e' }}
         />
@@ -255,5 +242,5 @@ export default function VerifyOTP() {
         </CardContent>
       </Card>
     </Box>
-  )
+  );
 }
