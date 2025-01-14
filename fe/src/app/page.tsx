@@ -46,6 +46,7 @@ export default function Home() {
   const router = useRouter();
   const [active, setActive] = useState<string>("day");
   const [searchInput, setSearchInput] = useState<string>("");
+  const [searchInputLLM, setSearchInputLLM] = useState<string>("");
   const [error, setError] = useState<ErrorData>({} as ErrorData);
   const [loading, setLoading] = useState(false);
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -60,6 +61,11 @@ export default function Home() {
     e.preventDefault();
     router.push(`/movies/search?query=${searchInput}&page=1`);
   };
+
+  const handleSearchLLM = (type: string, e: React.FormEvent<HTMLFormElement>): void => {
+    e.preventDefault();
+    router.push(`/searchLLM?query=${searchInputLLM}&searchBy=${type}&amount=30`);
+  }
 
   const fetchTrendingMovies = useCallback(async () => {
     setLoading(true);
@@ -116,36 +122,15 @@ export default function Home() {
   }, [fetchTrendingMovies, fetchLatestTrailers, activeTrailers]);
 
   // ================== Test Result Display ==================
-  // const fetchTrendingPeople = useCallback(async () => {
-  //   setLoading(true);
-  //   setError({} as ErrorData);
-  //   try {
-  //     const response = await axios.get(
-  //       `${process.env.NEXT_PUBLIC_BACKEND_URL}${END_POINT_URL_LIST.PEOPLE_TRENDING}?timeWindow=${active}`
-  //     );
-  //     console.log("🚀 ~ fetchTrendingPeople ~ response.data.data:", response.data.data);
-  //     setPeople(response.data.data);
-  //   } catch (err: any) {
-  //     console.error("Error fetching trending people:", err);
-  //     const errorData = {
-  //       message: err.response?.data?.message?.message as string || "Failed to fetch trending people",
-  //       detail: "Backend Error: " + err.response?.data?.message?.details || "Unknown error occurred",
-  //       statusCode: err.response?.data?.message?.statusCode?.toString() as string || "500" as string
-  //     };
-  //     console.log(errorData);
-  //     setError(errorData);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // }, [active]);
-
-  // useEffect(() => {
-  //   fetchTrendingPeople();
-  // }, [fetchTrendingPeople]);
+  // 
 
   return (
     <>
-      <SearchInput value={searchInput} onChange={(value) => setSearchInput(value)} onSubmit={handleSearch} />
+      <SearchInput 
+        isUseSearchLLM={true} isUseSearch={true}
+        value={searchInput} onChange={(value) => setSearchInput(value)} onSubmit={handleSearch} 
+        valueLLM={searchInputLLM} onChangeLLM={(value) => setSearchInputLLM(value)} onSubmitLLM={handleSearchLLM}
+      />
 
       <div className="container my-4">
         <div className="d-flex justify-content-between align-items-center">
@@ -199,7 +184,7 @@ export default function Home() {
                   <div
                     className="rating container-rating"
                     style={{
-                      background: `conic-gradient(#4caf50 ${(movie.vote_average * 10) * 3.6}deg, #e0e0e0 0deg)`, // Viền xanh lá theo phần trăm
+                      background: `conic-gradient(#4caf50 ${(movie.vote_average * 10) * 3.6}deg, #e0e0e0 0deg)` // Viền xanh lá theo phần trăm
                     }}
                   >
                     <span className='circle-rating'>

@@ -4,12 +4,17 @@ import { ChangeEvent, useState } from "react";
 import "@styles/Searchbar.css";
 
 interface SearchInputProps {
-  value: string;
-  onChange: (value: string) => void;
-  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  isUseSearch: boolean;
+  isUseSearchLLM: boolean;
+  value?: string;
+  onChange?: (value: string) => void;
+  onSubmit?: (e: React.FormEvent<HTMLFormElement>) => void;
+  valueLLM?: string;
+  onChangeLLM?: (valueLLM: string) => void;
+  onSubmitLLM?: (type:string, e: React.FormEvent<HTMLFormElement>) => void;
 }
 
-const SearchInput: React.FC<SearchInputProps> = ({ value, onChange, onSubmit }) => {
+const SearchInput: React.FC<SearchInputProps> = ({ isUseSearch, isUseSearchLLM ,value, onChange, onSubmit, valueLLM, onChangeLLM, onSubmitLLM }) => {
   const [searchType2, setSearchType2] = useState('movies'); 
 
   return (
@@ -19,14 +24,14 @@ const SearchInput: React.FC<SearchInputProps> = ({ value, onChange, onSubmit }) 
           <div className="text-white">
             <h1 className="mb-3">Welcome</h1>
             <h4 className="mb-3">Millions of movies, TV shows and people to discover. Explore now.</h4>
-            <form className="d-flex" role="search" onSubmit={onSubmit}>
+            {isUseSearch && <form className="d-flex" role="search" onSubmit={onSubmit}>
               <input
                 className="form-control me-2"
                 type="search"
                 placeholder="Search"
                 aria-label="Search"
                 value={value}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => onChange(e.target.value)}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => onChange && onChange(e.target.value)}
               />
               <button
                 className="btn btn-outline-light btn-lg btn-search"
@@ -41,26 +46,17 @@ const SearchInput: React.FC<SearchInputProps> = ({ value, onChange, onSubmit }) 
               >
                 Search
               </button>
-            </form>
+            </form>}
 
             {/* Thanh tìm kiếm thứ hai với lựa chọn "Movies" và "People" */}
-            <form className="d-flex mt-4" role="search" onSubmit={onSubmit}>
+            {isUseSearchLLM && <form className="d-flex mt-4" role="search" onSubmit={(e: React.FormEvent<HTMLFormElement>) => onSubmitLLM && onSubmitLLM(searchType2, e)}>
               <input
                 className="form-control me-2"
                 type="search"
-                placeholder="Search"
+                placeholder="Search with LLM"
                 aria-label="Search"
-                value={value}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => onChange(e.target.value)}
-              />
-              
-              {/* Thêm input mới ở giữa */}
-              <input
-                className="form-control me-2 form-popular"
-                type="text"
-                placeholder="With popular"
-                aria-label="Popular"
-                onChange={(e: ChangeEvent<HTMLInputElement>) => {}}
+                value={valueLLM}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => onChangeLLM && onChangeLLM(e.target.value)}
               />
               
               {/* Dropdown để chọn loại tìm kiếm */}
@@ -85,7 +81,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ value, onChange, onSubmit }) 
               >
                 Search
               </button>
-            </form>
+            </form>}
           </div>
         </div>
       </div>

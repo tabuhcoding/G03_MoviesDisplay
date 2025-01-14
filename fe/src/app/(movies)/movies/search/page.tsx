@@ -63,6 +63,8 @@ export default function SearchPage() {
   return (
     <>
       <SearchInput
+        isUseSearchLLM={false}
+        isUseSearch={true}
         value={query}
         onChange={(value) => router.push(`/movies/search?query=${value}&page=1`)}
         onSubmit={handleSearch}
