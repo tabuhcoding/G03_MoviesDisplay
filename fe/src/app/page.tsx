@@ -1,14 +1,21 @@
 "use client"
+
+/* Package System */
 import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import "bootstrap/dist/css/bootstrap.min.css";
+import axios from 'axios';
+
+/* Package Application */
 import SearchInput from '@components/layout/searchInput';
 import "@styles/Homepage.css";
-import axios from 'axios';
 import { ErrorData, ErrorHandling } from '@components/errorHandling';
 import { END_POINT_URL_LIST } from '../util/constant';
+
+// ================== Test Result Display ==================
+// import ResultDisplay from '../components/combinedDisplay';
 export interface Movie {
-  id: string;
+  id: number;
   title: string;
   overview: string;
   poster_path: string;
@@ -26,10 +33,20 @@ export interface MovieLastest {
   name: string;
 }
 
+// ================== Test Result Display ==================
+export interface Person {
+  id: number;
+  name: string;
+  profile_path: string | null;
+  popularity: number;
+  known_for_department: string;
+}
+
 export default function Home() {
   const router = useRouter();
   const [active, setActive] = useState<string>("day");
   const [searchInput, setSearchInput] = useState<string>("");
+  const [searchInputLLM, setSearchInputLLM] = useState<string>("");
   const [error, setError] = useState<ErrorData>({} as ErrorData);
   const [loading, setLoading] = useState(false);
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -37,10 +54,18 @@ export default function Home() {
   const [activeTrailers, setActiveTrailers] = useState<'popular' | 'intheater'>('popular');
   const [isPlaying, setIsPlaying] = useState<string | null>(null);
 
+  // ================== Test Result Display ==================
+  // const [people, setPeople] = useState<Person[]>([]);
+
   const handleSearch = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     router.push(`/movies/search?query=${searchInput}&page=1`);
   };
+
+  const handleSearchLLM = (type: string, e: React.FormEvent<HTMLFormElement>): void => {
+    e.preventDefault();
+    router.push(`/searchLLM?query=${searchInputLLM}&searchBy=${type}&amount=30`);
+  }
 
   const fetchTrendingMovies = useCallback(async () => {
     setLoading(true);
@@ -96,9 +121,16 @@ export default function Home() {
     fetchLatestTrailers(activeTrailers);
   }, [fetchTrendingMovies, fetchLatestTrailers, activeTrailers]);
 
+  // ================== Test Result Display ==================
+  // 
+
   return (
     <>
-      <SearchInput value={searchInput} onChange={(value) => setSearchInput(value)} onSubmit={handleSearch} />
+      <SearchInput 
+        isUseSearchLLM={true} isUseSearch={true}
+        value={searchInput} onChange={(value) => setSearchInput(value)} onSubmit={handleSearch} 
+        valueLLM={searchInputLLM} onChangeLLM={(value) => setSearchInputLLM(value)} onSubmitLLM={handleSearchLLM}
+      />
 
       <div className="container my-4">
         <div className="d-flex justify-content-between align-items-center">
@@ -152,7 +184,7 @@ export default function Home() {
                   <div
                     className="rating container-rating"
                     style={{
-                      background: `conic-gradient(#4caf50 ${(movie.vote_average * 10) * 3.6}deg, #e0e0e0 0deg)`, // Viền xanh lá theo phần trăm
+                      background: `conic-gradient(#4caf50 ${(movie.vote_average * 10) * 3.6}deg, #e0e0e0 0deg)` // Viền xanh lá theo phần trăm
                     }}
                   >
                     <span className='circle-rating'>
@@ -164,6 +196,9 @@ export default function Home() {
             </div>
           )}
         </div>
+
+        {/* ================== Test Result Display ================== */}
+        {/* <ResultDisplay results={movies} isPeople={false}/> */}
       </div>
 
       <hr></hr>

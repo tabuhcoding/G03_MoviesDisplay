@@ -6,6 +6,10 @@ import { MoviesRepository } from './movies.repository';
 export class MoviesService {
   constructor(private readonly moviesRepository: MoviesRepository) {}
 
+  async getMovies(ids: number[]) {
+    return this.moviesRepository.fetchMoviesByIds(ids);
+  }
+
   async getTrendingMovies(timeWindow: 'day' | 'week') {
     return this.moviesRepository.fetchTrendingMovies(timeWindow);
   }

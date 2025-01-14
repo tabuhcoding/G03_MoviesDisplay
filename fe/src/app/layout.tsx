@@ -1,6 +1,7 @@
 import Footer from "@components/layout/footer";
 import Navigation from "@components/layout/navigation";
 import AuthProvider from "@context/authContext";
+import ChatBox from '@components/layout/chatbox';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 export default function RootLayout({
   children
@@ -16,6 +17,7 @@ export default function RootLayout({
             <div className="d-flex flex-column min-vh-100">
               {children}
             </div>
+            <ChatBox />
             <Footer />
           </AuthProvider>
         </GoogleOAuthProvider>

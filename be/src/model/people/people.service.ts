@@ -7,6 +7,9 @@ import { PeopleRepository } from './people.repository';
 export class PeopleService {
   constructor(private readonly peopleRepository: PeopleRepository) {}
 
+  async getPeople(ids: number[]) {
+    return this.peopleRepository.fetchPeopleByIds(ids);
+  }
   async getTrendingPeople(timeWindow: 'day' | 'week') {
     return this.peopleRepository.fetchTrendingPeople(timeWindow);
   }

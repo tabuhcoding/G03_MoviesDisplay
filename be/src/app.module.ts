@@ -7,15 +7,13 @@ import { ConfigModule } from '@nestjs/config';
 import { ImageModule } from './model/image/image.module';
 import { OtpModule } from './model/user/otp/otp.module';
 import { PeopleModule } from './model/people/people.module';
+import { NavigateModule } from './model/natigate/navigate.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot( {isGlobal: true}),
     MongooseModule.forRoot(process.env.MONGODB_URL_AUTH, {
       connectionName: 'auth',
-    }),
-    MongooseModule.forRoot(process.env.MONGODB_URL_CUSTOMDATA, {
-      connectionName: 'customData',
     }),
     MongooseModule.forRoot(process.env.MONGODB_URL_OTHERSCRAP, {
       connectionName: 'otherNoSQL',
@@ -28,6 +26,7 @@ import { PeopleModule } from './model/people/people.module';
     ImageModule,
     OtpModule,
     PeopleModule,
+    NavigateModule,
   ],
 })
 export class AppModule {}
