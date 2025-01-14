@@ -1,14 +1,21 @@
 "use client"
+
+/* Package System */
 import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import "bootstrap/dist/css/bootstrap.min.css";
+import axios from 'axios';
+
+/* Package Application */
 import SearchInput from '@components/layout/searchInput';
 import "@styles/Homepage.css";
-import axios from 'axios';
 import { ErrorData, ErrorHandling } from '@components/errorHandling';
 import { END_POINT_URL_LIST } from '../util/constant';
+
+// ================== Test Result Display ==================
+// import ResultDisplay from '../components/combinedDisplay';
 export interface Movie {
-  id: string;
+  id: number;
   title: string;
   overview: string;
   poster_path: string;
@@ -26,6 +33,15 @@ export interface MovieLastest {
   name: string;
 }
 
+// ================== Test Result Display ==================
+export interface Person {
+  id: number;
+  name: string;
+  profile_path: string | null;
+  popularity: number;
+  known_for_department: string;
+}
+
 export default function Home() {
   const router = useRouter();
   const [active, setActive] = useState<string>("day");
@@ -36,6 +52,9 @@ export default function Home() {
   const [trailerMovies, setTrailerMovies] = useState<MovieLastest[]>([]);
   const [activeTrailers, setActiveTrailers] = useState<'popular' | 'intheater'>('popular');
   const [isPlaying, setIsPlaying] = useState<string | null>(null);
+
+  // ================== Test Result Display ==================
+  // const [people, setPeople] = useState<Person[]>([]);
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
@@ -95,6 +114,34 @@ export default function Home() {
     fetchTrendingMovies();
     fetchLatestTrailers(activeTrailers);
   }, [fetchTrendingMovies, fetchLatestTrailers, activeTrailers]);
+
+  // ================== Test Result Display ==================
+  // const fetchTrendingPeople = useCallback(async () => {
+  //   setLoading(true);
+  //   setError({} as ErrorData);
+  //   try {
+  //     const response = await axios.get(
+  //       `${process.env.NEXT_PUBLIC_BACKEND_URL}${END_POINT_URL_LIST.PEOPLE_TRENDING}?timeWindow=${active}`
+  //     );
+  //     console.log("🚀 ~ fetchTrendingPeople ~ response.data.data:", response.data.data);
+  //     setPeople(response.data.data);
+  //   } catch (err: any) {
+  //     console.error("Error fetching trending people:", err);
+  //     const errorData = {
+  //       message: err.response?.data?.message?.message as string || "Failed to fetch trending people",
+  //       detail: "Backend Error: " + err.response?.data?.message?.details || "Unknown error occurred",
+  //       statusCode: err.response?.data?.message?.statusCode?.toString() as string || "500" as string
+  //     };
+  //     console.log(errorData);
+  //     setError(errorData);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }, [active]);
+
+  // useEffect(() => {
+  //   fetchTrendingPeople();
+  // }, [fetchTrendingPeople]);
 
   return (
     <>
@@ -164,6 +211,9 @@ export default function Home() {
             </div>
           )}
         </div>
+
+        {/* ================== Test Result Display ================== */}
+        {/* <ResultDisplay results={movies} isPeople={false}/> */}
       </div>
 
       <hr></hr>

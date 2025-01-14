@@ -41,8 +41,8 @@ export class OtpService {
     const mailOptions = {
       from: `"Movie Display" <${process.env.MAIL_USER}>`,
       to: email,
-      subject: 'Mã xác thực đặt lại mật khẩu',
-      text: `Đây là mã xác thực email của bạn để làm lại mật khẩu. Mã gồm 6 ký tự và có giá trị trong vòng 60  giây. Mã xác thực: ${otp}.`
+      subject: 'Mã xác thực',
+      text: `Đây là mã xác thực email của bạn. Mã gồm 6 ký tự và có giá trị trong vòng 60  giây. Mã xác thực: ${otp}.`
     };
 
     try {

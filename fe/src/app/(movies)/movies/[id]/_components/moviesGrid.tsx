@@ -44,7 +44,7 @@ const MoviesGrid: React.FC<MoviesGridProps> = ({ movies, lastMovieElementRef }) 
                 src={
                   movie.poster_path
                     ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-                    : 'https://via.placeholder.com/300x450?text=No+Image'
+                    : 'https://res.cloudinary.com/de66mx8mw/image/upload/v1736666809/default-avatar-icon-of-social-media-user-vector.jpg.jpg'
                 }
                 className="movies-img"
                 alt={movie.title || 'Movie'}
