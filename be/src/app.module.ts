@@ -15,9 +15,6 @@ import { NavigateModule } from './model/natigate/navigate.module';
     MongooseModule.forRoot(process.env.MONGODB_URL_AUTH, {
       connectionName: 'auth',
     }),
-    MongooseModule.forRoot(process.env.MONGODB_URL_CUSTOMDATA, {
-      connectionName: 'customData',
-    }),
     MongooseModule.forRoot(process.env.MONGODB_URL_OTHERSCRAP, {
       connectionName: 'otherNoSQL',
     }),

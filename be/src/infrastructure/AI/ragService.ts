@@ -46,7 +46,8 @@ class RagService {
         collection = "people";
       }
 
-      console.log("amount", amount);
+      console.log("collection", collection);
+      console.log("query", query);
       const response = await this.client.get('/retriever/', {
         params: {
           llm_api_key: this.apiKey,

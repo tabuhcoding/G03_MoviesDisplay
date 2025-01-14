@@ -16,14 +16,18 @@ export class NavigateService {
 
   async retrieveMovies(searchBy: string, query: string, amount = 10, threshold = 0.5) {
     try{
-      console.log("searchBy", searchBy);
-      console.log("query", query);
       const result = await this.ragService.retrieveMovies(searchBy, query, amount, threshold);
       if (!result.data) {
         throw new InternalServerErrorException('Failed to retrieve movies.');
       }
-      const convertIds = await this.navigateRepository.convertIdToTmdbId(result.data.result);
-      return convertIds;
+      if (searchBy === "people") {
+        const convertIds = await this.navigateRepository.convertIdToTmdbIdPeople(result.data.result);
+        return convertIds;
+      }else
+        {const convertIds = await this.navigateRepository.convertIdToTmdbId(result.data.result);
+          return convertIds;
+
+      }
     } catch (error) {
       throw new InternalServerErrorException('Failed to retrieve movies.');
     }
