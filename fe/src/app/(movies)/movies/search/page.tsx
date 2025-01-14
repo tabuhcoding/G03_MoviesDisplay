@@ -10,6 +10,7 @@ import Pagination from "../../../(movies)/movies/[id]/_components/pagination";
 import { END_POINT_URL_LIST } from "@/src/util/constant";
 import '@public/styles/movie/search.css'
 import "@styles/Homepage.css";
+import { CircularProgress } from "@mui/material";
 
 interface Movie {
   id: number;
@@ -23,7 +24,8 @@ interface Movie {
 
 interface Person {
   id: number;
-  poster_path: string;
+  profile_path: string;
+  name: string;
   original_title: string;
   vote_average: number;
   release_date: string;
@@ -57,6 +59,7 @@ export default function SearchPage() {
         );
 
         const results = response.data.data.results || [];
+        console.log("🚀 ~ fetchMovies ~ results:", results);
 
         setMovies(results);
         setTotalPages(response.data.data.total_pages || 1);
@@ -81,6 +84,7 @@ export default function SearchPage() {
 
         const results = response.data.data.results || [];
 
+        console.log("🚀 ~ fetchPeople ~ results:", results);
         setPeople(results);
         setTotalPages(response.data.data.total_pages || 1);
       } catch (error) {
@@ -131,10 +135,10 @@ export default function SearchPage() {
         </div>
 
         {isLoading ? (
-          <p>Loading...</p>
+          <CircularProgress size={24} />
         ) : (
           <>
-            {active === "movies" && movies.length > 0 ? (
+            {active === "movies" && movies && movies?.length > 0 ? (
               <div className="row mb-4">
                 <MoviesGrid movies={movies} />
                 <Pagination
@@ -145,7 +149,7 @@ export default function SearchPage() {
                   }
                 />
               </div>
-            ) : active === "people" && people.length > 0 ? (
+            ) : active === "people" && people && people?.length > 0 ? (
               <div className="row mb-4">
                 <PeopleGrid people={people} />
                 <Pagination

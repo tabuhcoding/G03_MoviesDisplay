@@ -7,7 +7,7 @@ import axios from 'axios';
 import { useSearchParams } from 'next/navigation';
 import {useRouter} from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
-import Loading from '@/src/components/loading';
+import { CircularProgress } from '@mui/material';
 
 export interface Person {
   id: number;
@@ -109,7 +109,7 @@ export default function SearchLLM(){
         </div>
       </div>
       {loading ? (
-        <Loading />
+        <CircularProgress size={24} />
       ) : error?.message ? (
         <ErrorHandling error={error} callback={fetchData} />
       ) : (

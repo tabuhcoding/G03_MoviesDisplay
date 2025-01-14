@@ -6,7 +6,8 @@ import '@styles/CustomMoviesGrid.css'
 
 interface Person {
   id: number;
-  poster_path: string | null;
+  name: string;
+  profile_path: string | null;
   original_title: string;
   vote_average: number | null;
   release_date: string | null;
@@ -43,18 +44,18 @@ const PeopleGrid: React.FC<PeopleGridProps> = ({ people, lastPersonElementRef })
             <div className="movies-card">
               <img
                 src={
-                  person.poster_path
-                    ? `https://image.tmdb.org/t/p/w500${person.poster_path}`
-                    : 'https://via.placeholder.com/300x450?text=No+Image'
+                  person.profile_path
+                    ? `https://media.themoviedb.org/t/p/w300_and_h450_bestv2${person.profile_path}`
+                    : 'https://res.cloudinary.com/de66mx8mw/image/upload/v1736666809/default-avatar-icon-of-social-media-user-vector.jpg.jpg'
                 }
                 className="movies-img"
-                alt={person.original_title || 'Person'}
+                alt={person.name || 'Person'}
               />
               <div className="movies-info">
                 <h5 className={isExpanded ? "expanded-title" : "truncated-title"}>
-                  {isExpanded || person.original_title.length <= 30
-                    ? person.original_title
-                    : `${person.original_title.substring(0, 30)}...`}
+                  {isExpanded || person?.name?.length <= 30
+                    ? person?.name
+                    : `${person?.name?.substring(0, 30)}...`}
                 </h5>
                 <p>Rating: {(person.vote_average ?? 0).toFixed(1)}</p>
                 <p>{person.release_date ? new Date(person.release_date).toLocaleDateString() : 'Unknown'}</p>
