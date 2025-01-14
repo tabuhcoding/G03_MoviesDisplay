@@ -6,6 +6,11 @@ import { PeopleService } from './people.service';
 export class PeopleController {
   constructor(private readonly peopleService: PeopleService) {}
 
+  @Get('list')
+  async getPeople(@Query('ids') ids: number[] ) {
+    return await this.peopleService.getPeople(ids);
+  }
+  
   @Get('trending')
   async getTrendingPeople(@Query('timeWindow') timeWindow: 'day' | 'week') {
     return await this.peopleService.getTrendingPeople(timeWindow || 'day');
