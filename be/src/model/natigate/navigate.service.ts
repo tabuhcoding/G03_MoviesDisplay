@@ -40,15 +40,11 @@ export class NavigateService {
       if (!is_success) {
         throw new BadRequestException('Failed to navigate.');
       }
-      console.log("route", route);
-      console.log("params", params);
       if (route === "GENRE_PAGE"){
         const genreIds = params.genre_ids;
         const genreNames = await this.navigateRepository.getGenresName(genreIds);
-        console.log("genreNames", genreNames);
         const conjun = metadata.$or ? "or" : "and";
         const query = genreNames.join(` ${conjun} `) + " movies";
-        console.log("query", query);
         const genresResult = await this.ragService.retrieveMovies("movies", query, 50, 0.5);
         const resultsIds = await this.navigateRepository.convertIdToTmdbId(genresResult.data.result);
         return { route: "MOVIE_PAGE", ids: resultsIds };

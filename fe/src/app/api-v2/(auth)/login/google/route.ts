@@ -10,7 +10,6 @@ export async function POST (request: NextRequest) {
       {}, {
         headers: { Authorization: `Bearer ${body.token}` }
       });
-    console.log(res)
     if(res.data.statusCode === 201 && res.data.data.user){
       const response = NextResponse.json( res.data.data.user, { status: 200 })
       const expires = new Date();

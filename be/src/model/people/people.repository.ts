@@ -42,7 +42,6 @@ export class PeopleRepository {
 
   async searchPeople(query: string, page: number) {
     try {
-      console.log("Query:", query);
       const nomalQuery = query.toLowerCase();
   
       // Tìm kết quả khớp với truy vấn

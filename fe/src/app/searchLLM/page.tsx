@@ -7,6 +7,7 @@ import axios from 'axios';
 import { useSearchParams } from 'next/navigation';
 import {useRouter} from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
+import Loading from '@/src/components/loading';
 
 export interface Person {
   id: number;
@@ -26,6 +27,7 @@ export interface Movie {
   vote_average: number;
   vote_count: number;
   trailer_key?: string; 
+  popularity: number;
 }
 
 export default function SearchLLM(){
@@ -49,7 +51,6 @@ export default function SearchLLM(){
         `${process.env.NEXT_PUBLIC_BACKEND_URL}${END_POINT_URL_LIST.RETRIEVE}?query=${query}&searchBy=${searchBy}&amount=${amount}`
       );
       if(response.data.data.length > 0){
-        console.log(response.data.data);
         if(searchBy === "people"){
           const peopleResponse = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}${END_POINT_URL_LIST.PEOPLE_LIST}`,{
             params: {
@@ -108,7 +109,7 @@ export default function SearchLLM(){
         </div>
       </div>
       {loading ? (
-        <p>Loading...</p>
+        <Loading />
       ) : error?.message ? (
         <ErrorHandling error={error} callback={fetchData} />
       ) : (

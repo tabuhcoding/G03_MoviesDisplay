@@ -63,7 +63,7 @@ interface Review {
   };
   content: string;
   created_at: string;
-  update_at: string;
+  updated_at: string;
   id: string;
   url: string;
 }
@@ -130,7 +130,7 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
   const otherCrew = movieDetails?.credits?.crew?.filter(member => member.job !== "Director");
 
   const [showAllCrew, setShowAllCrew] = useState(false);
-  const visibleCrew = showAllCrew ? otherCrew : otherCrew.slice(0, 10);
+  const visibleCrew = showAllCrew ? otherCrew : otherCrew?.slice(0, 10);
 
   const handleAddToList = async (apiEndPoint: string) => {
     if (!isLogin) {

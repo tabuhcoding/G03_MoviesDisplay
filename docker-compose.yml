@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  backend:
+    build:
+      context: ./be
+    ports:
+      - "3001:3001"
+    env_file:
+      - ./be/.env.docker
+    environment:
+      - NODE_ENV=production
+
+  frontend:
+    build:
+      context: ./fe
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./fe/.env.docker
+    environment:
+      - NODE_ENV=production 

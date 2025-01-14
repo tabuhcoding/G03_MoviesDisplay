@@ -30,7 +30,6 @@ export class MoviesRepository {
       //   params: { api_key: this.apiKey, movie_id: ids.join(',') },
       // });
       // return data.results;
-      console.log(ids);
       const idsToNumber = ids.map((id) => id >> 0);
       return this.moviesNoSQLModel.find({ tmdb_id: { $in: idsToNumber } }).exec();
     } catch (error) {
@@ -66,7 +65,6 @@ export class MoviesRepository {
 
   async searchMovies(query: string, page: number): Promise<any> {
     try {
-      console.log("Query:", query);
       const nomalQuery = query.toLowerCase();
 
       // Tìm kết quả khớp với truy vấn
@@ -352,7 +350,6 @@ export class MoviesRepository {
       const sameMovie = await this.moviesNoSQLModel.find({
         'belongs_to_collection.id': collectionId,
       }).limit(20).exec();
-      console.log(sameMovie.length);
       return sameMovie;
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -362,7 +359,6 @@ export class MoviesRepository {
   async getSameMoviesByHistory(email: String) {
     try {
       // Lấy danh sách watchlist và favoriteList của user
-      console.log(email);
       const watchlist = await this.watchlistModel.find({ 
         email: {$regex: new RegExp(`^${email.trim()}$`, 'i')} 
       }).exec();

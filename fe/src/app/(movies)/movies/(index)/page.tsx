@@ -32,12 +32,10 @@ export default function Page() {
     setLoading(true);
     setError({} as ErrorData);
     try {
-      console.log(ids);
       const idsArray = ids.split(",").map(Number);
       const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}${END_POINT_URL_LIST.MOVIES_LIST}`,{
         params: { ids: idsArray }
       });
-      console.log(response.data.data);
       if (response.data.data.length > 0) {
         const uniqueMovies = [
           ...new Map(response.data.data.map((item: Movie) => [item.id, item])).values()

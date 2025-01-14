@@ -17,7 +17,6 @@ export class ActionController {
 
   @Delete('watch-list')
   async removeFromWatchList(@Query('email') email: string, @Query('movieId') movieId: Number) {
-    console.log(email, movieId);
     return this.actionService.removeFromWatchList(email, movieId);
   }
 

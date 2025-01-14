@@ -47,7 +47,6 @@ export class OtpService {
 
     try {
       await this.transporter.sendMail(mailOptions);
-      console.log(`OTP sent to ${email}`);
       
       return {
         expiresAt: newOtp.expiresAt,

@@ -46,8 +46,6 @@ class RagService {
         collection = "people";
       }
 
-      console.log("collection", collection);
-      console.log("query", query);
       const response = await this.client.get('/retriever/', {
         params: {
           llm_api_key: this.apiKey,
@@ -67,7 +65,6 @@ class RagService {
   // Navigate the web by query
   async navigate(query: string) {
     try {
-      console.log("query", query);
       const response = await this.client.post('/navigate/', null, {
         params: {
           llm_api_key: this.apiKey,

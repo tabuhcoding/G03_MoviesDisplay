@@ -40,7 +40,7 @@ async function PeopleContent({ id }: { id: string }) {
     if (peopleDetails) {
       return <PeopleDetail peopleDetails={peopleDetails} />;
     }
-    return <p style={{marginTop:'56px'}}>People {id} has no data</p>
+    return <p style={{marginTop:'60px'}}>People {id} has no data</p>
   } catch (error) {
     const err = error as ErrorData;
     return <ErrorHandling error={err} callback={() => fetchPeopleDetails(id)} />;

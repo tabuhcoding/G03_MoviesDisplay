@@ -57,7 +57,6 @@ export default function SearchPage() {
         );
 
         const results = response.data.data.results || [];
-        console.log("Result movies: ", results);
 
         setMovies(results);
         setTotalPages(response.data.data.total_pages || 1);
@@ -81,7 +80,6 @@ export default function SearchPage() {
         );
 
         const results = response.data.data.results || [];
-        console.log("Result people: ", results);
 
         setPeople(results);
         setTotalPages(response.data.data.total_pages || 1);

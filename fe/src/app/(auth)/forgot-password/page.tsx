@@ -67,7 +67,6 @@ export default function ForgotPassword() {
 
     setIsLoading(true);
     try {
-      console.log(END_POINT_URL_LIST.FORGOT_PASSWORD);
       const res = await fetch(END_POINT_URL_LIST.V2_FORGOT_PASSWORD, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

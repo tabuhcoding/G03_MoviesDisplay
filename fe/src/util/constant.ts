@@ -31,7 +31,7 @@ export class END_POINT_URL_LIST {
   static MOVIES_POPULAR = "/movies/popular";
   static MOVIES_TOP_RATED = "/movies/top-rated";
   static MOVIES_UPCOMING = "/movies/upcoming";
-  static LASTEST_TRAILER = "/movies/latest-trailers";
+  static LASTEST_TRAILER = "/movies/lastest-trailers";
   // MOVIES DETAIL
   static MOVIES = "/movies"; // /movies/:id
   static MOVIES_RECOMMENDATIONS = "/recommendations"; // /movies/:id/recommendations

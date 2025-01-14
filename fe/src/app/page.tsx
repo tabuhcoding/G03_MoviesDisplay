@@ -11,6 +11,7 @@ import SearchInput from '@components/layout/searchInput';
 import "@styles/Homepage.css";
 import { ErrorData, ErrorHandling } from '@components/errorHandling';
 import { END_POINT_URL_LIST } from '../util/constant';
+import Loading from '../components/loading';
 
 // ================== Test Result Display ==================
 // import ResultDisplay from '../components/combinedDisplay';
@@ -54,9 +55,6 @@ export default function Home() {
   const [activeTrailers, setActiveTrailers] = useState<'popular' | 'intheater'>('popular');
   const [isPlaying, setIsPlaying] = useState<string | null>(null);
 
-  // ================== Test Result Display ==================
-  // const [people, setPeople] = useState<Person[]>([]);
-
   const handleSearch = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     router.push(`/movies/search?query=${searchInput}&page=1`);
@@ -95,7 +93,7 @@ export default function Home() {
     setError({} as ErrorData);
     try {
       const response = await axios.get(
-        'http://localhost:3001/movies/lastest-trailers', {
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}${END_POINT_URL_LIST.LASTEST_TRAILER}`, {
           params: {
             query
           }
@@ -120,9 +118,6 @@ export default function Home() {
     fetchTrendingMovies();
     fetchLatestTrailers(activeTrailers);
   }, [fetchTrendingMovies, fetchLatestTrailers, activeTrailers]);
-
-  // ================== Test Result Display ==================
-  // 
 
   return (
     <>
@@ -153,7 +148,7 @@ export default function Home() {
 
         <div className="movie-list-container my-3">
           {loading ? (
-            <p>Loading...</p>
+            <Loading />
           ) : error?.message ? (
             <ErrorHandling error={error} callback={fetchTrendingMovies} />
           ) : (
@@ -168,7 +163,7 @@ export default function Home() {
                     src={
                       movie.poster_path
                         ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-                        : "https://via.placeholder.com/150"
+                        : "https://res.cloudinary.com/de66mx8mw/image/upload/v1736666809/default-avatar-icon-of-social-media-user-vector.jpg.jpg"
                     }
                     alt={movie.title || "Unknown title"}
                     style={{
@@ -196,9 +191,6 @@ export default function Home() {
             </div>
           )}
         </div>
-
-        {/* ================== Test Result Display ================== */}
-        {/* <ResultDisplay results={movies} isPeople={false}/> */}
       </div>
 
       <hr></hr>
@@ -225,7 +217,7 @@ export default function Home() {
 
         <div className="movie-list-container my-3">
           {loading ? (
-            <p>Loading...</p>
+            <Loading />
           ) : error?.message ? (
             <ErrorHandling error={error} callback={() => fetchLatestTrailers(activeTrailers)} />
           ) : (

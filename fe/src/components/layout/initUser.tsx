@@ -22,7 +22,6 @@ export const InitUser = ({token}: {token:string}) => {
           }
         );
         login(response.data.data.user);
-        console.log("User profile:", response.data.data);
       } catch (error) {
         logout();
         console.error("Failed to fetch user profile:", error);

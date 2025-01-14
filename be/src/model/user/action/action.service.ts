@@ -39,7 +39,6 @@ export class ActionService {
   async addRating(email: string, movieId: Number, rating: number, reviews: string) {
     const createdRating = await this.actionRepository.createRating({ email, movieId, rating, reviews });
     const createdReviews = await this.actionRepository.createReview(email, createdRating);
-    console.log(createdReviews);
     return { createdRating, createdReviews };
   }
 

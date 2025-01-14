@@ -24,7 +24,7 @@ interface Review {
   };
   content: string;
   created_at: string;
-  update_at: string;
+  updated_at: string;
   id: string;
   url: string;
 }
@@ -135,12 +135,12 @@ export const ReviewList: FC<{ reviews: Review[]; currentUserEmail: string; onEdi
           <div key={review.id} className="review-item">
             <div className="review-header">
               <img
-                src={review.author_details.avatar_path || "https://res.cloudinary.com/de66mx8mw/image/upload/v1736666809/default-avatar-icon-of-social-media-user-vector.jpg.jpg"}
-                alt={review.author_details.name}
+                src={`https://media.themoviedb.org/t/p/w300_and_h450_bestv2${review.author_details.avatar_path}` || "https://res.cloudinary.com/de66mx8mw/image/upload/v1736666809/default-avatar-icon-of-social-media-user-vector.jpg.jpg"}
+                alt={review.author}
                 className="avatar"
               />
               <div className="user-info">
-                <strong>{review.author_details.name}</strong>
+                <strong>{review.author}</strong>
                 <p className="rating">Rating: {review.author_details.rating}/10</p>
               </div>
               {review.author_details.username === currentUserEmail && (
@@ -171,7 +171,7 @@ export const ReviewList: FC<{ reviews: Review[]; currentUserEmail: string; onEdi
               )}
             </div>
             <div className="review-footer">
-              <small>{new Date(review.update_at).toLocaleString()}</small>
+              <small>{new Date(review.updated_at).toLocaleString()}</small>
             </div>
           </div>
         );
