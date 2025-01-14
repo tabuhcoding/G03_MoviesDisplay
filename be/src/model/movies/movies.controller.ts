@@ -5,6 +5,11 @@ import { MoviesService } from './movies.service';
 export class MoviesController {
   constructor(private readonly moviesService: MoviesService) {}
 
+  @Get('list')
+  async getMovies(@Query('ids') ids: number[]) {
+    return await this.moviesService.getMovies(ids);
+  }
+
   @Get('trending')
   async getTrendingMovies(@Query('timeWindow') timeWindow: 'day' | 'week') {
     return await this.moviesService.getTrendingMovies(timeWindow || 'day');

@@ -17,11 +17,13 @@ export class END_POINT_URL_LIST {
   static RESET_PASSWORD = "/user/reset-password";
   static VERIFY_OTP = "/otp/verify";
   static UPDATE_AVATAR = "/user/update-avatar";
+  static SEND_OTP = "/user/send-otp";
 
   // IMAGE
   static IMAGE = "/image";
 
   // MOVIES
+  static MOVIES_LIST = "/movies/list";
   static MOVIES_GENRES = "/movies/genres";
   static MOVIES_TRENDING = "/movies/trending";
   static MOVIES_SEARCH = "/movies/search";
@@ -37,6 +39,7 @@ export class END_POINT_URL_LIST {
   
   // PEOPLE
   static PEOPLE = "/people";
+  static PEOPLE_LIST = "/people/list";
   static PEOPLE_SEARCH = "/people/search";
   static PEOPLE_TRENDING = "/people/trending"
   static PEOPLEPOPULAR = "/people/popular";
@@ -45,4 +48,8 @@ export class END_POINT_URL_LIST {
   static favorite = "user/action/favorite-list";
   static watchlist = "user/action/watch-list";
   static rating = "user/action/rating";
+
+  // AI
+  static NAVIGATE = "/navigate";
+  static RETRIEVE = "/retrieve";
 }

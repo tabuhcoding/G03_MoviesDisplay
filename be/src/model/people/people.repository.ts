@@ -14,7 +14,14 @@ export class PeopleRepository {
     @InjectModel('scrap_people_trending_week', 'otherNoSQL') private peopleTrendingWeekModel: Model<any>,
     @InjectModel('scrap_people_popular', 'otherNoSQL') private peoplePopularModel: Model<any>,
   ) {}
-
+  async fetchPeopleByIds(ids: number[]) {
+    try {
+      const idsToNumber = ids.map((id) => id >> 0);
+      return await this.peopleNoSQLModel.find({ tmdb_id: { $in: idsToNumber } }).exec();
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
   async fetchTrendingPeople(timeWindow: 'day' | 'week') {
     try {
       return timeWindow === 'day'

@@ -1,7 +1,7 @@
 "use client"
 
 /* Package System */
-import { useState, ChangeEvent, FormEvent, useEffect, use } from "react"
+import { useState, ChangeEvent, FormEvent, useEffect } from "react"
 import {
   Button,
   TextField,
@@ -43,7 +43,6 @@ export default function VerifyOTP() {
       return router.push('/');
     }
   }, [isLogin, router]);
-
 
   useEffect(() => {
     const expiresAt = localStorage.getItem('expiresAt');

@@ -1,7 +1,7 @@
 'use client'
 
 /* Package System */
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, TextField, Card, CardContent, CardHeader, Typography, Alert, Box, CircularProgress, IconButton, InputAdornment } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
@@ -53,7 +53,7 @@ export default function Register() {
       [name]: ''
     }));
   }
-  
+
   const validateForm = () => {
     const newErrors: any = {};
 
@@ -97,26 +97,25 @@ export default function Register() {
     setIsLoading(true);
 
     try {
-      const res = await fetch(END_POINT_URL_LIST.V2_REGISTER, {
+      const otpRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}${END_POINT_URL_LIST.SEND_OTP}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({ email: formData.email })
       });
 
-      const data = await res.json();
-      
-      if (res.ok) {
-        login(data);
-        setMessage('Đăng ký thành công!')
-        setFormData({ username: '', email: '', password: '', confirmPassword: '' })
+      const otpData = await otpRes.json();
+
+      if (otpRes.ok) {
+        setMessage('Mã OTP đã được gửi đến email của bạn thành công.');
+        localStorage.setItem('tempRegisterData', JSON.stringify(formData));
         setTimeout(() => {
-          router.push('/login')
-        }, 2000)
+          router.push('/activate-otp');
+        }, 2000);
         return;
       }
 
-      setMessage(data?.message?.message || 'Đăng ký thất bại. Vui lòng kiểm tra lại thông tin đăng ký.');
-      throw new Error(data?.message?.message || 'Đăng ký thất bại. Vui lòng kiểm tra lại thông tin đăng ký.');
+      setMessage(otpData?.message?.message || 'Không thể gửi mã OTP. Vui lòng thử lại.');
+      throw new Error(otpData?.message?.message || 'Không thể gửi mã OTP. Vui lòng thử lại.');
     } catch (error: any) {
       console.log(error)
       setMessage(error.response?.data?.message || error?.message || "Đã xảy ra lỗi trong quá trình đăng ký");
