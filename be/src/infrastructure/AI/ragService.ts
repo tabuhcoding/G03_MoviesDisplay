@@ -45,10 +45,12 @@ class RagService {
       if (searchBy === "people"){
         collection = "people";
       }
+
+      console.log("amount", amount);
       const response = await this.client.get('/retriever/', {
         params: {
           llm_api_key: this.apiKey,
-          collection,
+          collection_name: collection,
           query,
           amount,
           threshold,
@@ -64,13 +66,15 @@ class RagService {
   // Navigate the web by query
   async navigate(query: string) {
     try {
-      const response = await this.client.get('/navigate/', {
+      console.log("query", query);
+      const response = await this.client.post('/navigate/', null, {
         params: {
           llm_api_key: this.apiKey,
           query,
         },
       });
       return response.data;
+      
     } catch (error) {
       console.error('Error navigating:', error.response?.data || error.message);
       throw new Error('Failed to navigate.');

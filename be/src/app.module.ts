@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ImageModule } from './model/image/image.module';
 import { OtpModule } from './model/user/otp/otp.module';
 import { PeopleModule } from './model/people/people.module';
+import { NavigateModule } from './model/natigate/navigate.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { PeopleModule } from './model/people/people.module';
     ImageModule,
     OtpModule,
     PeopleModule,
+    NavigateModule,
   ],
 })
 export class AppModule {}
