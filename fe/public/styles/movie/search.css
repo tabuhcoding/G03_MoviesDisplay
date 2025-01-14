@@ -1,0 +1,69 @@
+.filter-title {
+    background: #01B4EB !important;
+    border-color: #01B4EB !important;
+    color: white;
+    font-weight: 500;
+}
+
+.list-group-item.active {
+    font-weight: bold !important;
+}
+
+
+.custom-select-wrapper {
+    width: 200px;
+    position: relative;
+}
+
+.custom-select {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+}
+
+.custom-select::after {
+    content: '▼';
+    font-size: 12px;
+    margin-left: 10px;
+    transition: transform 0.3s ease;
+}
+
+.custom-select.open::after {
+    transform: rotate(180deg);
+}
+
+.custom-select-options {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    display: block;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.custom-select-option {
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.custom-select-option:hover {
+    background-color: #f0f0f0;
+}
+
+.custom-select-option.active {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}

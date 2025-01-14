@@ -1,13 +1,14 @@
 .movies-grid {
-  column-count: 5; 
-  column-gap: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
   padding: 20px;
+  justify-content: flex-start;
 }
 
 .movies-item {
-  display: inline-block;
+  flex: 1 1 calc(20% - 20px); /* 5 items mỗi hàng, chia đều 100% */
   margin-bottom: 20px;
-  width: 100%;
 }
 
 .movies-card {
@@ -18,11 +19,12 @@
   display: flex;
   flex-direction: column;
   cursor: pointer;
+  height: 440px;
 }
 
 .movies-img {
+  height: 225px;
   width: 100%;
-  height: auto;
   display: block;
   border-bottom: 4px solid #ddd;
 }
@@ -40,19 +42,19 @@
 }
 
 @media (max-width: 1200px) {
-  .movies-grid {
-    column-count: 3;
+  .movies-item {
+    flex: 1 1 calc(33.33% - 20px); /* 3 items mỗi hàng */
   }
 }
 
 @media (max-width: 768px) {
-  .movies-grid {
-    column-count: 2;
+  .movies-item {
+    flex: 1 1 calc(50% - 20px); /* 2 items mỗi hàng */
   }
 }
 
 @media (max-width: 480px) {
-  .movies-grid {
-    column-count: 1;
+  .movies-item {
+    flex: 1 1 100%; /* 1 item mỗi hàng */
   }
 }
