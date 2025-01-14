@@ -24,6 +24,19 @@ export class MoviesRepository {
       @InjectModel('FavoriteList', 'auth') private favoriteListModel: Model<any>,
     ) {}
 
+  async fetchMoviesByIds(ids: number[]) {
+    try {
+      // const { data } = await axios.get(`${this.baseUrl}/movie`, {
+      //   params: { api_key: this.apiKey, movie_id: ids.join(',') },
+      // });
+      // return data.results;
+      console.log(ids);
+      const idsToNumber = ids.map((id) => id >> 0);
+      return this.moviesNoSQLModel.find({ tmdb_id: { $in: idsToNumber } }).exec();
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
   async fetchTrendingMovies(timeWindow: 'day' | 'week') {
     try {
       // const { data } = await axios.get(`${this.baseUrl}/trending/movie/${timeWindow}`, {
