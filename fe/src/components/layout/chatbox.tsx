@@ -14,6 +14,7 @@ interface Message {
 
 export default function ChatBox() {
   const [isOpen, setIsOpen] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [messages, setMessages] = useState<Message[]>([{ text: "Hello! How can we help you today?", sender: "bot", link: null }]);
   const [input, setInput] = useState("");
   const [size, setSize] = useState({ width: 300, height: 400 }); // Kích thước mặc định
@@ -26,60 +27,63 @@ export default function ChatBox() {
   const sendMessage = async () => {
     if (input.trim()) {
       // Hiển thị tin nhắn của user
+      setIsLoading(true);
       setMessages([...messages, { text: input, sender: "user" }]);
       const userMessage = input; // Lưu tin nhắn của user
       setInput(""); // Reset input field
 
       try {
         // Gửi tin nhắn tới API
-        const response = await axios.get( `${process.env.NEXT_PUBLIC_BACKEND_URL}${END_POINT_URL_LIST.NAVIGATE}?query=${userMessage}`);
-        if (response.data.data.ids.length > 0){
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}${END_POINT_URL_LIST.NAVIGATE}?query=${userMessage}`);
+        if (response.data.data.ids.length > 0) {
           const routeRes = response.data.data.route;
           const idsRes = response.data.data.ids;
           let link = ``;
           let text = "";
-          if (routeRes === "MOVIE_PAGE"){
+          if (routeRes === "MOVIE_PAGE") {
             text = "Here are some movies you might find what you wants:";
             link = `/movies?ids=${idsRes.join(",")}&text=${text}`;
           }
-          else if (routeRes === "HOME_PAGE"){
+          else if (routeRes === "HOME_PAGE") {
             text = "You can find it in this page:";
             link = `/`;
           }
-          else if (routeRes === "PROFILE_PAGE"){
+          else if (routeRes === "PROFILE_PAGE") {
             text = "Here is your profile:";
             link = `/profile`;
           }
-          else if (routeRes === "CAST_PAGE"){
+          else if (routeRes === "CAST_PAGE") {
             text = "Go to one of these movie, you can see cast of the movie:";
             link = `/movies?ids=${idsRes.join(",")}&text=${text}`;
           }
-          else if (routeRes === "NONE"){
+          else if (routeRes === "NONE") {
             text = "Sorry, I can't find what you want. Please try again.";
           }
 
           setMessages((prev) => [
             ...prev,
-            { 
-              text: text, 
-              sender: "bot", 
-              link: link ? <a href={link} target="_blank" rel="noopener noreferrer">{link}</a> : null 
+            {
+              text: text,
+              sender: "bot",
+              link: link ? <a href={link} target="_blank" rel="noopener noreferrer">{link}</a> : null
             }
           ]);
         }
-        else{
+        else {
           setMessages((prev) => [
             ...prev,
-            { text: "Sorry, something went wrong. Please try again.", sender: "bot" },
+            { text: "Sorry, something went wrong. Please try again.", sender: "bot" }
           ]);
         }
-          
+
       } catch (error) {
         console.error("Error fetching data:", error);
         setMessages((prev) => [
           ...prev,
-          { text: "Unable to connect to the server. Please try later.", sender: "bot" },
+          { text: "Unable to connect to the server. Please try later.", sender: "bot" }
         ]);
+      } finally {
+        setIsLoading(false);
       }
     }
   };
@@ -89,11 +93,14 @@ export default function ChatBox() {
       className={`chatbox ${isOpen ? "open" : "closed"}`}
       style={{
         width: `${isMinimized ? 300 : size.width}px`,
-        height: `${isMinimized ? 60 : size.height}px`,
+        height: `${isMinimized ? 60 : size.height}px`
       }}
     >
       <div className="chatbox-header">
-        <h4>Chat with us!</h4>
+        <div className="d-flex flex-column">
+          <h4>Chat with us!</h4>
+          <h6>{isLoading ? 'Typing' : 'Online'}</h6>
+        </div>
         <div className="chatbox-buttons">
           <button onClick={toggleMinimize} className="chatbox-minimize">
             {isMinimized ? "+" : "-"}
@@ -107,7 +114,7 @@ export default function ChatBox() {
             {messages.map((msg, idx) => (
               <div key={idx} className={`message ${msg.sender}`}>
                 <p>{msg.text}</p>
-                {msg.link && <p>{msg.link}</p>} {/* Hiển thị liên kết nếu có */}
+                {msg.link && <p>{msg.link}</p>}
               </div>
             ))}
           </div>

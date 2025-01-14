@@ -7,6 +7,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import SearchInput from "@/src/components/layout/searchInput";
 import "@styles/Homepage.css";
+import { CircularProgress } from "@mui/material";
 
 export interface Movie {
   id: number;
@@ -70,7 +71,7 @@ export default function Page() {
         <div/>
         <div className="movie-list-container my-3">
           {loading ? (
-            <p>Loading...</p>
+            <CircularProgress size={25} />
           ) : error?.message ? (
             <ErrorHandling error={error} callback={fetchData} />
           ) : (
