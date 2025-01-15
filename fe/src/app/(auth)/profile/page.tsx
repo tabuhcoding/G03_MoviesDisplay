@@ -316,7 +316,6 @@ export default function Profile() {
               <div style={{marginLeft:'100px'}} className='about_me'>
                 <div className='content_wrapper flex'>
                   <h2>{user.username ?? ''}</h2>
-                  <h3>Member since {formatDateToMonthYYYY(user?.createdAt ?? '')}</h3>
                 </div>
                 <div className='content_wrapper flex'>
                   <span>Email: {user?.email ?? ''}</span>
