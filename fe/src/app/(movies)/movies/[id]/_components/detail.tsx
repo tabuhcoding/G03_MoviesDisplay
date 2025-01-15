@@ -63,6 +63,7 @@ interface Review {
   };
   content: string;
   created_at: string;
+  update_at: string;
   updated_at: string;
   id: string;
   url: string;

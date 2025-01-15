@@ -6,6 +6,7 @@ import axios from "axios";
 import { END_POINT_URL_LIST } from "@/src/util/constant";
 import { link } from "fs";
 import { JSX } from "@emotion/react/jsx-runtime";
+import { useRouter } from "next/navigation";
 interface Message {
   text: string;
   sender: string;
@@ -19,6 +20,7 @@ export default function ChatBox() {
   const [input, setInput] = useState("");
   const [size, setSize] = useState({ width: 300, height: 400 }); // Kích thước mặc định
   const [isMinimized, setIsMinimized] = useState(false); // Thêm trạng thái để kiểm soát việc thu nhỏ
+  const router = useRouter();
 
   const toggleChatBox = () => setIsOpen(!isOpen);
 
@@ -35,7 +37,7 @@ export default function ChatBox() {
       try {
         // Gửi tin nhắn tới API
         const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}${END_POINT_URL_LIST.NAVIGATE}?query=${userMessage}`);
-        if (response.data.data.ids.length > 0) {
+        if (response.data.data.route !== null) {
           const routeRes = response.data.data.route;
           const idsRes = response.data.data.ids;
           let link = ``;
@@ -51,6 +53,10 @@ export default function ChatBox() {
           else if (routeRes === "PROFILE_PAGE") {
             text = "Here is your profile:";
             link = `/profile`;
+            setTimeout(() => {
+              router.push(link);
+            }, 2000);
+
           }
           else if (routeRes === "CAST_PAGE") {
             text = "Go to one of these movie, you can see cast of the movie:";

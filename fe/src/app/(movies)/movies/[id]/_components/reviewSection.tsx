@@ -24,6 +24,7 @@ interface Review {
   };
   content: string;
   created_at: string;
+  update_at: string;
   updated_at: string;
   id: string;
   url: string;
@@ -172,7 +173,7 @@ export const ReviewList: FC<{ reviews: Review[]; currentUserEmail: string; onEdi
               )}
             </div>
             <div className="review-footer">
-              <small>{new Date(review.updated_at).toLocaleString()}</small>
+              <small>{new Date(review.update_at ?? review.updated_at).toLocaleString()}</small>
             </div>
           </div>
         );

@@ -56,13 +56,13 @@ export class NavigateService {
         const resultsIds = await this.navigateRepository.convertIdToTmdbId(searchResult.data.result);
         return { route: "MOVIE_PAGE", ids: resultsIds };
       }
-      const resultsIds = await this.navigateRepository.convertIdToTmdbId(params.movie_ids);
+      if (!params) return { route, ids: []  };
+      
+      const resultsIds = await this.navigateRepository.convertIdToTmdbId(params.movie_ids === null ? [] : params.movie_ids);
 
-      if (params)
-        return { route, ids:resultsIds  };
       return {
         route,
-        ids: [],
+        ids: resultsIds,
       }
     } catch (error) {
       throw new InternalServerErrorException('Failed to navigate.');

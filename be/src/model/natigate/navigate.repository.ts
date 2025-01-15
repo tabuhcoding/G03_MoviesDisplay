@@ -16,11 +16,15 @@ export class NavigateRepository {
     return genres.map(genre => genre.name);
   }
   async convertIdToTmdbId(ids: string[]){
+    if (ids === null) return [];
     const movies = await this.moviesNoSQLModel.find({_id: { $in: ids }});
+    if (movies.length === 0) return [];
     return movies?.map(movie => movie.tmdb_id) ?? [];
   }
   async convertIdToTmdbIdPeople(ids: string[]){
+    if (ids === null) return [];
     const people = await this.peopleModel.find({_id: { $in: ids }});
-    return people?.map(person => person.tmdb_id) ?? [];
+    if (people.length === 0) return [];
+    return people.map(person => person.tmdb_id) ?? [];
   }
 }
