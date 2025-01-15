@@ -281,7 +281,6 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
         setMovieSameKeyword(result.data[1].movies);
         setMovieSameCollection(result.data[2].movies);
       } else {
-        console.error("Invalid data format:", result);
         setMovieSameGenres([]);
         setMovieSameKeyword([]);
         setMovieSameCollection([]);

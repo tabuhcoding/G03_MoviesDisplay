@@ -17,10 +17,10 @@ export class NavigateRepository {
   }
   async convertIdToTmdbId(ids: string[]){
     const movies = await this.moviesNoSQLModel.find({_id: { $in: ids }});
-    return movies.map(movie => movie.tmdb_id);
+    return movies?.map(movie => movie.tmdb_id) ?? [];
   }
   async convertIdToTmdbIdPeople(ids: string[]){
     const people = await this.peopleModel.find({_id: { $in: ids }});
-    return people.map(person => person.tmdb_id);
+    return people?.map(person => person.tmdb_id) ?? [];
   }
 }

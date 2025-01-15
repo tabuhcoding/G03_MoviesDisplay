@@ -135,7 +135,8 @@ export const ReviewList: FC<{ reviews: Review[]; currentUserEmail: string; onEdi
           <div key={review.id} className="review-item">
             <div className="review-header">
               <img
-                src={`https://media.themoviedb.org/t/p/w300_and_h450_bestv2${review.author_details.avatar_path}` || "https://res.cloudinary.com/de66mx8mw/image/upload/v1736666809/default-avatar-icon-of-social-media-user-vector.jpg.jpg"}
+                src={review.author_details.username === currentUserEmail ? review.author_details.avatar_path 
+                  : ((review.author_details.avatar_path === "" || !review.author_details.avatar_path) ? "https://res.cloudinary.com/de66mx8mw/image/upload/v1736666809/default-avatar-icon-of-social-media-user-vector.jpg.jpg" : `https://media.themoviedb.org/t/p/w300_and_h450_bestv2${review.author_details.avatar_path}`)}
                 alt={review.author}
                 className="avatar"
               />
