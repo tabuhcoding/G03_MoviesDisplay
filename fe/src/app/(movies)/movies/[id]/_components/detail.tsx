@@ -153,7 +153,7 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
         setDialogMessage("Added movie to the list successfully!");
       } else {
         setDialogType("error");
-        setDialogMessage("Failed to add movie to the list. Please try again.");
+        setDialogMessage("please login to add movie to the list.");
       }
     } catch (error) {
       console.log(error);
@@ -197,7 +197,7 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
 
       } else {
         setDialogType("error");
-        setDialogMessage("Failed to add rating and review. Please try again.");
+        setDialogMessage("Please login to add rating and review.");
       }
     } catch (error) {
       console.log(error);
@@ -229,7 +229,7 @@ export default function MovieDetail({ movieDetails }: MovieDetailProps) {
         setDialogMessage("Updated rating and review successfully!");
       } else {
         setDialogType("error");
-        setDialogMessage("Failed to update rating and review. Please try again.");
+        setDialogMessage("Please login to edit your review.");
       }
     } catch (error) {
       console.log(error);
